@@ -37,7 +37,12 @@ public class MapObjectPointer extends MapObject {
     }
 
     @Override
-    public int getSize() {
-        return original.getSize();
+    public int getWidth() {
+        return original.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return original.getHeight();
     }
 }

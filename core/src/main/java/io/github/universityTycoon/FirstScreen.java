@@ -38,6 +38,10 @@ public class FirstScreen implements Screen {
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
 
+    Texture background;
+    Texture logo;
+    Texture start; 
+
     final ScreenManager game;
     public FirstScreen(ScreenManager main) {
         this.game = main;
@@ -60,6 +64,10 @@ public class FirstScreen implements Screen {
 
         startButton = new Rectangle();
         mousePos = new Vector2(0,0);
+
+        background = new Texture(Gdx.files.internal("images/title_page.png"));
+        logo = new Texture(Gdx.files.internal("images/logo.png"));
+        start = new Texture(Gdx.files.internal("images/start.png"));
     }
 
     /**
@@ -126,19 +134,19 @@ public class FirstScreen implements Screen {
         batch.begin();
 
         ScreenUtils.clear(Color.BLACK);
-        Texture background = new Texture(Gdx.files.internal("images/title_page.png"));
-        Texture logo = new Texture(Gdx.files.internal("images/logo.png"));
-        Texture start = new Texture(Gdx.files.internal("images/start.png"));
 
         startButton.set(6.05f, 2.5f, 4f, 0.55f);
-
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(logo, 6, 4.5f, 4, 4);
-        batch.draw(start, 6.05f, 2.5f, 4, 0.55f);
+        GameModel.blackFont.draw(batch, "Leaderboard:", 6, 4);
+        for(Integer i : game.leaderboard.keySet()) {
+            GameModel.blackFont.draw(batch, Integer.toString(i) + ". " + game.leaderboard.get(i).getName()+ " " + game.leaderboard.get(i).getScore(), 6f, 4f - 0.4f*i);
+        }
+        batch.draw(start, 6.05f, 1, 4, 0.55f);
 
         batch.end();
     }
@@ -161,7 +169,9 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        logo.dispose();
+        start.dispose();
     }
 }
 

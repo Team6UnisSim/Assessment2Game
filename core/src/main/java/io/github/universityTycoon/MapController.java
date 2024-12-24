@@ -41,31 +41,31 @@ public class MapController {
      * @param yPos The y grid coordinate it's being placed in.
      * @return true if the building was successfully added, false otherwise.
      */
-    public boolean addBuilding(Building building, int xPos, int yPos) {
-        boolean buildingFits = true;
+    public boolean addObject(MapObject object, int xPos, int yPos) {
+        boolean objectFits = true;
         // Note that the top left square is 0,0, so y/j is negative
-        for (int i = 0; i < building.getSize() ; i++) {
-            for (int j = 0; j < building.getSize() ; j++) {
+        for (int i = 0; i < object.getWidth() ; i++) {
+            for (int j = 0; j < object.getHeight() ; j++) {
                 if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
-                    buildingFits = false;
+                    objectFits = false;
                     break;
                 }
             }
         }
-        if (buildingFits) {
+        if (objectFits) {
             // Place the bottom left square
-            mapObjects[xPos][yPos] = building;
+            mapObjects[xPos][yPos] = object;
 
             // Then place pointers to the original
-            for (int i = 0; i < building.getSize() ; i++) {
-                for (int j = 0; j < building.getSize() ; j++) {
+            for (int i = 0; i < object.getWidth() ; i++) {
+                for (int j = 0; j < object.getHeight() ; j++) {
                     if (i != 0 || j != 0) {
-                        mapObjects[xPos + i][yPos - j] = new MapObjectPointer(building);
+                        mapObjects[xPos + i][yPos - j] = new MapObjectPointer(object);
                     }
                 }
             }
         }
-        return buildingFits;
+        return objectFits;
     }
 
     /**

@@ -137,30 +137,48 @@ public class Building extends MapObject {
     }
 
     /**
-     * Gets the size of the building.
-     * @return The size of the building
+     * Gets the width of the building.
+     * @return The width of the building
      */
-    public int getSize() {
-        return size;
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the height of the building.
+     * @return The height of the building
+     */
+    public int getHeight() {
+        return height;
     }
 
 
     /**
      * Creates and returns a new instance of a specific building type based on the provided enum type.
-     * The type of building returned corresponds to the `BuildingTypes` enum value.
+     * The type of building returned corresponds to the 'BuildingTypes' enum value.
      *
-     * @param type The type of building to create, specified as a `BuildingTypes` enum value.
+     * @param type The type of building to create, specified as a 'BuildingTypes' enum value.
      * @param time The time the building will be constructed at.
-     * @param <T> A generic type parameter that extends the `Building` class, representing the type of building to create.
+     * @param <T> A generic type parameter that extends the 'Building' class, representing the type of building to create.
      *
      * @return A new instance of the specified building type, constructed at the specified time.
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
         return switch (type) {
-            case Accommodation -> (T) new AccommodationBuilding(time);
-            case Leisure -> (T) new LeisureBuilding(time);
-            case Cafeteria -> (T) new Cafeteria(time);
-            case Teaching -> (T) new TeachingBuilding(time);
+            case SmallAccommodation -> (T) new SmallAccommodation(time);
+            case MediumAccommodation -> (T) new MediumAccommodation(time);
+            case LargeAccommodation -> (T) new LargeAccommodation(time);
+            case DiningHall -> (T) new DiningHall(time);
+            case ConvenienceStore -> (T) new ConvenienceStore(time);
+            case Cafe -> (T) new Cafe(time);
+            case CommonRoom -> (T) new CommonRoom(time);
+            case StudentBar -> (T) new StudentBar(time);
+            case BasketballCourt -> (T) new BasketballCourt(time);
+            case StemBuilding -> (T) new StemBuilding(time);
+            case HumanitiesBuilding -> (T) new HumanitiesBuilding(time);
+            case ArtsBuilding -> (T) new ArtsBuilding(time);
+            case Library -> (T) new Library(time);
             default -> null;
         };
     }

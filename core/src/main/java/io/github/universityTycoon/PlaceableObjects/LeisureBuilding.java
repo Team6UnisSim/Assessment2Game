@@ -14,9 +14,10 @@ public class LeisureBuilding extends Building {
      *
      * @param constructionStartedAt The date the construction starts at.
      */
-    public LeisureBuilding(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt, "images/fun_building.png");
-        size = 2;
+    public LeisureBuilding(LocalDateTime constructionStartedAt, String texturePath) {
+        super(constructionStartedAt, texturePath);
+        width = 2;
+        height = 2;
         satisfactionBonus = 3;
         constructionGameTime = Duration.ofDays(45);
         finishDate = constructionStartedAt.plus(constructionGameTime);
