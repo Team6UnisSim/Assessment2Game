@@ -24,6 +24,40 @@ public class EventManager {
     }
 
 
+    /**
+     * Adds an event-rarity pair to eventMap
+     * 
+     * @param event event to be added
+     * @param rarity event's rarity value
+     */
+    public void addEvent(GameEvent event, Integer rarity){
+
+        if (rarity < 1 || rarity > 5){ // rarity scale from 1 (rare) to 5 (common)
+            throw new IllegalArgumentException("Rarity value must be between 1 and 5.");
+        }
+
+        if (eventMap.containsKey(event)){
+            throw new IllegalArgumentException("Event exists already.");
+        }
+
+        eventMap.put(event,rarity);
+    }
+
+    /**
+     * Removes given event from  the map, checks if it exists first
+     * 
+     * @param event event to be removed
+     * @param rarity event's rarity to be removed
+     */
+    public void removeEvent(GameEvent event){
+        if (!eventMap.keySet().contains(event)){
+            throw new IllegalArgumentException("Event does not exist.");
+        }
+
+        eventMap.remove(event); // removes pair
+    }
+
+
     // ADDED THIS METHOD - HELPER METHOD FOR THE ONE BELOW
 
     /**
