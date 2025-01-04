@@ -1,10 +1,18 @@
 package io.github.universityTycoon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Map;
+
+
+
 
 public class EventManager {
-    ArrayList<GameEvent> eventList = new ArrayList<GameEvent>();
-    GameEventListener listener;
+    private Map<GameEvent, Integer> eventMap = new HashMap<>();
+    private GameEventListener listener;
+    private float timeSinceLastEvent = 0.0f;
+    private static final float EVENT_INTERVAL = 60.0f; // 60 sec between events
 
     /**
      * Assigns the GameEventListener
@@ -14,14 +22,65 @@ public class EventManager {
         this.listener = listener;
     }
 
+
+    // ADDED THIS METHOD - HELPER METHOD FOR THE ONE BELOW
+
+    /**
+     * Picks event from eventMap based on their rarity value, higher >> more chance to be picked.
+     * 
+     * Example: (E1:1), (E2:2), (E3:3), (E4:4) -> (Event, rarity)
+     * totalWeight = 10 (1+2+3+4), lowestRarity <= randomNumber <= totalWeight
+     * E1 picked if randomNumber = 1 (10% chance)
+     * E2 picked if randomNumber = 2,3 (20% chance)
+     * E3 picked if randomNumber = 4,5,6 (30% chance)
+     * E4 picked if randomNumber = 7,8,9,10 (40% chance)
+     * 
+     * @param eventMap map that contains all the events 
+     * @return single GameEvent
+     */
+    public GameEvent pickEvent(Map<GameEvent, Integer> eventMap) {
+        int totalRarity = 0;
+
+        // First, check if event list is empty
+        if (eventMap.isEmpty()){
+            throw new IllegalStateException("EventMap is empty");
+        }
+
+        for (int rarity : eventMap.values()){
+            totalRarity += rarity;
+        }
+        // Generate random number between 1 and total rarity -> so 1 and 10
+        int randomWeight = new Random().nextInt(totalRarity) + 1;
+
+        for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
+            randomWeight -= entry.getValue();
+            if (randomWeight <= 0){ // Once <= 0 we opick this event
+                return entry.getKey();
+            }
+        }
+        throw new IllegalStateException("Random weight calculation failed");
+    }
+
+
+
     /**
      * Run this inside the main process loop (MainScreen.logic()). Raises events at random intervals determined by
      * the rarity of said event.
      * @param delta time in seconds since the last frame
      */
     public void processEvents(float delta) {
-        if (false) { // Calculate whether to raise an event
-            listener.raiseEvent(eventList.get(0));
+
+        // increment thiswith every frame delta time
+        timeSinceLastEvent += delta;
+
+        // when interval reached, pick an event to generate
+        if (timeSinceLastEvent >= EVENT_INTERVAL){
+            GameEvent currentEvent = pickEvent(eventMap);
+            timeSinceLastEvent -= EVENT_INTERVAL; // reset
+
+            if (currentEvent != null){
+                listener.raiseEvent(currentEvent);
+            }
         }
     }
 }
