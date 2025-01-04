@@ -42,7 +42,7 @@ public class EventManager {
     public GameEvent pickRandomEvent(Map<GameEvent, Integer> eventMap) {
         int totalRarity = 0;
 
-        // First, check if event list is empty
+        // First, check if eventMap is empty
         if (eventMap.isEmpty()){
             throw new IllegalStateException("EventMap is empty");
         }
@@ -51,11 +51,11 @@ public class EventManager {
             totalRarity += rarity;
         }
         // Generate random number between 1 and total rarity -> so 1 and 10
-        int randomWeight = new Random().nextInt(totalRarity) + 1;
+        int randomNumber = new Random().nextInt(totalRarity) + 1;
 
         for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
-            randomWeight -= entry.getValue();
-            if (randomWeight <= 0){ // Once <= 0 we opick this event
+            randomNumber -= entry.getValue();
+            if (randomNumber <= 0){ // Once <= 0 we opick this event
                 return entry.getKey();
             }
         }
