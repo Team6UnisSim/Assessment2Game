@@ -6,8 +6,9 @@ import java.util.Random;
 import java.util.Map;
 
 
-
-
+/**
+ * Responsible for raising an event and dispatching it to the GameEventListener
+ */
 public class EventManager {
     private Map<GameEvent, Integer> eventMap = new HashMap<>();
     private GameEventListener listener;
@@ -38,7 +39,7 @@ public class EventManager {
      * @param eventMap map that contains all the events 
      * @return single GameEvent
      */
-    public GameEvent pickEvent(Map<GameEvent, Integer> eventMap) {
+    public GameEvent pickRandomEvent(Map<GameEvent, Integer> eventMap) {
         int totalRarity = 0;
 
         // First, check if event list is empty
@@ -75,7 +76,7 @@ public class EventManager {
 
         // when interval reached, pick an event to generate
         if (timeSinceLastEvent >= EVENT_INTERVAL){
-            GameEvent currentEvent = pickEvent(eventMap);
+            GameEvent currentEvent = pickRandomEvent(eventMap);
             timeSinceLastEvent -= EVENT_INTERVAL; // reset
 
             if (currentEvent != null){
