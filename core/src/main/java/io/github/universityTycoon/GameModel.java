@@ -215,13 +215,6 @@ public class GameModel {
         return teachingBuildingCount;
     }
 
-    /**
-     * Returns the current player satisfaction score.
-     * @return The satisfaction score as a float.
-     */
-    public float getSatisfactionScore() {
-        return satisfactionScore;
-    }
 
     /**
      * Gets the current game state.
@@ -238,6 +231,34 @@ public class GameModel {
     public int getNoBuildingTypes() {
         return noBuildingTypes;
     }
+
+    // SATISFACTION METHODS:
+    /**
+     * Returns the current player satisfaction score.
+     * @return The satisfaction score as a float.
+     */
+    public float getSatisfactionScore() {
+        return satisfactionScore;
+    }
+
+    // ADDED METHOD
+    /**
+     * Retrieves the score calculator object
+     * @return
+     */
+    public ScoreCalculator getScoreCalculator(){
+        return scoreCalculator;
+    }
+
+    // ADDED METHOD
+    /**
+     * Updates the satisfaction score with a new value
+     * @param updatedScore new updated value for the score
+     */
+    public void setSatisfactionScore(float updatedScore){
+        satisfactionScore = updatedScore;
+    }
+
 
     /**
      * Handles game events by doing something.
