@@ -20,7 +20,12 @@ public class DecorationObject extends MapObject {
         return 0f;
     }
 
-    public int getSize() {
-        return size;
+    public int getWidth() {
+        return width;
     }
+
+    public int getHeight() {
+        return height;
+    }
+
 }
