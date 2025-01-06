@@ -10,11 +10,12 @@ public abstract class MapObject {
     int width = 1; // How many squares it takes up in the x axis.
     int height = 1; // How many squares it takes up in the y axis.
 
-    public abstract float calculateSatisfaction(); // As a percentage
+    public abstract float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects); // As a percentage
 
     public abstract String getName();
     public abstract String getTexturePath();
     public abstract boolean getIsStackable();
     public abstract int getWidth();
     public abstract int getHeight();
+    public abstract float getSatisfactionBonus();
 }

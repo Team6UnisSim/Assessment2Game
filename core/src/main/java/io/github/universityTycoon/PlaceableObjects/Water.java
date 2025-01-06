@@ -6,5 +6,6 @@ public class Water extends Terrain {
         super("texture path");
         width = 6;
         height = 4;
+        satisfactionBonus = 15f;
     }
 }

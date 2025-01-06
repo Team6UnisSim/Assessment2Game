@@ -5,12 +5,8 @@ import java.time.LocalDateTime;
 /**
  * AccommodationBuilding extends the Building class, and is the superclass to different types of accommodation
  * building.
- *
- * @param rentPricePPM The rent per month
- *
  */
 public class AccommodationBuilding extends Building {
-    static int rentPricePPM;
 
     /**
      * Constructor with the following parameters.
@@ -22,20 +18,11 @@ public class AccommodationBuilding extends Building {
     }
 
     /**
-     * Retrieves the rent price per month.
-     * @return The rent per month.
-     */
-    public static int getRentPricePPM() {
-        return rentPricePPM;
-    }
-
-
-    /**
      * Will calculate the satisfaction impact based off other aspects in the game.
      * @return the satisfaction impact.
      */
     @Override
-    public float calculateSatisfaction() {
+    public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
         return 0f;
     }
 }

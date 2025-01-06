@@ -18,9 +18,9 @@ public class StudentBar extends LeisureBuilding  {
         super(constructionStartedAt, "images/fun_building.png");
         width = 2;
         height = 4;
-        satisfactionBonus = 3;
         constructionGameTime = Duration.ofDays(45);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 150;
+        studentRating = 5;
     }
 }

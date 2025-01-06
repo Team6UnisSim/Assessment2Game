@@ -18,9 +18,10 @@ public class CommonRoom extends LeisureBuilding  {
         super(constructionStartedAt, "images/fun_building.png");
         width = 2;
         height = 2;
-        satisfactionBonus = 3;
+        satisfactionBonus = 0;
         constructionGameTime = Duration.ofDays(45);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 150;
+        studentRating = 4;
     }
 }

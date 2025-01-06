@@ -12,7 +12,7 @@ public class Terrain extends MapObject {
     // All of these building statistics (such as buildingCapacity), and those for its subclasses are currently static,
     // as we are not currently making subclasses of accommodation buildings for example, when that is the case,
     // those classes will have their own values, and at that point, these statistics should be made no longer static.
-    public static float satisfactionBonus;
+    public float satisfactionBonus;
 
     /**
      * Constructor with the following parameters.
@@ -49,7 +49,7 @@ public class Terrain extends MapObject {
     }
 
     // As a percentage (not implemented)
-    public float calculateSatisfaction() {
+    public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
         return 1f;
     }
 
@@ -69,6 +69,10 @@ public class Terrain extends MapObject {
         return height;
     }
 
+    public float getSatisfactionBonus() {
+        return satisfactionBonus;
+    }
+
     /**
      * Creates and returns a new instance of a specific building type based on the provided enum type.
      * The type of building returned corresponds to the `BuildingTypes` enum value.
@@ -79,13 +83,12 @@ public class Terrain extends MapObject {
      *
      * @return A new instance of the specified building type, constructed at the specified time.
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends Terrain> T getObjectFromEnum(TerrainTypes type, LocalDateTime time) {
+    public static Terrain getObjectFromEnum(TerrainTypes type, LocalDateTime time) {
         return switch (type) {
-            case Hills -> (T) new Hills();
-            case Water -> (T) new Water();
-            case Tree -> (T) new Tree();
-            case LargeTrees -> (T) new LargeTrees();
+            case Road -> new Road();
+            case Water -> new Water();
+            case Tree -> new Tree();
+            case LargeTrees -> new LargeTrees();
             default -> null;
         };
     }

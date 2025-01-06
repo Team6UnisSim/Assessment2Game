@@ -14,12 +14,9 @@ public class StemBuilding extends TeachingBuilding {
         super(constructionStartedAt, "images/library_building.png");
         width = 2;
         height = 2;
-        satisfactionBonus = 0.1f;
         constructionGameTime = Duration.ofDays(60);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 400;
-        lectureHallCount = 2;
-        labCount = 10;
-        classroomCount = 30;
+        studentRating = 2;
     }
 }

@@ -18,9 +18,9 @@ public class BasketballCourt extends LeisureBuilding  {
         super(constructionStartedAt, "images/fun_building.png");
         width = 3;
         height = 2;
-        satisfactionBonus = 3;
-        constructionGameTime = Duration.ofDays(45);
+        constructionGameTime = Duration.ofDays(60);
         finishDate = constructionStartedAt.plus(constructionGameTime);
-        buildingCapacity = 150;
+        buildingCapacity = 30;
+        studentRating = 3;
     }
 }

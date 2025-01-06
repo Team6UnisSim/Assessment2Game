@@ -10,9 +10,8 @@ public class SmallAccommodation extends AccommodationBuilding {
         width = 2;
         height = 2;
         constructionGameTime = Duration.ofDays(30);
-        satisfactionBonus = 1;
-        rentPricePPM = 700;
         buildingCapacity = 300;
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        studentRating = 4;
     }
 }

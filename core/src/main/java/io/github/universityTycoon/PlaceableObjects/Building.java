@@ -5,6 +5,7 @@ import io.github.universityTycoon.BuildingTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Building extends the abstract class MapObject, and is the superclass of all other building types.
@@ -15,22 +16,24 @@ import java.time.LocalDateTime;
  */
 public class Building extends MapObject {
 
-    public static Duration constructionGameTime;
+    public Duration constructionGameTime;
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
 
     // All of these building statistics (such as buildingCapacity), and those for its subclasses are currently static,
     // as we are not currently making subclasses of accommodation buildings for example, when that is the case,
     // those classes will have their own values, and at that point, these statistics should be made no longer static.
-    public static float satisfactionBonus;
+    public float satisfactionBonus;
 
     // This is multipurpose, it's how many people can live in an accommodation building, how many can eat in the cafeteria
     // at any given time, how many can leisure? in a leisure building, and how many can be taught at once in a teaching building.
     // These should affect the satisfaction later on, meaning if 2000 students attend the university, the other buildings
     // should have a capacity that is high enough to accommodate for that, or the satisfaction score reduces.
-    public static float buildingCapacity;
+    public float buildingCapacity;
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
+
+    int studentRating;
 
     /**
      * Constructor with the following parameters.
@@ -41,6 +44,7 @@ public class Building extends MapObject {
     public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
         this.texturePath = texturePath;
+        satisfactionBonus = 0;
     }
 
     /**
@@ -55,6 +59,7 @@ public class Building extends MapObject {
         this.constructionGameTime = constructionGameTime;
         this.texturePath = texturePath;
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        satisfactionBonus = 0;
     }
 
     /**
@@ -78,7 +83,7 @@ public class Building extends MapObject {
      *
      * @return The bonus.
      */
-    public static float getSatisfactionBonus() {
+    public float getSatisfactionBonus() {
         return satisfactionBonus;
     }
 
@@ -87,7 +92,7 @@ public class Building extends MapObject {
      *
      * @return The capacity.
      */
-    public static float getBuildingCapacity() {
+    public float getBuildingCapacity() {
         return buildingCapacity;
     }
 
@@ -96,7 +101,7 @@ public class Building extends MapObject {
      *
      * @return The time taken to construct the building.
      */
-    public static Duration getConstructionGameTime() {
+    public Duration getConstructionGameTime() {
         return constructionGameTime;
     }
 
@@ -110,9 +115,69 @@ public class Building extends MapObject {
         return isStackable;
     }
 
-    // As a percentage (not implemented)
-    public float calculateSatisfaction() {
-        return 1f;
+    public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
+        ArrayList<MapObject> nearbyObjects = new ArrayList<>();
+        float satisfaction = 0;
+
+        // Checks for nearby objects up and right - needed splitting to avoid going out of bounds.
+        for (int i = ownX; i < ownX + width + 6 && i < mapObjects.length; i++) {
+            for (int j = ownY; j < ownY + height + 6 && j < mapObjects[i].length; j++) {
+                if(mapObjects[i][j] != null && mapObjects[i][j] != this) {
+                    if (mapObjects[i][j] instanceof MapObjectPointer pointer) {
+                        if(!nearbyObjects.contains(pointer.original) && pointer.original != this) {
+                            nearbyObjects.add(pointer.original);
+                        }
+                    } else {
+                        if(!nearbyObjects.contains(mapObjects[i][j])) {
+                            nearbyObjects.add(mapObjects[i][j]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Checks for nearby objects down and left.
+        for (int i = ownX; i > ownX - 6 && i >= 0; i--) {
+            for (int j = ownY; j > ownY - 6 && j >= 0; j--) {
+                if(mapObjects[i][j] != null && mapObjects[i][j] != this) {
+                    if (mapObjects[i][j] instanceof MapObjectPointer pointer) {
+                        if(!nearbyObjects.contains(pointer.original) && pointer.original != this) {
+                            nearbyObjects.add(pointer.original);
+                        }
+                    } else {
+                        if(!nearbyObjects.contains(mapObjects[i][j])) {
+                            nearbyObjects.add(mapObjects[i][j]);
+                        }
+                    }
+                }
+            }
+        }
+
+        float minimumNearbyScore = 6 * buildingCapacity;
+        float nearbyScore = 0f;
+        for(MapObject i : nearbyObjects) {
+            if (i instanceof Building building) {
+                if(!building.isUnderConstruction) {
+                    nearbyScore += building.getBuildingCapacity() * building.getStudentRating();
+                } else {
+                    satisfaction -= 10;
+                }
+            } else {
+                satisfaction += i.getSatisfactionBonus();
+            }
+        }
+
+        if(nearbyScore >= minimumNearbyScore) {
+            satisfaction += 100;
+        } else {
+            satisfaction += 100 * (nearbyScore / minimumNearbyScore);
+        }
+
+        if(satisfaction > 100) {
+            return 100f;
+        } else {
+            return satisfaction;
+        }
     }
 
     /**
@@ -152,6 +217,10 @@ public class Building extends MapObject {
         return height;
     }
 
+    public int getStudentRating() {
+        return studentRating;
+    }
+
 
     /**
      * Creates and returns a new instance of a specific building type based on the provided enum type.
@@ -163,22 +232,21 @@ public class Building extends MapObject {
      *
      * @return A new instance of the specified building type, constructed at the specified time.
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
+    public static Building getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
         return switch (type) {
-            case SmallAccommodation -> (T) new SmallAccommodation(time);
-            case MediumAccommodation -> (T) new MediumAccommodation(time);
-            case LargeAccommodation -> (T) new LargeAccommodation(time);
-            case DiningHall -> (T) new DiningHall(time);
-            case ConvenienceStore -> (T) new ConvenienceStore(time);
-            case Cafe -> (T) new Cafe(time);
-            case CommonRoom -> (T) new CommonRoom(time);
-            case StudentBar -> (T) new StudentBar(time);
-            case BasketballCourt -> (T) new BasketballCourt(time);
-            case StemBuilding -> (T) new StemBuilding(time);
-            case HumanitiesBuilding -> (T) new HumanitiesBuilding(time);
-            case ArtsBuilding -> (T) new ArtsBuilding(time);
-            case Library -> (T) new Library(time);
+            case SmallAccommodation -> new SmallAccommodation(time);
+            case MediumAccommodation -> new MediumAccommodation(time);
+            case LargeAccommodation -> new LargeAccommodation(time);
+            case DiningHall -> new DiningHall(time);
+            case ConvenienceStore -> new ConvenienceStore(time);
+            case Cafe -> new Cafe(time);
+            case CommonRoom -> new CommonRoom(time);
+            case StudentBar -> new StudentBar(time);
+            case BasketballCourt -> new BasketballCourt(time);
+            case StemBuilding -> new StemBuilding(time);
+            case HumanitiesBuilding -> new HumanitiesBuilding(time);
+            case ArtsBuilding -> new ArtsBuilding(time);
+            case Library -> new Library(time);
             default -> null;
         };
     }

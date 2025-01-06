@@ -6,13 +6,12 @@ import java.time.LocalDateTime;
 public class LargeAccommodation extends AccommodationBuilding {
     
     public LargeAccommodation(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt, "images/sleep_building.png");
+        super(constructionStartedAt, "images/large_sleep_building.png");
         width = 4;
         height = 4;
         constructionGameTime = Duration.ofDays(80);
-        satisfactionBonus = 1;
-        rentPricePPM = 700;
-        buildingCapacity = 700;
+        buildingCapacity = 1000;
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        studentRating = 3;
     }
 }

@@ -3,7 +3,7 @@ package io.github.universityTycoon.PlaceableObjects;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Cafe extends FoodAndDrink {
+public class Cafe extends FoodAndDrinkBuilding {
 
     /**
      * Constructor with the following parameters.
@@ -14,11 +14,9 @@ public class Cafe extends FoodAndDrink {
         super(constructionStartedAt, "images/rec_building.png");
         width = 1;
         height = 1;
-        satisfactionBonus = 2;
         constructionGameTime = Duration.ofDays(10);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 100;
-        foodQuality = 7;
-        hygieneRating = 1;
+        studentRating = 4;
     }
 }
