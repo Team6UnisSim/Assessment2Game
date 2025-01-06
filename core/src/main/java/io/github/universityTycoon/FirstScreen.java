@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -42,6 +43,8 @@ public class FirstScreen implements Screen {
     Texture logo;
     Texture start; 
 
+    ShapeRenderer sr;
+
     final ScreenManager game;
     public FirstScreen(ScreenManager main) {
         this.game = main;
@@ -68,6 +71,8 @@ public class FirstScreen implements Screen {
         background = new Texture(Gdx.files.internal("images/title_page.png"));
         logo = new Texture(Gdx.files.internal("images/logo.png"));
         start = new Texture(Gdx.files.internal("images/start.png"));
+
+        sr = new ShapeRenderer();
     }
 
     /**
@@ -131,6 +136,7 @@ public class FirstScreen implements Screen {
      * Note: Batch.begin() and batch.end() must contain all draw statements, and cannot overlap with other begin/ends.
      */
     private void draw() {
+        
         batch.begin();
 
         ScreenUtils.clear(Color.BLACK);
@@ -141,12 +147,26 @@ public class FirstScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+
+        batch.end();
+
+        sr.setProjectionMatrix(viewport.getCamera().combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+
+        sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
+        sr.rect(5.9f, 1.65f, 4.2f, 2.5f);
+        
+        sr.end();
+        batch.begin();  
+        
         batch.draw(logo, 6, 4.5f, 4, 4);
+    
+        batch.draw(start, 6.05f, 1, 4, 0.55f);
+
         GameModel.blackFont.draw(batch, "Leaderboard:", 6, 4);
         for(Integer i : game.leaderboard.keySet()) {
-            GameModel.blackFont.draw(batch, Integer.toString(i) + ". " + game.leaderboard.get(i).getName()+ " " + game.leaderboard.get(i).getScore(), 6f, 4f - 0.4f*i);
+            GameModel.blackFont.draw(batch, Integer.toString(i) + ". " + game.leaderboard.get(i).getName()+ ": " + game.leaderboard.get(i).getScore(), 6f, 4f - 0.4f*i);
         }
-        batch.draw(start, 6.05f, 1, 4, 0.55f);
 
         batch.end();
     }

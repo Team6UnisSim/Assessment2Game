@@ -80,12 +80,10 @@ public class MainScreen implements Screen {
     boolean placeMode;
     PlayerInputHandler playerInputHandler;
 
-
     String time;
     String dateTimeString;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
-
 
     final ScreenManager game;
 
@@ -130,6 +128,12 @@ public class MainScreen implements Screen {
         music.setVolume(0.5f);
         music.setLooping(true);
         music.play();
+
+        gameModel.mapController.addObject(new Tree(), 3, 4);
+        gameModel.mapController.addObject(new Tree(), 4, 6);
+        gameModel.mapController.addObject(new LargeTrees(), 14, 4);
+        gameModel.mapController.addObject(new Road(), 5, 6);
+        gameModel.mapController.addObject(new Road(), 5, 13);
     }
 
 
@@ -223,7 +227,6 @@ public class MainScreen implements Screen {
             }
         }
 
-
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
         dateTimeString = gameModel.getGameTimeGMT().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
@@ -261,14 +264,14 @@ public class MainScreen implements Screen {
 
         // Draws the time remaining, the satisfaction score and the date.
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
-        GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
+        GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.1f", gameModel.getSatisfactionScore()) + "%", 5.8f, 8.9f);
         GameModel.smallerFont.draw(batch, dateTimeString, 0.05f, 8.95f);
 
 
         // Draws the building counters
         GameModel.smallerFont.draw(batch, "Leisure Buildings: " + gameModel.getLeisureBuildingCount(), 13.15f, 8.9f);
         GameModel.smallerFont.draw(batch, "Teaching Buildings: " + gameModel.getTeachingBuildingCount(), 13.15f, 8.7f);
-        GameModel.smallerFont.draw(batch, "Food&Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
+        GameModel.smallerFont.draw(batch, "Food & Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
         batch.end();
@@ -283,39 +286,14 @@ public class MainScreen implements Screen {
         batch.begin();
 
         // Draws all the relevant information about the currently selected building.
+        Building building = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
         GameModel.blackFont.draw(batch, "Building type: " + currentBuilding.name,  0.01f, 1.98f);
         GameModel.blackFont.draw(batch, "Building category: " + currentBuilding.category,  0.01f, 1.68f);
-
-        switch (currentBuilding.category) {
-            case "Accommodation":
-                GameModel.blackFont.draw(batch, "Number of rooms: " + SmallAccommodation.getBuildingCapacity(),  0.01f, 1.38f);
-                GameModel.blackFont.draw(batch, "Satisfaction score bonus: " + SmallAccommodation.getSatisfactionBonus(),  0.01f, 1.08f);
-                GameModel.blackFont.draw(batch, "Rent per month: " + SmallAccommodation.getRentPricePPM(),  0.01f, 0.78f);
-                // Prints the duration as the number of days.
-                GameModel.blackFont.draw(batch, "Time to build: " + SmallAccommodation.getConstructionGameTime().getSeconds() / 86400 + " days",  0.01f, 0.48f);
-                break;
-            case "Leisure":
-                GameModel.blackFont.draw(batch, "Building capacity: " + CommonRoom.getBuildingCapacity() + " students",  0.01f, 1.38f);
-                GameModel.blackFont.draw(batch, "Satisfaction score bonus: " + CommonRoom.getSatisfactionBonus(),  0.01f, 1.08f);
-                GameModel.blackFont.draw(batch, "Time to build: " + CommonRoom.getConstructionGameTime().getSeconds() / 86400 + " days",  0.01f, 0.78f);
-                break;
-            case "Food & Drink":
-                GameModel.blackFont.draw(batch, "People fed per hour: " + DiningHall.getBuildingCapacity(),  0.01f, 1.38f);
-                GameModel.blackFont.draw(batch, "Satisfaction score bonus: " + DiningHall.getSatisfactionBonus(),  0.01f, 1.08f);
-                GameModel.blackFont.draw(batch, "Food quality: " + DiningHall.getFoodQuality() + "/10",  0.01f, 0.78f);
-                GameModel.blackFont.draw(batch, "Hygiene rating: " + DiningHall.getHygieneRating() + "/5",  0.01f, 0.48f);
-                GameModel.blackFont.draw(batch, "Time to build: " + DiningHall.getConstructionGameTime().getSeconds() / 86400 + " days",  9.51f, 1.98f);
-                break;
-            case "Teaching":
-                GameModel.blackFont.draw(batch, "Building capacity: " + StemBuilding.getBuildingCapacity() + " students",  0.01f, 1.38f);
-                GameModel.blackFont.draw(batch, "Satisfaction score bonus: " + StemBuilding.getSatisfactionBonus(),  0.01f, 1.08f);
-                GameModel.blackFont.draw(batch, "Number of Lecture halls: " + StemBuilding.getLectureHallCount(),  0.01f, 0.78f);
-                GameModel.blackFont.draw(batch, "Number of lab rooms: " + StemBuilding.getLabCount(),  0.01f, 0.48f);
-                GameModel.blackFont.draw(batch, "Number of classrooms: " + StemBuilding.getClassroomCount(),  9.511f, 1.98f);
-                GameModel.blackFont.draw(batch, "Time to build: " + StemBuilding.getConstructionGameTime().getSeconds() / 86400 + " days",  9.51f, 1.68f);
-                break;
-        }
-
+        GameModel.blackFont.draw(batch, "Building capacity: " + building.getBuildingCapacity(),  0.01f, 1.38f);
+        GameModel.blackFont.draw(batch, "Student rating: " + building.getStudentRating() + "/5",  0.01f, 1.08f);
+        // Prints the duration as the number of days.
+        GameModel.blackFont.draw(batch, "Time to build: " + building.getConstructionGameTime().getSeconds() / 86400 + " days",  0.01f, 0.78f);
+        
         // Show building when dragging
         if (placeMode && mouseDown) {
             Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
@@ -336,8 +314,8 @@ public class MainScreen implements Screen {
         // Again, note that sr.begin() must come after all other end() statements.
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.rectLine(1570, 948, 1570, 1080, 5, Color.BLACK, Color.BLACK);
-        shapeRenderer.rectLine(1568, 950, 1920, 950, 4, Color.BLACK, Color.BLACK);
+        shapeRenderer.rectLine(1570, 938, 1570, 1080, 5, Color.BLACK, Color.BLACK);
+        shapeRenderer.rectLine(1568, 940, 1920, 940, 4, Color.BLACK, Color.BLACK);
         shapeRenderer.end();
     }
 
@@ -352,8 +330,6 @@ public class MainScreen implements Screen {
 
         Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
         if (gameModel.mapController.addObject(buildingToAdd, (int)gridPos.x, (int)gridPos.y)) {
-            // TEMPORARY CALCULATION FOR DEMONSTRATION PURPOSES ONLY. IN FUTURE, THIS WILL BE CALCULATED BY THE SCORECALCULATOR AT REGULAR INTERVALS
-            gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
             switch (currentBuilding.category) {
                 case "Accommodation" -> gameModel.accommodationBuildingCount += 1;
                 case "Leisure" -> gameModel.leisureBuildingCount += 1;
@@ -403,6 +379,13 @@ public class MainScreen implements Screen {
                         batch.draw(percentTexture, screenPos.x + 0.17f, screenPos.y + 0.25f, 48 * 0.015f, 32 * 0.015f);
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
+                } else if (mapObjects[i][j] instanceof Terrain terrain) {
+                    // Get the texture for the object
+                    String texturePath = mapObjects[i][j].getTexturePath();
+                    if (!mapObjTextures.containsKey(texturePath)) {
+                        mapObjTextures.put(texturePath, new Texture(texturePath));
+                    }
+                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * terrain.getWidth(), tileSizeOnScreen * terrain.getHeight());
                 }
             }
         }

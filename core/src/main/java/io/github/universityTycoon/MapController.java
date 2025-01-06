@@ -31,6 +31,7 @@ public class MapController {
         this.tilesWide = tilesWide;
         this.tilesHigh = tilesHigh;
         this.mapObjects = new MapObject[tilesWide][tilesHigh];
+
     }
 
     /**
@@ -46,9 +47,16 @@ public class MapController {
         // Note that the top left square is 0,0, so y/j is negative
         for (int i = 0; i < object.getWidth() ; i++) {
             for (int j = 0; j < object.getHeight() ; j++) {
-                if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
-                    objectFits = false;
-                    break;
+                if(object instanceof Building) {
+                    if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
+                        objectFits = false;
+                        break;
+                    }
+                } else {
+                    if ((xPos + i >= tilesWide || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
+                        objectFits = false;
+                        break;
+                    }
                 }
             }
         }
@@ -66,6 +74,20 @@ public class MapController {
             }
         }
         return objectFits;
+    }
+
+    public void removeObject(MapObject object, int xPos, int yPos) {
+        // Remove the bottom left square
+        mapObjects[xPos][yPos] = null;
+
+        // Then remove the pointers to the original
+        for (int i = 0; i < object.getWidth() ; i++) {
+            for (int j = 0; j < object.getHeight() ; j++) {
+                if (i != 0 || j != 0) {
+                    mapObjects[xPos + i][yPos - j] = null;
+                }
+            }
+        }
     }
 
     /**

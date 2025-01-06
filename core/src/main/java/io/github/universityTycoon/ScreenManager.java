@@ -58,7 +58,7 @@ public class ScreenManager extends Game {
         leaderboard = new HashMap<>();
 
         for(int i = 1; i < 6; i++) {
-            leaderboard.put(Integer.valueOf(i), new SavedScore(leaderboardNames.getString(String.valueOf(i), "-"), leaderboardScores.getFloat(String.valueOf(i), 0f)));
+            leaderboard.put(Integer.valueOf(i), new SavedScore(leaderboardNames.getString(String.valueOf(i), "Player"), leaderboardScores.getFloat(String.valueOf(i), 0f)));
         }
 
         fullScreen = false;

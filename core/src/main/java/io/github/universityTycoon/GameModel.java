@@ -132,6 +132,7 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
+            satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
         }
     }
 
