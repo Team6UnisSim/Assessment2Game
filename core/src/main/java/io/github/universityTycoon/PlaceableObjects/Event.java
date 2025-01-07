@@ -10,7 +10,7 @@ import io.github.universityTycoon.GameEvent;
  */
 public class Event extends MapObject{
 
-    private final GameEvent gameEvent;
+    private GameEvent gameEvent;
 
 
     /**

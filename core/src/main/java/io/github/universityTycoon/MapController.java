@@ -165,8 +165,8 @@ public class MapController {
         // duration the event has been taking place
         Duration durationOfEvent = Duration.between(timeEventStarted , gameTime);
 
-        // !!! need to add below
-        if (durationOfEvent.getSeconds() >= 60){ // need to check if event has been dealth with - add
+        // !!! ADD: isEventDealtWith() -> check if the event has been dealth with
+        if (durationOfEvent.getSeconds() >= 60){ 
             mapObjects[eventTile[0]][eventTile[1]] = null; // remove event
             return true;
         }

@@ -27,8 +27,9 @@ public abstract class AbstractGameEvent {
      * Displays an event-specific message in the main screen for the player 
      */
     public void displayMessageToPlayer(GameEvent event){
+        // to do
     }
-    
+
 
     /**
      * Default placement logic: find a random free tile
@@ -36,6 +37,6 @@ public abstract class AbstractGameEvent {
      * @return 
      */
     public int[] deterinePlacement(){
-        return gameModel.getMapController().findRandomFreeTile();
+        return gameModel.getMapController().();
     }
 }
