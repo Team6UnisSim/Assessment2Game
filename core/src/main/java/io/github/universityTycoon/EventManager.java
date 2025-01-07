@@ -1,6 +1,5 @@
 package io.github.universityTycoon;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map;
@@ -21,44 +20,18 @@ public class EventManager {
      */
     public EventManager(GameEventListener listener) {
         this.listener = listener;
+        initialiseEventMap(); 
+    }
+
+    // Iterates over enum class EventTypes and adds all types to eventMap as active events
+    private void initialiseEventMap(){
+        for (EventType eventType : EventType.values()){
+            eventMap.put(new GameEvent(eventType), eventType.getRarity());
+        }
     }
 
 
-    /**
-     * Adds an event-rarity pair to eventMap
-     * 
-     * @param event event to be added
-     * @param rarity event's rarity value
-     */
-    public void addEvent(GameEvent event, Integer rarity){
-
-        if (rarity < 1 || rarity > 5){ // rarity scale from 1 (rare) to 5 (common)
-            throw new IllegalArgumentException("Rarity value must be between 1 and 5.");
-        }
-
-        if (eventMap.containsKey(event)){
-            throw new IllegalArgumentException("Event exists already.");
-        }
-
-        eventMap.put(event,rarity);
-    }
-
-    /**
-     * Removes given event from  the map, checks if it exists first
-     * 
-     * @param event event to be removed
-     * @param rarity event's rarity to be removed
-     */
-    public void removeEvent(GameEvent event){
-        if (!eventMap.keySet().contains(event)){
-            throw new IllegalArgumentException("Event does not exist.");
-        }
-
-        eventMap.remove(event); // removes pair
-    }
-
-
-    // ADDED THIS METHOD - HELPER METHOD FOR THE ONE BELOW
+    // ADDED THIS HELPER METHOD FOR processEvents() METHOD
 
     /**
      * Picks event from eventMap based on their rarity value, higher >> more chance to be picked.
@@ -73,7 +46,7 @@ public class EventManager {
      * @param eventMap map that contains all the events 
      * @return single GameEvent
      */
-    public GameEvent pickRandomEvent(Map<GameEvent, Integer> eventMap) {
+    public GameEvent pickRandomEvent() {
         int totalRarity = 0;
 
         // First, check if eventMap is empty
@@ -81,19 +54,32 @@ public class EventManager {
             throw new IllegalStateException("EventMap is empty");
         }
 
-        for (int rarity : eventMap.values()){
-            totalRarity += rarity;
-        }
-        // Generate random number between 1 and total rarity -> so 1 and 10
-        int randomNumber = new Random().nextInt(totalRarity) + 1;
-
+        // Calculate total rarity by adding all rarity values
         for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
-            randomNumber -= entry.getValue();
-            if (randomNumber <= 0){ // Once <= 0 we opick this event
-                return entry.getKey();
+            if (entry.getKey().isActive()){
+                totalRarity += entry.getValue();
             }
         }
-        throw new IllegalStateException("Random weight calculation failed");
+
+        // Will only be 0 if  ther are no active events left
+        if (totalRarity == 0){
+            throw new IllegalStateException("No active events available.");
+        }
+
+        // Generate random number between 1 and total rarity -> so 1 - 10 in above example
+        int randomNumber = new Random().nextInt(totalRarity) + 1;
+
+        // iterate over map and select an event
+        for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
+            GameEvent event = entry.getKey(); // Check if event has an active status
+            if (event.isActive()){
+                randomNumber -= entry.getValue(); // we keep subtracting the rarities until 0
+                if (randomNumber <= 0){ // Once <= 0 we opick this event
+                    event.disableEvent(); // disbale so it is not picked again
+                    return event;
+                }
+            }
+        } throw new IllegalStateException("Random event selection failed");
     }
 
 
@@ -103,14 +89,14 @@ public class EventManager {
      * the rarity of said event.
      * @param delta time in seconds since the last frame
      */
-    public void processEvents(float delta) {
+    public void processEvents(float delta) throws Exception {
 
         // increment thiswith every frame delta time
         timeSinceLastEvent += delta;
 
         // when interval reached, pick an event to generate
         if (timeSinceLastEvent >= EVENT_INTERVAL){
-            GameEvent currentEvent = pickRandomEvent(eventMap);
+            GameEvent currentEvent = pickRandomEvent();
             timeSinceLastEvent -= EVENT_INTERVAL; // reset
 
             if (currentEvent != null){

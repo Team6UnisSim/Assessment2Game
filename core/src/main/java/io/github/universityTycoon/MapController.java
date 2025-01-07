@@ -3,6 +3,8 @@ package io.github.universityTycoon;
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 import io.github.universityTycoon.PlaceableObjects.MapObjectPointer;
+import io.github.universityTycoon.PlaceableObjects.Event;
+import java.util.Random;
 
 import java.time.LocalDateTime;
 
@@ -81,5 +83,74 @@ public class MapController {
                 }
             }
         }
+    }
+
+
+
+    /**
+     * Adds event icon to the specified position given
+     * 
+     * @param event event to retrieve icon for
+     * @param xPos x position of the event to be placed
+     * @param yPos y position of the event to be placed
+     * @return
+     */
+    public boolean addEventIcon(Event event, int xPos, int yPos){
+        
+        // Check if it x,y are within the map bounds and that the tile is free
+        if (xPos < 0 || xPos >= tilesWide || yPos < MIN_DISTANCE_TO_TOP || yPos >= tilesHigh){
+            return false; // position passed is out of bounds
+        }
+
+        // Check that tile is free
+        if (mapObjects[xPos][yPos] != null){
+            return false; // tile is not free
+        }
+        // Place the event on the single tile (no MapObjectPointers needed)
+        mapObjects[xPos][yPos] = event;
+        return true;
+    }
+
+
+
+    // /**
+    //  * This function checks all the events against the current game time, and updates them when they've finished.
+    //  * Call this to ensure events progress from current to complete.
+    //  * @param gameTime The current in game time.
+    //  */
+    // public void updateEvents(LocalDateTime gameTime) {
+    //     for (int x = 0; x < tilesWide; x++) {
+    //         for (int y = 0; y < tilesHigh; y++) {
+    //             if (mapObjects[x][y] instanceof Event) {
+    //                 ((GameEvent) mapObjects[x][y]).update(gameTime);
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    /**
+     * Method for finding a random tile that is free to display the event icon on
+     * @return x and y coordinates of the tile
+     */
+    public int[] findRandomFreeTile() throws Exception{
+
+        Random random = new Random();
+
+        // attemp up to 100 times to find a free tile to place event icon
+        for (int i = 0; i < 100; i++){
+            // get random coordinates
+            int x = random.nextInt(tilesWide);
+            int y = random.nextInt(tilesHigh);
+
+            // check if free
+            if (mapObjects[x][y] == null){
+                int[] coordinates = new int[2]; // create array to hold 2 coordinates
+                coordinates[0] = x;
+                coordinates[1] = y;
+                return coordinates;
+            }
+        }
+        throw new Exception("No free tile found");
     }
 }
