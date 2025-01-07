@@ -31,7 +31,6 @@ public class EventManager {
     }
 
 
-    // ADDED THIS HELPER METHOD FOR processEvents() METHOD
 
     /**
      * Picks event from eventMap based on their rarity value, higher >> more chance to be picked.

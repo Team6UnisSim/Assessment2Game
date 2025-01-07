@@ -1,17 +1,6 @@
 package io.github.universityTycoon;
 
-import io.github.universityTycoon.Events.AnonymousGrantHandler;
-import io.github.universityTycoon.Events.CafeMachineUpgradeHandler;
-import io.github.universityTycoon.Events.CelebrityGuestHandler;
-import io.github.universityTycoon.Events.CulturalFairHandler;
-import io.github.universityTycoon.Events.FloodingHandler;
-import io.github.universityTycoon.Events.FootballVictoryHandler;
-import io.github.universityTycoon.Events.GameEventHandler;
-import io.github.universityTycoon.Events.GoodWeatherHandler;
-import io.github.universityTycoon.Events.HurricaneHandler;
-import io.github.universityTycoon.Events.PowerOutageHandler;
-import io.github.universityTycoon.Events.StudentProtestHandler;
-
+import io.github.universityTycoon.Events.*;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -23,19 +12,17 @@ import java.util.HashMap;
  *
  */
 public class GameEventListener {
-
-    GameEventHandler handler; // Each event raised -> 1 handler created for it
+    // Links the event with their handler class
     private final Map<EventType, GameEventHandler> handlers = new HashMap<>();
 
-    MapController 
 
     /**
-     * Constructor - creates a Listener for each type and adds to the map of handlers
+     * Constructor - not used
      * 
      * @param handler the handler to be notified when an event is raised
      */
     public GameEventListener() {
-        
+        // Handlers will be initialised in the raiseEvent method
     }
 
 
@@ -44,63 +31,56 @@ public class GameEventListener {
      * To do that it retrieves the EventType to find the corresponding HanldlerType.
      * 
      * @param event triggered and passed from EventManager
+     * @throws IllegalStateException if no handler is created or event type is invalid
      */
-    public void raiseEvent(GameEvent event) throws Exception{
-
+    public void raiseEvent(GameEvent event){
         EventType eventType = event.getEventType();
 
-        if (!handlers.containsKey(eventType)){
+        // check if handler already exists in map, retreive it
+        if (!handlers.containsKey(eventType)){ // 
             GameEventHandler handler = createHandler(eventType);
             if (handler != null){
-                handlers.put(eventType, handler); // adds the handler to its map as it is created
-            } else {
-                throw new Exception("No handler was created, invalid eventType.");
-                return;
-            }
+                handlers.put(eventType, handler); // store the handler in the map
+            } 
         }
+        // Retrieve handler and invoke the appropriate Event-specific handler class
         GameEventHandler handler = handlers.get(eventType);
-        handler.handle(event);
+        if (handler == null){
+            throw new IllegalStateException("handler for event type: " + eventType + "not found.");
+        }
+        // If eventType was flooding, a flooding handler object will be created and the corresponding class is invoked here
+        handler.handle(event); 
     }
 
 
-    // Creates and returns a corresponding Handler object based on EventType passed
+    // Creates and returns the corresponding handler based on EventType 
     private GameEventHandler createHandler(EventType eventType){
         switch (eventType){
             // Negative Events
-            case FLOODING: // 1
+            case FLOODING: 
                 return new FloodingHandler();
-                break;
-            case HURRICANE: // 2
+            case HURRICANE: 
                 return new HurricaneHandler();
-                break;
-            case POWER_OUTAGE: // 3
+            case POWER_OUTAGE: 
                 return new PowerOutageHandler();
-                break;
-            case STUDENT_PROTEST: // 4
+            case STUDENT_PROTEST: 
                 return new StudentProtestHandler();
-                break;
             // Positive Events
-            case CELEBRITY_GUEST: // 5
+            case CELEBRITY_GUEST: 
                 return new CelebrityGuestHandler();
-                break;
-            case FOOTBALL_VICTORY: // 6
-                return new FloodingHandler();
-                break;
-            case ANONYMOUS_GRANT: // 7
+            case FOOTBALL_VICTORY: 
+                return new FootballVictoryHandler();
+            case ANONYMOUS_GRANT: 
                 return new AnonymousGrantHandler();
-                break;
-            case CULTURAL_FAIR: // 8
+            case CULTURAL_FAIR:
                 return new CulturalFairHandler();
-                break;
             // Neutral Events
-            case GOOD_WEATHER: // 9
+            case GOOD_WEATHER: 
                 return new GoodWeatherHandler();
-                break;
-            case CAFE_MACHINE_UPGRADE: //10
+            case CAFE_MACHINE_UPGRADE: 
                 return new CafeMachineUpgradeHandler();
-                break;
             default:
-                return null;
+                throw new IllegalArgumentException("Event type is invalid.");
         }
     }
 }
