@@ -7,6 +7,7 @@ import io.github.universityTycoon.PlaceableObjects.Event;
 import java.util.Random;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 
 /**
  * Controls the map.
@@ -86,71 +87,89 @@ public class MapController {
     }
 
 
+    // --------- METHODS FOR EVENTS BELOW ---------
 
     /**
-     * Adds event icon to the specified position given
+     * Finds a random free tile - no need to iterate over map
+     * @return x and y coordinates of the tile
+     */
+    public int[] findRandomFreeTile(){
+        Random random = new Random();
+
+        // attemp up to 100 times to find a free tile
+        for (int i = 0; i < 100; i++){
+            int x = random.nextInt(tilesWide);
+            int y = random.nextInt(tilesHigh);
+
+            if (mapObjects[x][y] == null){ // check if free
+                return new int[] {x, y}; 
+            }
+        }
+        return null; 
+    }
+
+
+
+    /**
+     * Finds a random tile to place the event icon to using findRandomFreeTile().
+     * Places the object on the MapObject grid on that free tile.
+ 
      * 
      * @param event event to retrieve icon for
      * @param xPos x position of the event to be placed
      * @param yPos y position of the event to be placed
      * @return
      */
-    public boolean addEventIcon(Event event, int xPos, int yPos){
+    public boolean placeEventAt(Event event){
         
-        // Check if it x,y are within the map bounds and that the tile is free
-        if (xPos < 0 || xPos >= tilesWide || yPos < MIN_DISTANCE_TO_TOP || yPos >= tilesHigh){
-            return false; // position passed is out of bounds
+        // find a free random tile
+        int[] freeTile = findRandomFreeTile();
+        if (freeTile == null){
+            return false;
         }
 
-        // Check that tile is free
-        if (mapObjects[xPos][yPos] != null){
-            return false; // tile is not free
+        int xPos = freeTile[0];
+        int yPos = freeTile[1];
+
+        // check that xPos and yPos aren't out of map bounds
+        if (xPos < 0 || xPos >= tilesWide || yPos < MIN_DISTANCE_TO_TOP || yPos >= tilesHigh){
+            return false; // tile out of bounds
         }
-        // Place the event on the single tile (no MapObjectPointers needed)
+
+        // Check if tile is occupied
+        if (mapObjects[xPos][yPos] != null){
+            return false; // tile not free
+        }
+
+        // otherwise place the event on the tile
         mapObjects[xPos][yPos] = event;
-        return true;
+        return true; // successfully placed
     }
 
 
 
-    // /**
-    //  * This function checks all the events against the current game time, and updates them when they've finished.
-    //  * Call this to ensure events progress from current to complete.
-    //  * @param gameTime The current in game time.
-    //  */
-    // public void updateEvents(LocalDateTime gameTime) {
-    //     for (int x = 0; x < tilesWide; x++) {
-    //         for (int y = 0; y < tilesHigh; y++) {
-    //             if (mapObjects[x][y] instanceof Event) {
-    //                 ((GameEvent) mapObjects[x][y]).update(gameTime);
-    //             }
-    //         }
-    //     }
-    // }
-
-
     /**
-     * Method for finding a random tile that is free to display the event icon on
-     * @return x and y coordinates of the tile
+     * This function checks all the events against the current game time, and removes them.
+     * Only one 
+     * @param gameTime The current in game time.
      */
-    public int[] findRandomFreeTile() throws Exception{
-
-        Random random = new Random();
-
-        // attemp up to 100 times to find a free tile to place event icon
-        for (int i = 0; i < 100; i++){
-            // get random coordinates
-            int x = random.nextInt(tilesWide);
-            int y = random.nextInt(tilesHigh);
-
-            // check if free
-            if (mapObjects[x][y] == null){
-                int[] coordinates = new int[2]; // create array to hold 2 coordinates
-                coordinates[0] = x;
-                coordinates[1] = y;
-                return coordinates;
-            }
+    public boolean updateEvent(LocalDateTime gameTime, int[] eventTile) {
+        Event event = (Event) mapObjects[eventTile[0]][eventTile[1]]; // retrieve event
+        if (event == null){
+            return false; // no event exists at this time
         }
-        throw new Exception("No free tile found");
+
+        GameEvent gameEvent = event.getGameEvent();
+        LocalDateTime timeEventStarted = gameEvent.getEventStartedAt();
+
+        // duration the event has been taking place
+        Duration durationOfEvent = Duration.between(timeEventStarted , gameTime);
+
+        // !!! need to add below
+        if (durationOfEvent.getSeconds() >= 60){ // need to check if event has been dealth with - add
+            mapObjects[eventTile[0]][eventTile[1]] = null; // remove event
+            return true;
+        }
+        return false; // event is still ongoing
     }
 }

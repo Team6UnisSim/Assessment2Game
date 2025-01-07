@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+
 /**
  * EventTypes is an enum class that holds all the information about the different events that can happen during the game.
  * There are 4 negative, 4 positive and 2 neutral.
@@ -8,9 +9,9 @@ package io.github.universityTycoon;
 public enum EventType {
     // Negative events:
     FLOODING(-3, 1, "Flooding has occured in the campus.", "images/flooding.png"),
-    HURRICANE(-2, 2, "Bad weather has caused damange to the buildings.", "images/hurricane.png"),
-    POWER_OUTAGE(-4, 4, "A power outage has disabled one of your buildings.", "images/power_outage.png"),
-    STUDENT_PROTEST(-1, 3, "Students protest about the campus poor conditions.", "images/student_protest.png"), 
+    HURRICANE(-2, 3, "Bad weather has caused damange to the buildings.", "images/hurricane.png"),
+    COFFEE_MACHINE_BREAKDOWN(-1, 4, "The coffee machine has broken.", "images/coffee_machine_breakdown.png"),
+    STUDENT_PROTEST(-4, 2, "Students protest about the campus poor conditions.", "images/student_protest.png"), 
     // Positive events:
     CELEBRITY_GUEST(1, 2, "A celebrity guest will be giving a lecture in campus", "images/celebrity_guest.png" ),
     FOOTBALL_VICTORY(3, 3, "The university football team beat the neighbouring university team", "images/football_victory.png"), 
@@ -18,7 +19,7 @@ public enum EventType {
     CULTURAL_FAIR(4, 4, "A cultural fair has been organised by the  university for the weekend", "images/cultural_fair.png"),
     // NeutralEvents:
     GOOD_WEATHER(0, 4, "A few days of good weather have improved everyone's mood", "images/good_weather.png"),
-    CAFE_MACHINE_UPGRADE(0,2, "The library cafe machine has been upgraded.", "images/cafe_machine_upgrade.png");
+    GEESE_INVASION(0,2, "The geese have inVaded the campus.", "images/geese_invasion.png");
     
     private final int effect; // effect the event has on the satisfaction score
     private final String description; // short description of the event
@@ -32,7 +33,7 @@ public enum EventType {
      * @param effect effect on the student satisfactions score
      * @param description short description of the event occuring
      * @param rarity chances of the event occuring
-     * @param iconPath the file path for that event-specific icon to be displayed
+     * @param icon the file path for that event-specific icon to be displayed
      */
     EventType(int effect, int rarity, String description, String iconPath){
     

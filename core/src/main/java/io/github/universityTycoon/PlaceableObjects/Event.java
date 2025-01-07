@@ -12,16 +12,16 @@ public class Event extends MapObject{
 
     private final GameEvent gameEvent;
 
+
     /**
      * Constructor for Event class
      * @param gameEvent 
      */
-    public Event(GameEvent gameEvent){
+    public Event(GameEvent gameEvent) {
         this.gameEvent = gameEvent;
     }
 
     // public void update(LocalDateTime currentGameTime){
-
     // }
 
     @Override

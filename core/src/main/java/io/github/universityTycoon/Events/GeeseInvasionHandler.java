@@ -3,15 +3,12 @@ package io.github.universityTycoon.Events;
 import io.github.universityTycoon.GameEvent;
 import io.github.universityTycoon.GameModel;
 
-public class AnonymousGrantHandler implements GameEventHandler{
+public class GeeseInvasionHandler implements GameEventHandler{
 
-
-    public AnonymousGrantHandler(GameModel gameModel){
+    public GeeseInvasionHandler(GameModel gameModel){
 
     }
     @Override
     public void handle(GameEvent event){
     }
-
-
 }

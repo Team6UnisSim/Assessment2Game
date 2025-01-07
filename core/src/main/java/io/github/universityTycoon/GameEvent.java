@@ -2,7 +2,7 @@ package io.github.universityTycoon;
 
 import io.github.universityTycoon.PlaceableObjects.Event;
 
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +20,7 @@ public class GameEvent {
     private ArrayList<GameModifiers> modifiers; // The effects the event (e.g. flooding) applies (e.g. -3 score)
     private Event mapEvent; // Corresponding MapObject for placement of the event icon -> used in EventHandler
     private boolean isActive; // True/false if active/inactive
+    private LocalDateTime eventStartedAt;
 
 
     /**
@@ -87,6 +88,17 @@ public class GameEvent {
     public Event getMapEvent(){
         return mapEvent;
     }
+
+
+    public LocalDateTime getEventStartedAt() {
+        return eventStartedAt;
+    }
+
+
+    public void setEventStartedAt(LocalDateTime eventStartedAt) {
+        this.eventStartedAt = eventStartedAt;
+    }
+
 
     public boolean isActive(){
         return isActive;

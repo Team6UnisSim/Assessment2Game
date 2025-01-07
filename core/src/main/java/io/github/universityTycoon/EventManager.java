@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class EventManager {
      */
     public void processEvents(float delta) throws Exception {
 
-        // increment thiswith every frame delta time
+        // increment this with every frame delta time
         timeSinceLastEvent += delta;
 
         // when interval reached, pick an event to generate
@@ -99,6 +100,7 @@ public class EventManager {
             timeSinceLastEvent -= EVENT_INTERVAL; // reset
 
             if (currentEvent != null){
+                currentEvent.setEventStartedAt(LocalDateTime.now());
                 listener.raiseEvent(currentEvent);
             }
         }

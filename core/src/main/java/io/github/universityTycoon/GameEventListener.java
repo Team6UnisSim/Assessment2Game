@@ -12,17 +12,17 @@ import java.util.HashMap;
  *
  */
 public class GameEventListener {
-    // Links the event with their handler class
-    private final Map<EventType, GameEventHandler> handlers = new HashMap<>();
+    private GameModel gameModel; // reference to game model
+    private Map<EventType, GameEventHandler> handlers = new HashMap<>();     // Links the event with their handler class
 
 
     /**
-     * Constructor - not used
+     * Constructor - GameEventListener
      * 
-     * @param handler the handler to be notified when an event is raised
+     * @param gameModel passes the current game model
      */
-    public GameEventListener() {
-        // Handlers will be initialised in the raiseEvent method
+    public GameEventListener(GameModel gameModel) {
+        this.gameModel = gameModel;
     }
 
 
@@ -55,30 +55,31 @@ public class GameEventListener {
 
     // Creates and returns the corresponding handler based on EventType 
     private GameEventHandler createHandler(EventType eventType){
+        
         switch (eventType){
-            // Negative Events
+            // Negative Events:
             case FLOODING: 
-                return new FloodingHandler();
+                return new FloodingHandler(gameModel);
             case HURRICANE: 
-                return new HurricaneHandler();
-            case POWER_OUTAGE: 
-                return new PowerOutageHandler();
+                return new HurricaneHandler(gameModel);
+            case COFFEE_MACHINE_BREAKDOWN: 
+                return new GeeseInvasionHandler(gameModel);
             case STUDENT_PROTEST: 
-                return new StudentProtestHandler();
-            // Positive Events
+                return new StudentProtestHandler(gameModel);
+            // Positive Events:
             case CELEBRITY_GUEST: 
-                return new CelebrityGuestHandler();
+                return new CelebrityGuestHandler(gameModel);
             case FOOTBALL_VICTORY: 
-                return new FootballVictoryHandler();
+                return new FootballVictoryHandler(gameModel);
             case ANONYMOUS_GRANT: 
-                return new AnonymousGrantHandler();
+                return new AnonymousGrantHandler(gameModel);
             case CULTURAL_FAIR:
-                return new CulturalFairHandler();
-            // Neutral Events
+                return new CulturalFairHandler(gameModel);
+            // Neutral Events:
             case GOOD_WEATHER: 
-                return new GoodWeatherHandler();
-            case CAFE_MACHINE_UPGRADE: 
-                return new CafeMachineUpgradeHandler();
+                return new GoodWeatherHandler(gameModel);
+            case GEESE_INVASION: 
+                return new CoffeeMachineBreakdownHandler(gameModel);
             default:
                 throw new IllegalArgumentException("Event type is invalid.");
         }

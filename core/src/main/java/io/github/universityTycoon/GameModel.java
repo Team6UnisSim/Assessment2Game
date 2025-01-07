@@ -259,6 +259,10 @@ public class GameModel {
         satisfactionScore = updatedScore;
     }
 
+    public MapController getMapController(){
+        return mapController;
+    }
+
 
     /**
      * Handles game events by doing something.
