@@ -63,7 +63,7 @@ public class GameEventListener {
             case HURRICANE: 
                 return new HurricaneHandler(gameModel);
             case COFFEE_MACHINE_BREAKDOWN: 
-                return new GeeseInvasionHandler(gameModel);
+                return new CoffeeMachineBreakdownHandler(gameModel);
             case STUDENT_PROTEST: 
                 return new StudentProtestHandler(gameModel);
             // Positive Events:
@@ -79,7 +79,7 @@ public class GameEventListener {
             case GOOD_WEATHER: 
                 return new GoodWeatherHandler(gameModel);
             case GEESE_INVASION: 
-                return new CoffeeMachineBreakdownHandler(gameModel);
+                
             default:
                 throw new IllegalArgumentException("Event type is invalid.");
         }
