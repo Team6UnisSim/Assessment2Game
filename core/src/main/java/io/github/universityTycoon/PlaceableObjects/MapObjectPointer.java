@@ -17,8 +17,8 @@ public class MapObjectPointer extends MapObject {
     }
 
     @Override
-    public float calculateSatisfaction() {
-        return original.calculateSatisfaction();
+    public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
+        return original.calculateSatisfaction(ownX, ownY, mapObjects);
     }
 
     @Override
@@ -37,7 +37,17 @@ public class MapObjectPointer extends MapObject {
     }
 
     @Override
-    public int getSize() {
-        return original.getSize();
+    public int getWidth() {
+        return original.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return original.getHeight();
+    }
+
+    @Override
+    public float getSatisfactionBonus() {
+        return original.getSatisfactionBonus();
     }
 }

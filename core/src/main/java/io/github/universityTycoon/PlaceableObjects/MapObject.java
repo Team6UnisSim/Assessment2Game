@@ -7,12 +7,15 @@ public abstract class MapObject {
     String name = "";
     String texturePath = ""; // Relative path to the texture, e.g. "images/rec_building.png"
     boolean isStackable = false; // Whether MapObjects can be place on top of this MapObject
-    int size = 1; // How many square it takes up. size=2 makes a 2x2 building
+    int width = 1; // How many squares it takes up in the x axis.
+    int height = 1; // How many squares it takes up in the y axis.
 
-    public abstract float calculateSatisfaction(); // As a percentage
+    public abstract float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects); // As a percentage
 
     public abstract String getName();
     public abstract String getTexturePath();
     public abstract boolean getIsStackable();
-    public abstract int getSize();
+    public abstract int getWidth();
+    public abstract int getHeight();
+    public abstract float getSatisfactionBonus();
 }

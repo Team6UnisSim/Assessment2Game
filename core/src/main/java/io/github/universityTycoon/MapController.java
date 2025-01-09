@@ -34,6 +34,7 @@ public class MapController {
         this.tilesWide = tilesWide;
         this.tilesHigh = tilesHigh;
         this.mapObjects = new MapObject[tilesWide][tilesHigh];
+
     }
 
     /**
@@ -44,31 +45,52 @@ public class MapController {
      * @param yPos The y grid coordinate it's being placed in.
      * @return true if the building was successfully added, false otherwise.
      */
-    public boolean addBuilding(Building building, int xPos, int yPos) {
-        boolean buildingFits = true;
+    public boolean addObject(MapObject object, int xPos, int yPos) {
+        boolean objectFits = true;
         // Note that the top left square is 0,0, so y/j is negative
-        for (int i = 0; i < building.getSize() ; i++) {
-            for (int j = 0; j < building.getSize() ; j++) {
-                if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
-                    buildingFits = false;
-                    break;
-                }
-            }
-        }
-        if (buildingFits) {
-            // Place the bottom left square
-            mapObjects[xPos][yPos] = building;
-
-            // Then place pointers to the original
-            for (int i = 0; i < building.getSize() ; i++) {
-                for (int j = 0; j < building.getSize() ; j++) {
-                    if (i != 0 || j != 0) {
-                        mapObjects[xPos + i][yPos - j] = new MapObjectPointer(building);
+        for (int i = 0; i < object.getWidth() ; i++) {
+            for (int j = 0; j < object.getHeight() ; j++) {
+                if(object instanceof Building) {
+                    if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
+                        objectFits = false;
+                        break;
+                    }
+                } else {
+                    if ((xPos + i >= tilesWide || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
+                        objectFits = false;
+                        break;
                     }
                 }
             }
         }
-        return buildingFits;
+        if (objectFits) {
+            // Place the bottom left square
+            mapObjects[xPos][yPos] = object;
+
+            // Then place pointers to the original
+            for (int i = 0; i < object.getWidth() ; i++) {
+                for (int j = 0; j < object.getHeight() ; j++) {
+                    if (i != 0 || j != 0) {
+                        mapObjects[xPos + i][yPos - j] = new MapObjectPointer(object);
+                    }
+                }
+            }
+        }
+        return objectFits;
+    }
+
+    public void removeObject(MapObject object, int xPos, int yPos) {
+        // Remove the bottom left square
+        mapObjects[xPos][yPos] = null;
+
+        // Then remove the pointers to the original
+        for (int i = 0; i < object.getWidth() ; i++) {
+            for (int j = 0; j < object.getHeight() ; j++) {
+                if (i != 0 || j != 0) {
+                    mapObjects[xPos + i][yPos - j] = null;
+                }
+            }
+        }
     }
 
     /**
