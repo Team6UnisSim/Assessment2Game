@@ -13,7 +13,8 @@ public class EventManager {
     private Map<GameEvent, Integer> eventMap = new HashMap<>();
     private GameEventListener listener;
     private float timeSinceLastEvent = 0.0f;
-    private static final float EVENT_INTERVAL = 60.0f; // 60 sec between events
+    private float eventInterval = 60; // 60 sec before first event is triggered
+    private GameEvent currentActiveEvent; // holds the current event taking place 
 
     /**
      * Assigns the GameEventListener
@@ -32,12 +33,29 @@ public class EventManager {
     }
 
 
+    /**
+     * Returns the current event -> taking place now
+     */
+    public GameEvent getCurrentActiveEvent(){
+        return currentActiveEvent;
+    }
+    
 
     /**
-     * Picks event from eventMap based on their rarity value, higher >> more chance to be picked.
+     * Removes the current event as active -> when event finishes
+     */
+    public void clearActiveCurrentEvent(){
+        currentActiveEvent = null;
+    }
+
+
+
+    /**
+     * Picks event from eventMap based on their rarity value, higher >> more chance to be picked (i know it should be the reverse)
      * 
-     * Example: (E1:1), (E2:2), (E3:3), (E4:4) -> (Event, rarity)
+     * Example: (E1:2), (E2:1), (E3:4), (E4:3) -> (Event, rarity)
      * totalWeight = 10 (1+2+3+4), lowestRarity <= randomNumber <= totalWeight
+     * if randomNumber = 4, randomNumber - 2 = 2, randomNumber - 1 = 1, randomNumber - 4 = -3 (so event E3 is picked as it )
      * E1 picked if randomNumber = 1 (10% chance)
      * E2 picked if randomNumber = 2,3 (20% chance)
      * E3 picked if randomNumber = 4,5,6 (30% chance)
@@ -73,9 +91,9 @@ public class EventManager {
         for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
             GameEvent event = entry.getKey(); // Check if event has an active status
             if (event.isActive()){
-                randomNumber -= entry.getValue(); // we keep subtracting the rarities until 0
-                if (randomNumber <= 0){ // Once <= 0 we opick this event
-                    event.disableEvent(); // disbale so it is not picked again
+                randomNumber -= entry.getValue(); // subtract event's rarities in order until randomNum <= 0
+                if (randomNumber <= 0){ // Pick this event that we just subtracted its rarity last
+                    event.disableEvent(); // Disable it as to not be picked again - we want event variation in the game
                     return event;
                 }
             }
@@ -89,20 +107,36 @@ public class EventManager {
      * the rarity of said event.
      * @param delta time in seconds since the last frame
      */
-    public void processEvents(float delta) throws Exception {
-
+    public void processEvents(float delta) {
         // increment this with every frame delta time
         timeSinceLastEvent += delta;
 
         // when interval reached, pick an event to generate
-        if (timeSinceLastEvent >= EVENT_INTERVAL){
-            GameEvent currentEvent = pickRandomEvent();
-            timeSinceLastEvent -= EVENT_INTERVAL; // reset
+        if (timeSinceLastEvent >= eventInterval){
+            GameEvent pickedEvent = pickRandomEvent();
+            currentActiveEvent = pickedEvent; // Label it as current active event
+            timeSinceLastEvent -= eventInterval; // reset
+            eventInterval = generateRandomInterval(); // set this for the event to be generated
 
-            if (currentEvent != null){
-                currentEvent.setEventStartedAt(LocalDateTime.now());
-                listener.raiseEvent(currentEvent);
+            if (pickedEvent != null){
+                pickedEvent.setEventStartedAt(LocalDateTime.now());
+                listener.raiseEvent(pickedEvent);
             }
+
+            // create method to generate random interval between 40-70 sec every time an event is picked
+            // generaterRandomInterval() 
         }
+    }
+
+
+    /**
+     * Generate a random event time interval between 30-60 sec
+     *  
+     * @return new event time interval
+     */
+    public float generateRandomInterval(){
+        Random random = new Random();
+        // generate random number between 30-60 
+        return 30 +  random.nextFloat() * 30;
     }
 }

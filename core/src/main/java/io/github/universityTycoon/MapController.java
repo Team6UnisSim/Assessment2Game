@@ -95,55 +95,48 @@ public class MapController {
      */
     public int[] findRandomFreeTile(){
         Random random = new Random();
+        int x = 0;
+        int y = 0;
 
         // attemp up to 100 times to find a free tile
         for (int i = 0; i < 100; i++){
-            int x = random.nextInt(tilesWide);
-            int y = random.nextInt(tilesHigh);
+            x = random.nextInt(tilesWide);
+            y = random.nextInt(tilesHigh);
 
-            if (mapObjects[x][y] == null){ // check if free
-                return new int[] {x, y}; 
+            if (mapObjects[x][y] == null){ // check if occupied
+                // if tile unoccupied return x,y
+                return new int[] {x, y};
             }
         }
+        System.out.println("Tile already occupied."); 
         return null; 
+        
     }
 
 
 
     /**
-     * Finds a random tile to place the event icon to using findRandomFreeTile().
+     * Finds a random tile to place the event icon using helper method above
      * Places the object on the MapObject grid on that free tile.
  
      * 
      * @param event event to retrieve icon for
-     * @param xPos x position of the event to be placed
-     * @param yPos y position of the event to be placed
-     * @return
+     * @return x and y coordinates of the tile that event was placed on
      */
-    public boolean placeEventAt(Event event){
-        
-        // find a free random tile
+    public int[] placeEvent(GameEvent event){
+
+        Event eventToPlace = new Event(event);
+        // find a random free tile
         int[] freeTile = findRandomFreeTile();
         if (freeTile == null){
-            return false;
+            return null;
         }
 
-        int xPos = freeTile[0];
-        int yPos = freeTile[1];
+        int x = freeTile[0];
+        int y = freeTile[1];
 
-        // check that xPos and yPos aren't out of map bounds
-        if (xPos < 0 || xPos >= tilesWide || yPos < MIN_DISTANCE_TO_TOP || yPos >= tilesHigh){
-            return false; // tile out of bounds
-        }
-
-        // Check if tile is occupied
-        if (mapObjects[xPos][yPos] != null){
-            return false; // tile not free
-        }
-
-        // otherwise place the event on the tile
-        mapObjects[xPos][yPos] = event;
-        return true; // successfully placed
+        mapObjects[x][y] = eventToPlace;
+        return freeTile; // return free tile
     }
 
 
@@ -165,7 +158,7 @@ public class MapController {
         // duration the event has been taking place
         Duration durationOfEvent = Duration.between(timeEventStarted , gameTime);
 
-        // !!! ADD: isEventDealtWith() -> check if the event has been dealth with
+        // ----> !!! ADD !!!: isEventDealtWith() -> check if the event has been dealth with
         if (durationOfEvent.getSeconds() >= 60){ 
             mapObjects[eventTile[0]][eventTile[1]] = null; // remove event
             return true;

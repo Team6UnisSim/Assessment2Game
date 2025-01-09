@@ -18,6 +18,9 @@ public class Event extends MapObject{
      * @param gameEvent 
      */
     public Event(GameEvent gameEvent) {
+        if (gameEvent == null) {
+            throw new IllegalArgumentException("GameEvent cannot be null");
+        }
         this.gameEvent = gameEvent;
     }
 

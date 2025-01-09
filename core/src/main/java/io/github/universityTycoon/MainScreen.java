@@ -83,6 +83,10 @@ public class MainScreen implements Screen {
     String time;
     String dateTimeString;
 
+    // ________ ADDED ________
+    // added this to pass to EventManager.processEvents() from MainScreen.render()
+    float delta;
+
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
 
@@ -139,7 +143,8 @@ public class MainScreen implements Screen {
      */
     @Override
     public void render(float v) {
-        gameModel.runGame(v);
+        delta = v; // this is passed from the game class which the ScreenManager extends
+        gameModel.runGame(v); // TOM: I think 'v' here is delta time so I am passing it to EventManager.processEvents
         input();
         logic();
         draw();
@@ -188,6 +193,10 @@ public class MainScreen implements Screen {
     private void logic() {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
+
+        // ________ ADDED ________
+        // Trigger events through the EventManager 
+        gameModel.eventManager.processEvents(delta);
 
         // Checks to see if the building icon has been clicked
         if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
@@ -265,6 +274,18 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Teaching Buildings: " + gameModel.getTeachingBuildingCount(), 13.15f, 8.7f);
         GameModel.smallerFont.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
+
+
+        // ________ ADDED ________
+        // Draws the current event description
+        GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
+        if (currentActiveEvent != null){
+            String eventDescription = currentActiveEvent.getDescription();
+            float xPos = 1.0f; // <<<  CHANGE AS NECCESSARY --- fixed position or not? 
+            float yPos = 1.0f; // <<<  CHANGE AS NECCESSARY 
+            GameModel.font.draw(batch, eventDescription, xPos, yPos); 
+        }
+
 
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
@@ -381,6 +402,7 @@ public class MainScreen implements Screen {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide() ;
                 Vector2 screenPos = new Vector2((float) i * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (j + 1) * tileSizeOnScreen));
+                            
                 // Show the grids (when in place mode)
                 if (placeMode && mouseDown) {
                     batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
@@ -398,6 +420,18 @@ public class MainScreen implements Screen {
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                         batch.draw(percentTexture, screenPos.x + 0.17f, screenPos.y+ 0.25f, 48 * 0.015f, 32 * 0.015f);
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
+                    }
+                    
+                // ----> ADDED <----: Draw events on the map 
+                } else if (mapObjects[i][j] instanceof Event event) {
+                    // add event textures to MapObjTextures
+                    String eventTexturePath = event.getTexturePath();
+                    if (eventTexturePath != null){
+                        if (!mapObjTextures.containsKey(eventTexturePath)){
+                            mapObjTextures.put(eventTexturePath, new Texture(eventTexturePath));
+                        }
+                        // draw event textures
+                        batch.draw(mapObjTextures.get(eventTexturePath), screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
                     }
                 }
             }
@@ -475,4 +509,3 @@ public class MainScreen implements Screen {
         GameModel.blackFont.dispose();
     }
 }
-

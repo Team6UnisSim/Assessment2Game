@@ -2,22 +2,42 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class CelebrityGuestHandler extends AbstractGameEvent implements GameEventHandler{
+public class CelebrityGuestHandler extends AbstractGameEvent{
 
     public CelebrityGuestHandler(GameModel gameModel){
         super(gameModel);
     }
-    
+
     /**
-     * Handles Celebrity Guest event
+     * Right now the AbstractEventHandler is invoked 
+     * Main method that delegates logic of event specific handling - in that case override and imlement
+     * 
      */
-    @Override
-    public void handle(GameEvent event){
+    // @Override
+    // public int[] handle(GameEvent event){
+    //     modifyScore(event);
+    //     displayMessageToPlayer(event);
+    //     return placeIconOnMap(event); // Return coordinates of placed icon in case it's needed
+        
+    // }
 
-        modifyScore(event); // handled in the abstract class
-         
-        displayMessageToPlayer(event); // handled in the abstract class
+    // @Override
+    // public void modifyScore(GameEvent event){
+    //     // implement if needed to be event specific
+    // }
 
-        // add icon placement on map logic here
+    // @Override
+    // public void displayMessageToPlayer(GameEvent event){
+    //     // implement if needed to be event specific
+    // } 
+
+    // @Override
+    // public int[] placeIconOnMap(GameEvent event){
+    //     // implement if needed to be event specific
+    // } 
+    
+    public boolean isResolved(GameEvent event){
+        // implement
+        return true;
     }
 }

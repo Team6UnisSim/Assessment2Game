@@ -85,6 +85,7 @@ public class GameEvent {
         return modifiers;
     }
 
+    
     public Event getMapEvent(){
         return mapEvent;
     }
@@ -107,6 +108,11 @@ public class GameEvent {
     public void disableEvent(){
         this.isActive = false;
     }
+
+
+    // public boolean isResolved(){
+    //     return isResolved(this); // send to handler
+    // }
 
 
     /**
