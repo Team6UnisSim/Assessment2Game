@@ -3,7 +3,9 @@ package io.github.universityTycoon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
+import io.github.universityTycoon.PlaceableObjects.Event;
 import io.github.universityTycoon.Events.*;
+
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -149,6 +151,20 @@ public class GameModel {
      */
     public MapObject[][] getMapObjects() {
         return mapController.mapObjects;
+    }
+
+
+    /**
+     * Remove event from the MapObject grid
+     * 
+     * @param x x coordinate in MapObjedt of event to remove
+     * @param y y coordinate in MapObjedt of event to remove
+     */
+    public void removeEvent(int x, int y){
+        MapObject[][] mapObjects = getMapObjects();
+        if (mapObjects[x][y] instanceof Event){
+            mapObjects[x][y] = null;
+        };
     }
 
     /**
@@ -321,7 +337,7 @@ public class GameModel {
             throw new IllegalStateException("Handler for event type: " + eventType + "not found.");
         }
 
-        // If eventType is flooding, flooding handler is created corresponding class methods are called    
+        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler   
         handler.handle(event);  
     }
 

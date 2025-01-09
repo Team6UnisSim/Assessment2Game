@@ -142,6 +142,7 @@ public class MapController {
 
 
     /**
+     * NOT DONE: 
      * This function checks all the events against the current game time, and removes them.
      * Only one 
      * @param gameTime The current in game time.

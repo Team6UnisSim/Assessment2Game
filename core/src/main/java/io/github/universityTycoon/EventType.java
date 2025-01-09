@@ -23,7 +23,7 @@ public enum EventType {
     
     private final int effect; // effect the event has on the satisfaction score
     private final String description; // short description of the event
-    private final int rarity; // probability of the event occuring -> 1:rare - 4:common
+    private final int rarity; // probability of the event occuring -> [1 = rare] -- [4 = common]
     private final String iconPath; // the file path for that event-specific icon to be displayed
 
 
@@ -41,7 +41,7 @@ public enum EventType {
             throw new IllegalArgumentException("Invalid rarity");         
         }
         if (iconPath == null){
-            throw new IllegalArgumentException("Invalid iconPath");
+            throw new IllegalArgumentException("Invalid icon file path");
         }
 
         this.effect = effect;

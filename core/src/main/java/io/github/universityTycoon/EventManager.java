@@ -91,7 +91,7 @@ public class EventManager {
         for (Map.Entry<GameEvent, Integer> entry : eventMap.entrySet()){
             GameEvent event = entry.getKey(); // Check if event has an active status
             if (event.isActive()){
-                randomNumber -= entry.getValue(); // subtract event's rarities in order until randomNum <= 0
+                randomNumber -= entry.getValue(); // subtract event's rarities one by one until randomNum <= 0
                 if (randomNumber <= 0){ // Pick this event that we just subtracted its rarity last
                     event.disableEvent(); // Disable it as to not be picked again - we want event variation in the game
                     return event;
@@ -113,6 +113,7 @@ public class EventManager {
 
         // when interval reached, pick an event to generate
         if (timeSinceLastEvent >= eventInterval){
+             
             GameEvent pickedEvent = pickRandomEvent();
             currentActiveEvent = pickedEvent; // Label it as current active event
             timeSinceLastEvent -= eventInterval; // reset
@@ -137,6 +138,6 @@ public class EventManager {
     public float generateRandomInterval(){
         Random random = new Random();
         // generate random number between 30-60 
-        return 30 +  random.nextFloat() * 30;
+        return 30 +  random.nextFloat() * 30; // times 30 cause this returns a float between 0 and 1
     }
 }

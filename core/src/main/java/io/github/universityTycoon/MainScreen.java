@@ -195,7 +195,7 @@ public class MainScreen implements Screen {
         viewport.getCamera().unproject(touch);
 
         // ________ ADDED ________
-        // Trigger events through the EventManager 
+        // Trigger events through the EventManager
         gameModel.eventManager.processEvents(delta);
 
         // Checks to see if the building icon has been clicked
@@ -278,6 +278,9 @@ public class MainScreen implements Screen {
 
         // ________ ADDED ________
         // Draws the current event description
+        // NEED TO IMPLEMENT >>>>>> make this last for a few seconds only or even pause the game while this is showing
+        // ---> possisble have EVENT_DISPLAY_DURATION variable in EventManager which is checked against every time the EventManager.processEvent is called 
+        // NEED TO IMPLEMENT >>>>>> change position of it below as necessary
         GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
         if (currentActiveEvent != null){
             String eventDescription = currentActiveEvent.getDescription();
@@ -422,7 +425,8 @@ public class MainScreen implements Screen {
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
                     
-                // ----> ADDED <----: Draw events on the map 
+                // ----> ADDED <----: Draw events on map on the tile it is in MapObject grid
+                // NEED TO IMPLEMENT: remove events after they have beem dealt with or after a certain time has passed --> should probably be done in EventManager
                 } else if (mapObjects[i][j] instanceof Event event) {
                     // add event textures to MapObjTextures
                     String eventTexturePath = event.getTexturePath();
@@ -430,8 +434,10 @@ public class MainScreen implements Screen {
                         if (!mapObjTextures.containsKey(eventTexturePath)){
                             mapObjTextures.put(eventTexturePath, new Texture(eventTexturePath));
                         }
-                        // draw event textures
+                        // draw event textures 
                         batch.draw(mapObjTextures.get(eventTexturePath), screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                        // ----> need to add logic for removing from MapObjects and event when it is dealt with, if not in MapObject ->not drawn
+                        // EventManager holds 'currentActiveEvent' variable and clearActiveCurrentEvent method
                     }
                 }
             }

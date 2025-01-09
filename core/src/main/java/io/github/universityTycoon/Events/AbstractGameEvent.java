@@ -24,7 +24,7 @@ public abstract class AbstractGameEvent implements GameEventHandler{
     @Override
     public void handle(GameEvent event){
         modifyScore(event);
-        displayMessageToPlayer(event);
+        // displayMessageToPlayer(event); dealt with in mainScreen
         placeIconOnMap(event); 
         
     }
@@ -47,7 +47,9 @@ public abstract class AbstractGameEvent implements GameEventHandler{
      * @param event event's description to retrieve
      */
     public void displayMessageToPlayer(GameEvent event){
-        gameModel.addDescriptionMessage(event.getDescription());
+        // this is implemented actually in the MainScreen - 
+        // it retrieves the active event and retrieves its description and draws it
+        // therefore this is unneccessary
     } 
 
 
