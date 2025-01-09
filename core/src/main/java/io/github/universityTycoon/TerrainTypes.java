@@ -5,8 +5,9 @@ package io.github.universityTycoon;
  * buildings can be placed
  */
 public enum TerrainTypes {
-    Grass,
-    Hills,
+    Road,
     Water,
+    Tree,
+    LargeTrees
     //... extend as necessary
 }

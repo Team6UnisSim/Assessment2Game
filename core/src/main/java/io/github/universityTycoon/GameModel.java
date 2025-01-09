@@ -32,7 +32,7 @@ import java.util.Map;
  * @param tilesHigh Height of the map in tiles.
  *
  * @param noBuildingTypes The total number of building types available in the game.
- * @param cafeteriaBuildingCount Number of cafeteria buildings.
+ * @param foodAndDrinkBuildingCount Number of cafeteria buildings.
  * @param accommodationBuildingCount Number of accommodation buildings.
  * @param leisureBuildingCount Number of leisure buildings.
  * @param teachingBuildingCount Number of teaching buildings.
@@ -54,9 +54,9 @@ public class GameModel {
     private final float YEARS_PER_MINUTE = 1f;
     private final int STARTING_YEAR = 2024;
 
-    public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.Accommodation;
+    public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.SmallAccommodation;
 
-    final float START_TIME_SECONDS = 300;
+    final float START_TIME_SECONDS = 10; // for current testing, CHANGE BACK TO 300
     public float timeRemainingSeconds = START_TIME_SECONDS;
 
     public static BitmapFont font;
@@ -67,7 +67,7 @@ public class GameModel {
     public int tilesHigh = 14;
 
     int noBuildingTypes;
-    public int cafeteriaBuildingCount;
+    public int foodAndDrinkBuildingCount;
     public int accommodationBuildingCount;
     public int leisureBuildingCount;
     public int teachingBuildingCount;
@@ -75,6 +75,7 @@ public class GameModel {
     public float satisfactionScore;
 
     public boolean isPaused;
+    
     // Objects
     GameState gameState;
     EventManager eventManager;
@@ -82,6 +83,7 @@ public class GameModel {
     ScoreCalculator scoreCalculator;
     AudioSelector audioSelector;
     MapController mapController;
+    AchievementManager achievementManager;
 
     // ---> ADDED <---
     // Links the eventType with their handlerType so theappropriate handler can be retrieved
@@ -108,6 +110,7 @@ public class GameModel {
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
+        achievementManager = new AchievementManager();
 
         isPaused = false;
 
@@ -142,6 +145,8 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
+            satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
+            achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
         }
     }
 
@@ -211,8 +216,8 @@ public class GameModel {
      * Gets the count of cafeteria buildings.
      * @return The number of cafeteria buildings.
      */
-    public int getCafeteriaBuildingCount() {
-        return cafeteriaBuildingCount;
+    public int getFoodAndDrinkBuildingCount() {
+        return foodAndDrinkBuildingCount;
     }
 
     /**
