@@ -1,6 +1,7 @@
 package io.github.universityTycoon;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -31,13 +32,12 @@ public class ScreenManager extends Game {
     public MainScreen gameScreen;
     public FirstScreen titleScreen;
     public FinalScreen endScreen; 
-    public ScoreEntryScreen scoreScreen;
 
     public Boolean fullScreen;
 
     private Preferences leaderboardNames;
     private Preferences leaderboardScores;
-    public HashMap<Integer, SavedScore> leaderboard;
+    public ArrayList<SavedScore> leaderboard;
 
     /**
      * Create is responsible for setting all variables.
@@ -49,16 +49,15 @@ public class ScreenManager extends Game {
         gameScreen = new MainScreen(this);
         titleScreen = new FirstScreen(this);
         endScreen = new FinalScreen(this);
-        scoreScreen = new ScoreEntryScreen(this);
 
         batch = new SpriteBatch();
 
         leaderboardNames = Gdx.app.getPreferences("LeaderboardNames");
         leaderboardScores = Gdx.app.getPreferences("LeaderboardScores");
-        leaderboard = new HashMap<>();
+        leaderboard = new ArrayList<>();
 
         for(int i = 1; i < 6; i++) {
-            leaderboard.put(Integer.valueOf(i), new SavedScore(leaderboardNames.getString(String.valueOf(i), "Player"), leaderboardScores.getFloat(String.valueOf(i), 0f)));
+            leaderboard.add(new SavedScore(leaderboardNames.getString(String.valueOf(i), "PLAYER"), leaderboardScores.getFloat(String.valueOf(i), 0f)));
         }
 
         fullScreen = false;
@@ -97,8 +96,23 @@ public class ScreenManager extends Game {
     }
 
     // Changes to final screen and resets the main game, added during Assessment 2.
-    public void switchToFinalScreen() {
+    public void switchToFinalScreen(String playerName, float playerScore) {
+        leaderboard.add(new SavedScore(playerName, playerScore));
+        Collections.sort(leaderboard);
+        leaderboard.remove(leaderboard.size() - 1);
+        
+        for (int i = 0; i < leaderboard.size(); i++) {
+            leaderboardNames.putString(String.valueOf(i + 1), leaderboard.get(i).getName());
+            leaderboardScores.putFloat(String.valueOf(i + 1), leaderboard.get(i).getScore());
+        }
+        leaderboardNames.flush();
+        leaderboardScores.flush();
+
         setScreen(endScreen);
         gameScreen.restartGame();
+    }
+
+    public void switchToScoreSummaryScreen() {
+        setScreen(new ScoreSummaryScreen(this, gameScreen.gameModel));
     }
 }

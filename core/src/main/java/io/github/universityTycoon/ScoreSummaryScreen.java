@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,7 +29,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  *
  * @param game An instance of the ScreenManager class, used in the constructor so that stuff works.
  */
-public class FirstScreen implements Screen {
+public class ScoreSummaryScreen implements Screen {
     SpriteBatch batch;
     PlayerInputHandler input;
     FitViewport viewport;
@@ -40,14 +41,20 @@ public class FirstScreen implements Screen {
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
 
     Texture background;
-    Texture logo;
     Texture start; 
 
     ShapeRenderer sr;
 
+    GameModel gameModel;
+
+    String[] playerName;
+    int namePointer;
+    GlyphLayout layout;
+
     final ScreenManager game;
-    public FirstScreen(ScreenManager main) {
+    public ScoreSummaryScreen(ScreenManager main, GameModel gameModel) {
         this.game = main;
+        this.gameModel = gameModel;
     }
 
 
@@ -69,10 +76,15 @@ public class FirstScreen implements Screen {
         mousePos = new Vector2(0,0);
 
         background = new Texture(Gdx.files.internal("images/title_page.png"));
-        logo = new Texture(Gdx.files.internal("images/logo.png"));
         start = new Texture(Gdx.files.internal("images/start.png"));
 
         sr = new ShapeRenderer();
+
+        gameModel.achievementManager.checkGameEndAchievements(gameModel.getSatisfactionScore(), gameModel.getMapObjects());
+    
+        playerName = new String[6];
+        namePointer = 0;
+        layout = new GlyphLayout();
     }
 
     /**
@@ -102,15 +114,32 @@ public class FirstScreen implements Screen {
      * Does things when inputs are received.
      */
     private void input() {
-        if (input.getKeyJustPressed(Input.Keys.SPACE)) {
+        if (input.getKeyJustPressed(Input.Keys.ENTER)) {
             music.stop();
-            game.switchToMainScreen();  // Switch to MainScreen
+            changeScreen();
+        }
+        
+        for (int i = 29; i < 55; i++) {
+            if (input.getKeyJustPressed(i)) {
+                if (namePointer < 5) {
+                    playerName[namePointer] = Input.Keys.toString(i);
+                    namePointer += 1;
+                } else if (namePointer == 5 && playerName[namePointer] == null) {
+                    playerName[namePointer] = Input.Keys.toString(i);
+                }
+            }
+        }
+
+        if (input.getKeyJustPressed(Input.Keys.BACKSPACE)) {
+            playerName[namePointer] = null;
+            if (!(namePointer == 0)) {
+                namePointer -= 1;
+            }
         }
 
         if (input.getIsMouseDown()) {
             mousePos = input.getMousePos();
             mouseDown = true;
-
         }
         else {mouseDown = false;}
     }
@@ -125,7 +154,7 @@ public class FirstScreen implements Screen {
 
         if (mouseDown && startButton.contains(touch.x, touch.y)) {
             music.stop();
-            game.switchToMainScreen();
+            changeScreen();
         }
     }
 
@@ -140,7 +169,7 @@ public class FirstScreen implements Screen {
 
         ScreenUtils.clear(Color.BLACK);
 
-        startButton.set(6.05f, 1f, 4f, 0.55f);
+        startButton.set(3.8f, 0.7f, 4f, 0.55f);
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -153,21 +182,64 @@ public class FirstScreen implements Screen {
         sr.begin(ShapeRenderer.ShapeType.Filled);
 
         sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
-        sr.rect(5.9f, 1.65f, 4.2f, 2.5f);
+        sr.rect(2.4f, 5.1f, 11f, 3.5f);
+        sr.rect(2.4f, 1.4f, 11f, 3.5f);
+
+        sr.setColor(0, 0, 0, 1);
+        sr.rect(5.3f, 2.8f, 5.2f, 1.2f);
+
+        sr.setColor(255f, 255f, 255f, 1);
+        sr.rect(5.4f, 2.9f, 5f, 1f);
         
         sr.end();
         batch.begin();  
-        
-        batch.draw(logo, 6, 4.5f, 4, 4);
     
-        batch.draw(start, 6.05f, 1, 4, 0.55f);
+        GameModel.blackFont.draw(batch, "Final Student Satisfaction: " + Float.toString(gameModel.achievementManager.calculateNewSatisfactionScore(gameModel.getSatisfactionScore())) + "%", 2.6f, 8.4f);
+        GameModel.blackFont.draw(batch, "Achievements Completed: ", 2.6f, 7.8f);
 
-        GameModel.blackFont.draw(batch, "Leaderboard:", 6, 4);
-        for(SavedScore i : game.leaderboard) {
-            GameModel.blackFont.draw(batch, Integer.toString(game.leaderboard.indexOf(i) + 1) + ". " + i.getName()+ ": " + i.getScore() + "%", 6f, 4f - 0.4f * (game.leaderboard.indexOf(i) + 1));
+        float displayed = 0;
+        for (int i = 0; i < gameModel.achievementManager.getAchievements().length; i++) {
+            if (gameModel.achievementManager.getAchievements()[i] == true) {
+                GameModel.blackFont.draw(batch, AchievementTypes.values()[i].name + ": " + AchievementTypes.values()[i].description, 2.6f, 7.4f - displayed);
+                displayed += 0.4f;
+            }
         }
 
+        GameModel.blackFont.draw(batch, "Type your name here if you want to save your score:", 4.4f, 4.5f);
+        GameModel.blackFont.getData().setScale(0.006f);
+        for (int i = 0; i < playerName.length; i++) {
+            if (playerName[i] == null) {
+                layout.setText(GameModel.blackFont, "-");
+                GameModel.blackFont.draw(batch, "-", 5.9f + (0.78f * i - layout.width / 2), 3.65f);
+            } else {
+                layout.setText(GameModel.blackFont, playerName[i]);
+                GameModel.blackFont.draw(batch, playerName[i], 5.9f + (0.78f * i - layout.width / 2), 3.65f);
+            }
+        }
+        GameModel.blackFont.getData().setScale(0.002f);
+
+        batch.draw(start, 3.8f, 0.7f, 4, 0.55f);
+        batch.draw(start, 8.3f, 0.7f, 4, 0.55f);
+
         batch.end();
+    }
+
+    public void changeScreen() {
+        boolean completeName = true;
+        for (String i : playerName) {
+            if (i == null) {
+                completeName = false;
+            }
+        }  
+
+        if (completeName) {
+            StringBuilder sb = new StringBuilder();
+            for (String i : playerName) {
+                sb.append(i);
+            }
+            String playerNameString = sb.toString();
+            game.switchToFinalScreen(playerNameString, gameModel.achievementManager.calculateNewSatisfactionScore(gameModel.getSatisfactionScore()));  // Switch to MainScreen
+        }
     }
 
 
@@ -189,7 +261,6 @@ public class FirstScreen implements Screen {
     @Override
     public void dispose() {
         background.dispose();
-        logo.dispose();
         start.dispose();
     }
 }

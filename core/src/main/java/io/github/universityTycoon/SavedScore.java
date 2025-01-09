@@ -1,10 +1,10 @@
 package io.github.universityTycoon;
 
-public class SavedScore {
+public class SavedScore implements Comparable<SavedScore> {
     private String name;
-    private Float score;
+    private float score;
 
-    public SavedScore(String name, Float score) {
+    public SavedScore(String name, float score) {
         this.name = name;
         this.score = score;
     }
@@ -13,7 +13,12 @@ public class SavedScore {
         return name;
     }
 
-    public Float getScore() {
+    public float getScore() {
         return score;
+    }
+
+    @Override
+    public int compareTo(SavedScore otherScore) {
+        return Float.compare(otherScore.getScore(), score);
     }
 }

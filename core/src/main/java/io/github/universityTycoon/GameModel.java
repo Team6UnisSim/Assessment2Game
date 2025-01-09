@@ -51,7 +51,7 @@ public class GameModel {
 
     public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.SmallAccommodation;
 
-    final float START_TIME_SECONDS = 300;
+    final float START_TIME_SECONDS = 10; // for current testing, CHANGE BACK TO 300
     public float timeRemainingSeconds = START_TIME_SECONDS;
 
     public static BitmapFont font;
@@ -70,6 +70,7 @@ public class GameModel {
     public float satisfactionScore;
 
     public boolean isPaused;
+    
     // Objects
     GameState gameState;
     EventManager eventManager;
@@ -77,6 +78,7 @@ public class GameModel {
     ScoreCalculator scoreCalculator;
     AudioSelector audioSelector;
     MapController mapController;
+    AchievementManager achievementManager;
 
     /**
      * Enum representing the possible states of the game.
@@ -98,6 +100,7 @@ public class GameModel {
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
+        achievementManager = new AchievementManager();
 
         isPaused = false;
 
@@ -133,6 +136,7 @@ public class GameModel {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
             satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
+            achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
         }
     }
 

@@ -127,7 +127,7 @@ public class MainScreen implements Screen {
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
         music.setLooping(true);
-        music.play();
+        //music.play(); TURN THIS BACK ON
 
         gameModel.mapController.addObject(new Tree(), 3, 4);
         gameModel.mapController.addObject(new Tree(), 4, 6);
@@ -232,7 +232,8 @@ public class MainScreen implements Screen {
         dateTimeString = gameModel.getGameTimeGMT().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
 
         if(gameModel.getTimeRemainingSeconds() < 0) {
-            game.switchToFinalScreen();
+            music.stop();
+            game.switchToScoreSummaryScreen();
         }
     }
 
@@ -287,7 +288,7 @@ public class MainScreen implements Screen {
 
         // Draws all the relevant information about the currently selected building.
         Building building = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
-        GameModel.blackFont.draw(batch, "Building type: " + currentBuilding.name,  0.01f, 1.98f);
+        GameModel.blackFont.draw(batch, "Building type: " + building.getName(),  0.01f, 1.98f);
         GameModel.blackFont.draw(batch, "Building category: " + currentBuilding.category,  0.01f, 1.68f);
         GameModel.blackFont.draw(batch, "Building capacity: " + building.getBuildingCapacity(),  0.01f, 1.38f);
         GameModel.blackFont.draw(batch, "Student rating: " + building.getStudentRating() + "/5",  0.01f, 1.08f);

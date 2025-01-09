@@ -1,25 +1,23 @@
 package io.github.universityTycoon;
 
 public enum BuildingTypes {
-    SmallAccommodation("Small Accommodation", "Accommodation"),
-    MediumAccommodation("Medium Accommodation", "Accommodation"), 
-    LargeAccommodation("Large Accommodation", "Accommodation"), 
-    DiningHall("Dining Hall", "Food & Drink"),
-    Cafe("Cafe", "Food & Drink"),
-    ConvenienceStore("Convenience Store", "Food & Drink"),
-    CommonRoom("Common Room", "Leisure"),
-    StudentBar("Student Bar", "Leisure"),
-    BasketballCourt("Basketball Court", "Leisure"),
-    StemBuilding("STEM Building", "Teaching"),
-    HumanitiesBuilding("Humanities Building", "Teaching"),
-    ArtsBuilding("Arts Building", "Teaching"),
-    Library("Library", "Teaching");
+    SmallAccommodation("Accommodation"),
+    MediumAccommodation("Accommodation"), 
+    LargeAccommodation("Accommodation"), 
+    DiningHall("Food & Drink"),
+    Cafe("Food & Drink"),
+    ConvenienceStore("Food & Drink"),
+    CommonRoom("Leisure"),
+    StudentBar("Leisure"),
+    BasketballCourt("Leisure"),
+    StemBuilding( "Teaching"),
+    HumanitiesBuilding("Teaching"),
+    ArtsBuilding("Teaching"),
+    Library("Teaching");
     
-    public final String name;
     public final String category;
 
-    private BuildingTypes(String name, String category) {
-        this.name = name;
+    private BuildingTypes(String category) {
         this.category = category;
     }
 }
