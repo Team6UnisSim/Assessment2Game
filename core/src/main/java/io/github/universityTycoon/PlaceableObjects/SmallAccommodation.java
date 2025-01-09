@@ -7,6 +7,7 @@ public class SmallAccommodation extends AccommodationBuilding {
     
     public SmallAccommodation(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/sleep_building.png");
+        name = "Small Accommodation";
         width = 2;
         height = 2;
         constructionGameTime = Duration.ofDays(30);

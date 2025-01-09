@@ -16,6 +16,7 @@ public class StudentBar extends LeisureBuilding  {
      */
     public StudentBar(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/fun_building.png");
+        name = "Student Bar";
         width = 2;
         height = 4;
         constructionGameTime = Duration.ofDays(45);

@@ -12,6 +12,7 @@ public class Cafe extends FoodAndDrinkBuilding {
      */
     public Cafe(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
+        name = "Cafe";
         width = 1;
         height = 1;
         constructionGameTime = Duration.ofDays(10);

@@ -12,6 +12,7 @@ public class ConvenienceStore extends FoodAndDrinkBuilding {
      */
     public ConvenienceStore(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
+        name = "Convenience Store";
         width = 2;
         height = 2;
         constructionGameTime = Duration.ofDays(10);

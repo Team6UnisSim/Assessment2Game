@@ -16,6 +16,7 @@ public class BasketballCourt extends LeisureBuilding  {
      */
     public BasketballCourt(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/fun_building.png");
+        name = "Basketball Court";
         width = 3;
         height = 2;
         constructionGameTime = Duration.ofDays(60);

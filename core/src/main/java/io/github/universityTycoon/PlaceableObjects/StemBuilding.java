@@ -12,6 +12,7 @@ public class StemBuilding extends TeachingBuilding {
      */
     public StemBuilding(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/library_building.png");
+        name = "STEM Building";
         width = 2;
         height = 2;
         constructionGameTime = Duration.ofDays(60);

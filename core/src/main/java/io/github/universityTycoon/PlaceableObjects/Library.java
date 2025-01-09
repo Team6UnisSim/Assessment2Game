@@ -12,6 +12,7 @@ public class Library extends TeachingBuilding {
      */
     public Library(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/library_building.png");
+        name = "Library";
         width = 5;
         height = 4;
         constructionGameTime = Duration.ofDays(60);

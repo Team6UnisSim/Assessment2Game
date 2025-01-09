@@ -16,6 +16,7 @@ public class CommonRoom extends LeisureBuilding  {
      */
     public CommonRoom(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/fun_building.png");
+        name = "Common Room";
         width = 2;
         height = 2;
         satisfactionBonus = 0;

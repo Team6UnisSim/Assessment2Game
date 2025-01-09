@@ -12,6 +12,7 @@ public class HumanitiesBuilding extends TeachingBuilding {
      */
     public HumanitiesBuilding(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/library_building.png");
+        name = "Humanities Building";
         width = 2;
         height = 2;
         constructionGameTime = Duration.ofDays(60);

@@ -12,6 +12,7 @@ public class DiningHall extends FoodAndDrinkBuilding {
      */
     public DiningHall(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
+        name = "Dining Hall";
         width = 4;
         height = 3;
         constructionGameTime = Duration.ofDays(10);

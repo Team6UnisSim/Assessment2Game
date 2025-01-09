@@ -7,6 +7,7 @@ public class MediumAccommodation extends AccommodationBuilding {
     
     public MediumAccommodation(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/medium_sleep_building.png");
+        name = "Medium Accommodation";
         width = 3;
         height = 3;
         constructionGameTime = Duration.ofDays(50);
