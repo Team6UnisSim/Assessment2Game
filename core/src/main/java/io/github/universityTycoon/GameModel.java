@@ -3,9 +3,12 @@ package io.github.universityTycoon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
+import io.github.universityTycoon.Events.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -79,6 +82,11 @@ public class GameModel {
     AudioSelector audioSelector;
     MapController mapController;
     AchievementManager achievementManager;
+
+    // ---> ADDED <---
+    // Links the eventType with their handlerType so theappropriate handler can be retrieved
+    private Map<EventType, GameEventHandler> handlers = new HashMap<>();     
+
 
     /**
      * Enum representing the possible states of the game.
@@ -220,13 +228,6 @@ public class GameModel {
         return teachingBuildingCount;
     }
 
-    /**
-     * Returns the current player satisfaction score.
-     * @return The satisfaction score as a float.
-     */
-    public float getSatisfactionScore() {
-        return satisfactionScore;
-    }
 
     /**
      * Gets the current game state.
@@ -236,6 +237,7 @@ public class GameModel {
         return gameState;
     }
 
+
     /**
      * Gets the number of building types.
      * @return The number of building types in the game.
@@ -244,13 +246,130 @@ public class GameModel {
         return noBuildingTypes;
     }
 
+
+    // ---> ADDED <---
+    /**
+     * Returns EventManager object
+     */
+    public EventManager getEventManager(){
+        return eventManager;
+    }
+
+
+    // ---> ADDED <---
+    /**
+     * Returns the current event -> taking place now
+     */
+    public GameEvent getCurrentActiveEvent(){
+        return eventManager.getCurrentActiveEvent();
+    }
+
+
+    // ---> ADDED <---
+    /**
+     * Returns the current player satisfaction score.
+     * @return The satisfaction score as a float.
+     */
+    public float getSatisfactionScore() {
+        return satisfactionScore;
+    }
+
+
+    // ---> ADDED <---
+    /**
+     * Retrieves the score calculator object
+     * @return
+     */
+    public ScoreCalculator getScoreCalculator(){
+        return scoreCalculator;
+    }
+
+
+    // ---> ADDED <---
+    /**
+     * Updates the satisfaction score with a new value
+     * @param updatedScore new updated value for the score
+     */
+    public void setSatisfactionScore(float updatedScore){
+        satisfactionScore = updatedScore;
+    }
+
+
+    public void addDescriptionMessage(String message) {
+        // Add logic to store or display the message to the player
+        System.out.println("Event Message: " + message);
+    }
+
+
+    public MapController getMapController(){
+        return mapController;
+    }
+
+
+    // ---> IMPLEMENTED <---
     /**
      * Handles game events by doing something.
      * @param event The GameEvent to handle.
      */
     public void handleEvent(GameEvent event) {
-        // Do lots of things probably
+        EventType eventType = event.getEventType(); // retrieve its type to call correct handler class
+        
+        // if map does not have handler - create it, store it inside map
+        if (!handlers.containsKey(eventType)){ // 
+            GameEventHandler handler = createHandler(eventType);
+            if (handler != null){
+                handlers.put(eventType, handler); 
+            }
+        }
+        GameEventHandler handler = handlers.get(eventType);
+        if (handler == null){
+            throw new IllegalStateException("Handler for event type: " + eventType + "not found.");
+        }
+
+        // If eventType is flooding, flooding handler is created corresponding class methods are called    
+        handler.handle(event);  
     }
+
+
+    // ---> ADDED <---  
+    /**
+     * HELPER METHOD FOR ABOVE: handleEvent()
+     * Creates relevant type handler object based on eventType passed
+     * 
+     * @param eventType the type of the current event being processed
+     * @return hanlder object of corresponding type, else throws exception
+     */
+    private GameEventHandler createHandler(EventType eventType){
+        
+        switch (eventType){
+            // Negative Events:
+            case FLOODING: 
+                return new FloodingHandler(this);
+            case HURRICANE: 
+                return new HurricaneHandler(this);
+            case COFFEE_MACHINE_BREAKDOWN: 
+                return new CoffeeMachineBreakdownHandler(this);
+            case STUDENT_PROTEST: 
+                return new StudentProtestHandler(this);
+            // Positive Events:
+            case CELEBRITY_GUEST: 
+                return new CelebrityGuestHandler(this);
+            case FOOTBALL_VICTORY: 
+                return new FootballVictoryHandler(this);
+            case ANONYMOUS_GRANT: 
+                return new AnonymousGrantHandler(this);
+            case CULTURAL_FAIR:
+                return new CulturalFairHandler(this);
+            // Neutral Events:
+            case GOOD_WEATHER: 
+                return new GoodWeatherHandler(this);
+            case GEESE_INVASION: 
+                return new GeeseInvasionHandler(this);
+            default:
+                throw new IllegalArgumentException("Event type is invalid.");
+        }
+    }
+
 
     /**
      * Converts the value in the timer to the relative game time

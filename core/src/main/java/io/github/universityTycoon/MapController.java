@@ -3,8 +3,11 @@ package io.github.universityTycoon;
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 import io.github.universityTycoon.PlaceableObjects.MapObjectPointer;
+import io.github.universityTycoon.PlaceableObjects.Event;
+import java.util.Random;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 
 /**
  * Controls the map.
@@ -103,5 +106,85 @@ public class MapController {
                 }
             }
         }
+    }
+
+
+    // --------- METHODS FOR EVENTS BELOW ---------
+
+    /**
+     * Finds a random free tile - no need to iterate over map
+     * @return x and y coordinates of the tile
+     */
+    public int[] findRandomFreeTile(){
+        Random random = new Random();
+        int x = 0;
+        int y = 0;
+
+        // attemp up to 100 times to find a free tile
+        for (int i = 0; i < 100; i++){
+            x = random.nextInt(tilesWide);
+            y = random.nextInt(tilesHigh);
+
+            if (mapObjects[x][y] == null){ // check if occupied
+                // if tile unoccupied return x,y
+                return new int[] {x, y};
+            }
+        }
+        System.out.println("Tile already occupied."); 
+        return null; 
+        
+    }
+
+
+
+    /**
+     * Finds a random tile to place the event icon using helper method above
+     * Places the object on the MapObject grid on that free tile.
+ 
+     * 
+     * @param event event to retrieve icon for
+     * @return x and y coordinates of the tile that event was placed on
+     */
+    public int[] placeEvent(GameEvent event){
+
+        Event eventToPlace = new Event(event);
+        // find a random free tile
+        int[] freeTile = findRandomFreeTile();
+        if (freeTile == null){
+            return null;
+        }
+
+        int x = freeTile[0];
+        int y = freeTile[1];
+
+        mapObjects[x][y] = eventToPlace;
+        return freeTile; // return free tile
+    }
+
+
+
+    /**
+     * This function checks all the events against the current game time, and removes them.
+     * Only one 
+     * @param gameTime The current in game time.
+     */
+    public boolean updateEvent(LocalDateTime gameTime, int[] eventTile) {
+        Event event = (Event) mapObjects[eventTile[0]][eventTile[1]]; // retrieve event
+        if (event == null){
+            return false; // no event exists at this time
+        }
+
+        GameEvent gameEvent = event.getGameEvent();
+        LocalDateTime timeEventStarted = gameEvent.getEventStartedAt();
+
+        // duration the event has been taking place
+        Duration durationOfEvent = Duration.between(timeEventStarted , gameTime);
+
+        // ----> !!! ADD !!!: isEventDealtWith() -> check if the event has been dealth with
+        if (durationOfEvent.getSeconds() >= 60){ 
+            mapObjects[eventTile[0]][eventTile[1]] = null; // remove event
+            return true;
+        }
+        return false; // event is still ongoing
     }
 }

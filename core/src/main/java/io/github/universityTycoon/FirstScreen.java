@@ -193,4 +193,3 @@ public class FirstScreen implements Screen {
         start.dispose();
     }
 }
-
