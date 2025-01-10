@@ -56,7 +56,7 @@ public class GameModel {
 
     public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.SmallAccommodation;
 
-    final float START_TIME_SECONDS = 10; // for current testing, CHANGE BACK TO 300
+    final float START_TIME_SECONDS = 300;
     public float timeRemainingSeconds = START_TIME_SECONDS;
 
     public static BitmapFont font;
@@ -86,8 +86,8 @@ public class GameModel {
     AchievementManager achievementManager;
 
     // ---> ADDED <---
-    // Links the eventType with their handlerType so theappropriate handler can be retrieved
-    private Map<EventType, GameEventHandler> handlers = new HashMap<>();     
+    // Links the eventType with their handlerType so the appropriate handler can be retrieved
+    private Map<EventTypes, GameEventHandler> handlers = new HashMap<>();     
 
 
     /**
@@ -328,7 +328,7 @@ public class GameModel {
      * @param event The GameEvent to handle.
      */
     public void handleEvent(GameEvent event) {
-        EventType eventType = event.getEventType(); // retrieve its type to call correct handler class
+        EventTypes eventType = event.getEventType(); // retrieve its type to call correct handler class
         
         // if map does not have handler - create it, store it inside map
         if (!handlers.containsKey(eventType)){ // 
@@ -355,35 +355,23 @@ public class GameModel {
      * @param eventType the type of the current event being processed
      * @return hanlder object of corresponding type, else throws exception
      */
-    private GameEventHandler createHandler(EventType eventType){
-        
-        switch (eventType){
+    private GameEventHandler createHandler(EventTypes type) {
+        return switch (type) {
             // Negative Events:
-            case FLOODING: 
-                return new FloodingHandler(this);
-            case HURRICANE: 
-                return new HurricaneHandler(this);
-            case COFFEE_MACHINE_BREAKDOWN: 
-                return new CoffeeMachineBreakdownHandler(this);
-            case STUDENT_PROTEST: 
-                return new StudentProtestHandler(this);
+            case FLOODING -> new FloodingHandler(this);
+            case HURRICANE -> new HurricaneHandler(this);
+            case COFFEE_MACHINE_BREAKDOWN -> new CoffeeMachineBreakdownHandler(this);
+            case STUDENT_PROTEST -> new StudentProtestHandler(this);
             // Positive Events:
-            case CELEBRITY_GUEST: 
-                return new CelebrityGuestHandler(this);
-            case FOOTBALL_VICTORY: 
-                return new FootballVictoryHandler(this);
-            case ANONYMOUS_GRANT: 
-                return new AnonymousGrantHandler(this);
-            case CULTURAL_FAIR:
-                return new CulturalFairHandler(this);
+            case CELEBRITY_GUEST -> new CelebrityGuestHandler(this);
+            case FOOTBALL_VICTORY -> new FootballVictoryHandler(this);
+            case ANONYMOUS_GRANT -> new AnonymousGrantHandler(this);
+            case CULTURAL_FAIR -> new CulturalFairHandler(this);
             // Neutral Events:
-            case GOOD_WEATHER: 
-                return new GoodWeatherHandler(this);
-            case GEESE_INVASION: 
-                return new GeeseInvasionHandler(this);
-            default:
-                throw new IllegalArgumentException("Event type is invalid.");
-        }
+            case GOOD_WEATHER -> new GoodWeatherHandler(this);
+            case GEESE_INVASION -> new GeeseInvasionHandler(this);
+            default -> null;
+        };
     }
 
 

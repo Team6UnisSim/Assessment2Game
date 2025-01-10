@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class CulturalFairHandler extends AbstractGameEvent{
+public class CulturalFairHandler extends GameEventHandler {
 
     public CulturalFairHandler(GameModel gameModel){
         super(gameModel);

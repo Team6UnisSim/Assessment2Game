@@ -9,6 +9,7 @@ public abstract class MapObject {
     boolean isStackable = false; // Whether MapObjects can be place on top of this MapObject
     int width = 1; // How many squares it takes up in the x axis.
     int height = 1; // How many squares it takes up in the y axis.
+    float satisfactionBonus = 0f;
 
     public abstract float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects); // As a percentage
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class GameEvent {
 
-    private EventType eventType; // Enum type for event
+    private EventTypes eventType; // Enum type for event
     private String description;
     private float rarity; // 1(rare) - 5 (common)
     private String iconPath; // E.g. "assets/icons/goose_event.png"
@@ -31,7 +31,7 @@ public class GameEvent {
      * @param rarity how rare the event is
      * @param iconPath file path for the event's icon
      */
-    public GameEvent(EventType eventType){
+    public GameEvent(EventTypes eventType){
         this.eventType = eventType;
         this.isActive = true; // default is active
         this.description = eventType.getDescription();
@@ -46,7 +46,7 @@ public class GameEvent {
      * Retrieves the EventType of the current event
      * @return
      */
-    public EventType getEventType(){
+    public EventTypes getEventType(){
         return eventType;
     }
 

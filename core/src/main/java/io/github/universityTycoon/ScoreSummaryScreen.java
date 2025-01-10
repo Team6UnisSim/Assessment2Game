@@ -70,7 +70,7 @@ public class ScoreSummaryScreen implements Screen {
 
         music.setVolume(0.3f);
         music.setLooping(true);
-        //music.play(); TURN THIS BACK ON
+        music.play(); 
 
         startButton = new Rectangle();
         mousePos = new Vector2(0,0);

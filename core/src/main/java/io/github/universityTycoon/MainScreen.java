@@ -131,7 +131,7 @@ public class MainScreen implements Screen {
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
         music.setLooping(true);
-        //music.play(); TURN THIS BACK ON
+        music.play(); 
 
         gameModel.mapController.addObject(new Tree(), 3, 4);
         gameModel.mapController.addObject(new Tree(), 4, 6);
@@ -291,11 +291,9 @@ public class MainScreen implements Screen {
         // ---> possisble have EVENT_DISPLAY_DURATION variable in EventManager which is checked against every time the EventManager.processEvent is called 
         // NEED TO IMPLEMENT >>>>>> change position of it below as necessary
         GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
-        if (currentActiveEvent != null){
+        if (currentActiveEvent != null) {
             String eventDescription = currentActiveEvent.getDescription();
-            float xPos = 1.0f; // <<<  CHANGE AS NECCESSARY --- fixed position or not? 
-            float yPos = 1.0f; // <<<  CHANGE AS NECCESSARY 
-            GameModel.font.draw(batch, eventDescription, xPos, yPos); 
+            GameModel.smallerFont.draw(batch, eventDescription, 6.8f, 8.9f); 
         }
 
 
