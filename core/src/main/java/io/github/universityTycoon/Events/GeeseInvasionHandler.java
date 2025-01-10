@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class GeeseInvasionHandler extends AbstractGameEvent {
+public class GeeseInvasionHandler extends GameEventHandler {
 
     public GeeseInvasionHandler(GameModel gameModel){
         super(gameModel);

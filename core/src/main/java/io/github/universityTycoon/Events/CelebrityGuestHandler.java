@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class CelebrityGuestHandler extends AbstractGameEvent{
+public class CelebrityGuestHandler extends GameEventHandler {
 
     public CelebrityGuestHandler(GameModel gameModel){
         super(gameModel);
