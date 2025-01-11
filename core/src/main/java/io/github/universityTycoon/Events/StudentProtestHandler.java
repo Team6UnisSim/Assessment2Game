@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class StudentProtestHandler extends AbstractGameEvent{
+public class StudentProtestHandler extends GameEventHandler {
 
     public StudentProtestHandler(GameModel gameModel){
         super(gameModel);

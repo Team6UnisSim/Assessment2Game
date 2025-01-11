@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class GoodWeatherHandler extends AbstractGameEvent{
+public class GoodWeatherHandler extends GameEventHandler {
 
     public GoodWeatherHandler(GameModel gameModel){
         super(gameModel);

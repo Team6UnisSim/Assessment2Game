@@ -8,7 +8,7 @@ import io.github.universityTycoon.GameEvent;
  * Represents events as placeable objects on the map. 
  * Doesn't deal with their logic.
  */
-public class Event extends MapObject{
+public class Event extends MapObject {
 
     private GameEvent gameEvent;
 
@@ -26,11 +26,6 @@ public class Event extends MapObject{
 
     // public void update(LocalDateTime currentGameTime){
     // }
-
-    @Override
-    public float calculateSatisfaction(){
-        return 0; // satisfaction calculation logic is implemented elsewhere
-    }
 
     public GameEvent getGameEvent(){
         return gameEvent;
@@ -53,9 +48,29 @@ public class Event extends MapObject{
         return false; // eventnts are not stackable
     }
 
-
-    @Override
-    public int getSize(){
-        return 1; // events occupy a single tile
+    // As a percentage (not implemented)
+    public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
+        return 1f;
     }
+
+    /**
+     * Gets the width of the building.
+     * @return The width of the building
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the height of the building.
+     * @return The height of the building
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    public float getSatisfactionBonus() {
+        return satisfactionBonus;
+    }
+
 }

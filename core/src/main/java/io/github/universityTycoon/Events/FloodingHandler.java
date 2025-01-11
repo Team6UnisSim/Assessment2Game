@@ -2,7 +2,7 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 
-public class FloodingHandler extends AbstractGameEvent {    
+public class FloodingHandler extends GameEventHandler {    
 
     public FloodingHandler(GameModel gameModel) {
         super(gameModel);

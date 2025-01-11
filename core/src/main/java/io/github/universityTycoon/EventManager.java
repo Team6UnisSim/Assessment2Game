@@ -27,7 +27,7 @@ public class EventManager {
 
     // Iterates over enum class EventTypes and adds all types to eventMap as active events
     private void initialiseEventMap(){
-        for (EventType eventType : EventType.values()){
+        for (EventTypes eventType : EventTypes.values()){
             eventMap.put(new GameEvent(eventType), eventType.getRarity());
         }
     }

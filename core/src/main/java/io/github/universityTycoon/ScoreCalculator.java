@@ -16,17 +16,8 @@ import io.github.universityTycoon.PlaceableObjects.TeachingBuilding;
 public class ScoreCalculator {
 
     ArrayList<GameModifiers> activeModifiers = new ArrayList<GameModifiers>();
-    int currentScore; 
+    float currentScore; 
     int currentStudents; // posssibly unneccessary
-
-    // This will probably need a lot of parameters
-    public int calculateScore(GameEvent event) {
-        int scoreChange = 0;
-        for (GameModifiers modifier : event.getModifiers()){
-            scoreChange += modifier.getEffect();
-        }
-        return currentScore + scoreChange;
-    }
 
     /**
      * Adds a modifier to the active list --> modify the score currently
@@ -50,13 +41,8 @@ public class ScoreCalculator {
      * Retrieve list of active modifiers 
      * @return list of active modifiers
      */
-    public ArrayList<GameModifiers> getActiveModifiers(){
+    public ArrayList<GameModifiers> getActiveModifiers() {
         return activeModifiers;
-    
-      ArrayList<GameModifiers> activeModifiers;
-
-    public ScoreCalculator() {
-        activeModifiers = new ArrayList<GameModifiers>();
     }
 
     public float calculateScore(MapObject[][] mapObjects) {
@@ -75,10 +61,11 @@ public class ScoreCalculator {
         }
 
         if(campusScore == 0) {
-            return 0;
+            currentScore = 0;
         } else {
-            return (campusScore + averageBuildingScore) / 2;
+            currentScore = (campusScore + averageBuildingScore) / 2;
         }
+        return currentScore;
     }
 
     /**
@@ -123,5 +110,14 @@ public class ScoreCalculator {
             }
             return output / 3;
         }
+    }
+
+    // This will probably need a lot of parameters
+    public float calculateEventScoreChange (GameEvent event) {
+        float scoreChange = 0;
+        for (GameModifiers modifier : event.getModifiers()){
+            scoreChange += modifier.getEffect();
+        }
+        return currentScore + scoreChange;
     }
 }

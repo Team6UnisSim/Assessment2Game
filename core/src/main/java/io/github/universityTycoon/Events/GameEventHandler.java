@@ -1,11 +1,64 @@
 package io.github.universityTycoon.Events;
 
-import io.github.universityTycoon.GameEvent;
+import io.github.universityTycoon.*;
 
 /**
- * Interfaces that all handlers implement
+ * Abstract method used for all event hanlders to access the methods modifyScore and displayMessageToPlayer
  */
-public interface GameEventHandler {
-    void handle(GameEvent event);
-    boolean isResolved(GameEvent event); // added this
+public class GameEventHandler {
+    GameModel gameModel;
+    
+
+    /**
+     * Constructor - AbstractGameEvent 
+     * @param gameModel
+     */
+    public GameEventHandler (GameModel gameModel){
+        this.gameModel = gameModel;
+    }
+
+
+    /**
+     * Main method that delegates logic of event handling to following 3
+     */
+    public void handle(GameEvent event){
+        modifyScore(event);
+        displayMessageToPlayer(event);
+        placeIconOnMap(event); 
+        
+    }
+
+    /**
+     * Modifies satisfaction score based on the event-specific effect value
+     * 
+     * @param event to process its score effect
+     */
+    public void modifyScore(GameEvent event){
+        ScoreCalculator scoreCalculator = gameModel.getScoreCalculator();
+        float modifiedScore = scoreCalculator.calculateEventScoreChange(event);
+        gameModel.setSatisfactionScore(modifiedScore);
+    }
+
+
+    /**
+     * Passes the event description and calls the GameModel method to add the message
+     * 
+     * @param event event's description to retrieve
+     */
+    public void displayMessageToPlayer(GameEvent event){
+        gameModel.addDescriptionMessage(event.getDescription());
+    } 
+
+
+
+    /**
+     * Finds a free tile on the map for placing the event icon. 
+     * 
+     * @param event event to process
+     * @return coordinates of the placed icon
+     */
+    public void placeIconOnMap(GameEvent event){
+        // retrieve the tile the event was placed at in MapController 
+        gameModel.getMapController().placeEvent(event);
+    }   
 }
