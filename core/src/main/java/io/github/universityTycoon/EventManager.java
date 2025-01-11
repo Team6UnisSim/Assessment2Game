@@ -15,12 +15,15 @@ public class EventManager {
     private float timeSinceLastEvent = 0.0f;
     private float eventInterval = 60; // 60 sec before first event is triggered
     private GameEvent currentActiveEvent; // holds the current event taking place 
+    private float responseCountdown = -1.0f; // -1  meanns inactive,  interval until the response message is displayed to the player
+    private GameModel gameModel;
 
     /**
      * Assigns the GameEventListener
      * @param listener The listener that can process the event
      */
-    public EventManager(GameEventListener listener) {
+    public EventManager(GameModel gameModel, GameEventListener listener) {
+        this.gameModel = gameModel;
         this.listener = listener;
         initialiseEventMap(); 
     }
@@ -46,6 +49,7 @@ public class EventManager {
      */
     public void clearActiveCurrentEvent(){
         currentActiveEvent = null;
+        responseCountdown = -1.0f; // reset to inactive
     }
 
 
@@ -56,10 +60,10 @@ public class EventManager {
      * Example: (E1:2), (E2:1), (E3:4), (E4:3) -> (Event, rarity)
      * totalWeight = 10 (1+2+3+4), lowestRarity <= randomNumber <= totalWeight
      * if randomNumber = 4, randomNumber - 2 = 2, randomNumber - 1 = 1, randomNumber - 4 = -3 (so event E3 is picked as it )
-     * E1 picked if randomNumber = 1 (10% chance)
-     * E2 picked if randomNumber = 2,3 (20% chance)
-     * E3 picked if randomNumber = 4,5,6 (30% chance)
-     * E4 picked if randomNumber = 7,8,9,10 (40% chance)
+     * E1 picked if randomNumber = 2,3 (20% chance)
+     * E2 picked if randomNumber = 1 (10% chance)
+     * E3 picked if randomNumber = 7,8,9,10 (40% chance)
+     * E4 picked if randomNumber = 4,5,6 (30% chance)
      * 
      * @param eventMap map that contains all the events 
      * @return single GameEvent
@@ -113,7 +117,6 @@ public class EventManager {
 
         // when interval reached, pick an event to generate
         if (timeSinceLastEvent >= eventInterval){
-             
             GameEvent pickedEvent = pickRandomEvent();
             currentActiveEvent = pickedEvent; // Label it as current active event
             timeSinceLastEvent -= eventInterval; // reset
@@ -122,10 +125,16 @@ public class EventManager {
             if (pickedEvent != null){
                 pickedEvent.setEventStartedAt(LocalDateTime.now());
                 listener.raiseEvent(pickedEvent);
-            }
 
-            // create method to generate random interval between 40-70 sec every time an event is picked
-            // generaterRandomInterval() 
+                responseCountdown = 10.0f; 
+            }
+        } 
+        // keeps track of time for 10 sec to display responses message
+        if (responseCountdown > 0){
+            responseCountdown -= delta;
+            if (responseCountdown <= 0){ // once 10 sec have passed, call displayMessage
+                displayResponses();
+            }
         }
     }
 
@@ -139,5 +148,30 @@ public class EventManager {
         Random random = new Random();
         // generate random number between 30-60 
         return 30 +  random.nextFloat() * 30; // times 30 cause this returns a float between 0 and 1
+    }
+
+
+    /**
+     * Retrieves the description message for current event and calls a method in MainScreen to display to player
+     */
+    public String getResponsesForCurrentEvent(){
+        if (currentActiveEvent == null){
+            throw new IllegalStateException("No active event.");
+        }
+        // retrieve response descriptions
+        return gameModel.displayResponse(currentActiveEvent);
+    }
+
+    /**
+     * Handles the chosen response by the player -> modifies score
+     * @param responseID
+     */
+    public void handleResponse(int responseID){
+        if (currentActiveEvent == null){
+            throw new IllegalStateException("No active event.");
+        }
+
+        gameModel.handleResponse(currentActiveEvent, responseID);
+        clearActiveCurrentEvent();
     }
 }

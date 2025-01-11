@@ -1,9 +1,8 @@
 package io.github.universityTycoon.Events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.github.universityTycoon.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CoffeeMachineBreakdownHandler extends GameEventHandler {
     // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
@@ -14,7 +13,13 @@ public class CoffeeMachineBreakdownHandler extends GameEventHandler {
         initialiseEventResponses();
     }
 
+
+    /**
+     * Initialises the response pool for this event
+     */
+    @Override
     public void initialiseEventResponses(){
+        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(-5,"Call a repair technician to resolve issue within 2 days."));
         eventResponses.put(2, new Response(-10, "Wait for the next scheduled maintenance which is in a week."));
         eventResponses.put(3, new Response(0, "Provide a temporary coffee station offering free instant coffee until next maintenance."));

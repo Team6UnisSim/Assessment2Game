@@ -86,6 +86,11 @@ public class MainScreen implements Screen {
     // ________ ADDED ________
     // added this to pass to EventManager.processEvents() from MainScreen.render()
     float delta;
+    // added too
+    private String currentEventDetails = null; // Holds the current event's details and responses
+    // added too
+    private boolean isEventMessageActive = false;
+
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
@@ -182,6 +187,14 @@ public class MainScreen implements Screen {
             }  // Toggle the pause state
         }
 
+        // _____ ADDED ______
+        // check if player has interacted with event message display
+        if (isEventMessageActive && playerInputHandler.getIsMouseDown()){
+            isEventMessageActive = false; // hide event response message 
+            currentEventDetails = null; // clear the even details for the next event message that will occur
+            resume();
+        }
+
         if (playerInputHandler.getIsMouseDown()) {
             mousePos = playerInputHandler.getMousePos();
             mouseDown = true;
@@ -200,8 +213,11 @@ public class MainScreen implements Screen {
         viewport.getCamera().unproject(touch);
 
         // ________ ADDED ________
-        // Trigger events through the EventManager
-        gameModel.eventManager.processEvents(delta);
+        // Trigger events through the EventManager and retrieve the event details 
+        String eventDetails = gameModel.eventManager.processEvents(delta);
+        if (eventDetails != null){
+            displayEventDetails(eventDetails);
+        }
 
         // Checks to see if the building icon has been clicked
         if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
@@ -284,16 +300,25 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Food & Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
+        batch.end();
 
         // ________ ADDED ________
-        // Draws the current event description
-        // NEED TO IMPLEMENT >>>>>> make this last for a few seconds only or even pause the game while this is showing
-        // ---> possisble have EVENT_DISPLAY_DURATION variable in EventManager which is checked against every time the EventManager.processEvent is called 
-        // NEED TO IMPLEMENT >>>>>> change position of it below as necessary
-        GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
-        if (currentActiveEvent != null) {
-            String eventDescription = currentActiveEvent.getDescription();
-            GameModel.smallerFont.draw(batch, eventDescription, 6.8f, 8.9f); 
+        
+        if (isEventMessageActive && currentEventDetails != null){
+        // Draw transparent rectangle as a background for message
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.7f); // 70% opacity
+        float x = 2f; // <<<< ADJUST  
+        float y = 6f; // <<<< ADJUST 
+        float width = 12f; // <<<< ADJUST 
+        float height = 2f; // <<<< ADJUST 
+        shapeRenderer.rect(x, y - height, width, height);
+        shapeRenderer.end();
+
+        // draw event message on top of rectangle
+        batch.begin();
+        GameModel.font.draw(batch, currentEventDetails, x, y);
+        batch.end();
         }
 
 
@@ -470,9 +495,26 @@ public class MainScreen implements Screen {
         batch.end();
     }
 
+
+    /**
+     * This is called from the EventManager.displayResponses
+     * Sets the currentEventDetails message which will be accessed elsewere band drawn to the screen  
+     * @param eventDetails
+     */
+    public void displayEventDetails(String eventDetails) {
+        currentEventDetails = eventDetails;
+        isEventMessageActive = true;
+        pauseGameKeepMusic(); 
+    }
+
+
+    /**
+     * Restarts the game
+     */
     public void restartGame() {
         gameModel = new GameModel();
     }
+
 
     /**
      * Pauses the game.
@@ -483,6 +525,15 @@ public class MainScreen implements Screen {
         music.pause();
     }
 
+
+    /**
+     * Pauses the game NOT music
+     */
+    public void pauseGameKeepMusic(){
+        gameModel.isPaused = true;
+    }
+
+    
     /**
      * Resumes the game
      */

@@ -1,9 +1,8 @@
 package io.github.universityTycoon.Events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.github.universityTycoon.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CelebrityGuestHandler extends GameEventHandler {
     // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
@@ -14,7 +13,13 @@ public class CelebrityGuestHandler extends GameEventHandler {
         initialiseEventResponses();
     }
 
-        public void initialiseEventResponses(){
+
+    /**
+     * Initialises the response pool for this event
+     */
+    @Override
+    public void initialiseEventResponses(){
+        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(0,"Host an exclusive dinner with selected top-performing students"));
         eventResponses.put(2, new Response(8, "Have the celebrity pose for photos around campus."));
         eventResponses.put(3, new Response(-20, "Organize a panel discussion with the celebrity and students"));

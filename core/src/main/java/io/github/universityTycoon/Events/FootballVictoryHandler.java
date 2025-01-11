@@ -1,9 +1,8 @@
 package io.github.universityTycoon.Events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.github.universityTycoon.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class FootballVictoryHandler extends GameEventHandler {
     // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
@@ -14,7 +13,13 @@ public class FootballVictoryHandler extends GameEventHandler {
         initialiseEventResponses();
     }
 
+
+    /**
+     * Initialises the response pool for this event
+     */
+    @Override
     public void initialiseEventResponses(){
+        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(3,"Create football team merchandise and sell them at a low cost in the university shop."));
         eventResponses.put(2, new Response(0, "Give money that would be allocated to football pitch maintenance to the team members."));
         eventResponses.put(3, new Response(8, "Improve football club facilities."));

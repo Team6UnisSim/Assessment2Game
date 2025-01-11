@@ -13,7 +13,13 @@ public class AnonymousGrantHandler extends GameEventHandler {
         initialiseEventResponses();
     }
 
+
+    /**
+     * Initialises the response pool for this event
+     */
+    @Override
     public void initialiseEventResponses(){
+        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(10,"Launch a sustainability initiative for the campus"));
         eventResponses.put(2, new Response(0, "Host a celebration to honor the donor"));
         eventResponses.put(3, new Response(15, "Establish a new scholarship fund with restrictive criteria"));

@@ -1,9 +1,8 @@
 package io.github.universityTycoon.Events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.github.universityTycoon.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CulturalFairHandler extends GameEventHandler {
     // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
@@ -14,7 +13,13 @@ public class CulturalFairHandler extends GameEventHandler {
         initialiseEventResponses();
     }
 
+    
+    /**
+     * Initialises the response pool for this event
+     */
+    @Override
     public void initialiseEventResponses(){
+        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(5,"Charge a £5 entry fee to fund additional activities and improve the event."));
         eventResponses.put(2, new Response(0, "Limit the fair to showcasing local cultural traditions only."));
         eventResponses.put(3, new Response(7, "Let students take charge of organizing the event with minimal university support."));

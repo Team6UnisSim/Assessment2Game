@@ -6,10 +6,10 @@ import java.util.*;
 /**
  * Abstract method used for all event hanlders to access the methods modifyScore and displayMessageToPlayer
  */
-public class GameEventHandler {
+public abstract class GameEventHandler {
     GameModel gameModel;
-    // holds the responses to this event
-    private Map<Integer, Response> eventResponses = new HashMap<>();
+    // holds the responses to this event - populated in each handler class
+    Map<Integer, Response> eventResponses = new HashMap<>();
     
 
     /**
@@ -21,6 +21,12 @@ public class GameEventHandler {
     }
 
 
+    /**
+     * Initialises the eventResponses map - specific to each handler class
+     */
+    public abstract void initialiseEventResponses();
+
+
     public Response getResponse(int responseID){
         Response response = eventResponses.get(responseID);
         if (response == null){
@@ -28,6 +34,13 @@ public class GameEventHandler {
         }
         return response;
     }
+
+
+    public Map<Integer, Response> getAllResponses(){
+        return eventResponses;
+    }
+
+
 
 
     public void handleResponse(int responseID, GameEvent event){
@@ -41,6 +54,9 @@ public class GameEventHandler {
      * Main method that delegates logic of event handling to following 3
      */
     public void handle(GameEvent event){
+        // initialise/reinitialise the responses based on the current event occuring
+        // This will be accessed 10 sec later to display the responses to the player
+        initialiseEventResponses(); 
         modifyScore(event);
         displayMessageToPlayer(event);
         placeIconOnMap(event);  
@@ -80,3 +96,4 @@ public class GameEventHandler {
         gameModel.getMapController().placeEvent(event);
     }   
 }
+
