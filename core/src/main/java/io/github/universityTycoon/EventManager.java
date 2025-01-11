@@ -15,7 +15,7 @@ public class EventManager {
     private float timeSinceLastEvent = 0.0f;
     private float eventInterval = 60; // 60 sec before first event is triggered
     private GameEvent currentActiveEvent; // holds the current event taking place 
-    private float responseCountdown = -1.0f; // -1  meanns inactive,  interval until the response message is displayed to the player
+    private float responseCountdown = -1.0f; // -1  means inactive,  interval until the response message is displayed to the player
     private GameModel gameModel;
 
     /**
@@ -132,6 +132,8 @@ public class EventManager {
         if (responseCountdown > 0){
             responseCountdown -= delta;
             if (responseCountdown <= 0){ // once 10 sec have passed, call displayMessage
+                // remove event from mapObject
+                gameModel.removeEventFromMapObjects(gameModel.getCurrentEventTile());
                 return getResponsesForCurrentEvent();
             }
         }

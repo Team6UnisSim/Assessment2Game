@@ -53,13 +53,13 @@ public abstract class GameEventHandler {
     /**
      * Main method that delegates logic of event handling to following 3
      */
-    public void handle(GameEvent event){
+    public int[] handle(GameEvent event){
         // initialise/reinitialise the responses based on the current event occuring
         // This will be accessed 10 sec later to display the responses to the player
         initialiseEventResponses(); 
         modifyScore(event);
         displayMessageToPlayer(event);
-        placeIconOnMap(event);  
+        return placeIconOnMap(event);  
     }
 
     /**
@@ -91,9 +91,9 @@ public abstract class GameEventHandler {
      * @param event event to process
      * @return coordinates of the placed icon
      */
-    public void placeIconOnMap(GameEvent event){
+    public int[] placeIconOnMap(GameEvent event){
         // retrieve the tile the event was placed at in MapController 
-        gameModel.getMapController().placeEvent(event);
+        return gameModel.getMapController().placeEvent(event);
     }   
 }
 

@@ -87,7 +87,9 @@ public class GameModel {
 
     // ---> ADDED <---
     // Links the eventType with their handlerType so the appropriate handler can be retrieved
-    private Map<EventTypes, GameEventHandler> handlers = new HashMap<>();     
+    private Map<EventTypes, GameEventHandler> handlers = new HashMap<>();   
+    // added
+    int[] currentEventTile;
 
 
     /**
@@ -160,17 +162,32 @@ public class GameModel {
 
 
     /**
-     * Remove event from the MapObject grid
+     * Removes Event objects from MapObjects
+     * Once responses are displayed, event icns should stop being drawn.
      * 
-     * @param x x coordinate in MapObjedt of event to remove
-     * @param y y coordinate in MapObjedt of event to remove
+     * @param currentEventTile current event's tile coordinates -> remove it from map
      */
-    public void removeEvent(int x, int y){
+    public void removeEventFromMapObjects(int[] currentEventTile){
+        if (currentEventTile == null || currentEventTile.length != 2){
+            throw new NullPointerException("Invalid event tile coordinates");
+        }   
+        int x = currentEventTile[0];
+        int y = currentEventTile[1];
         MapObject[][] mapObjects = getMapObjects();
         if (mapObjects[x][y] instanceof Event){
-            mapObjects[x][y] = null;
-        };
+            mapObjects[x][y] = null; // remove the event
+        }
     }
+
+
+    /**
+     * Retrieves the current event tile
+     * @return the current event tile
+     */
+    public int[] getCurrentEventTile(){
+        return currentEventTile;
+    }
+
 
     /**
      * Calculates the elapsed game time since the start.
@@ -342,8 +359,10 @@ public class GameModel {
             throw new IllegalStateException("Handler for event type: " + eventType + "not found.");
         }
 
-        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler   
-        handler.handle(event);  
+        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler 
+        // currentEventTile holds the chosen event's tile for later removal  
+        currentEventTile = handler.handle(event);  
+        
     }
 
 

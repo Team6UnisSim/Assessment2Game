@@ -131,8 +131,7 @@ public class MapController {
             }
         }
         System.out.println("Tile already occupied."); 
-        return null; 
-        
+        return null;
     }
 
 
