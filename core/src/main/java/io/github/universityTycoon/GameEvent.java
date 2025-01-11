@@ -21,6 +21,8 @@ public class GameEvent {
     private Event mapEvent; // Corresponding MapObject for placement of the event icon -> used in EventHandler
     private boolean isActive; // True/false if active/inactive
     private LocalDateTime eventStartedAt;
+    private float responseEffect; // the effect on the score the picked event response caused - tjis will be applied to the total score
+    private String responseDescription; 
 
 
     /**
@@ -91,11 +93,6 @@ public class GameEvent {
     }
 
 
-    public LocalDateTime getEventStartedAt() {
-        return eventStartedAt;
-    }
-
-
     public void setEventStartedAt(LocalDateTime eventStartedAt) {
         this.eventStartedAt = eventStartedAt;
     }
@@ -110,12 +107,32 @@ public class GameEvent {
     }
 
 
+    public float getResponseEffect(){
+        return responseEffect;
+    }
+
+
+    public String getResponseDescription(){
+        return responseDescription;
+    }
+
+
+    public void setResponseEffect(float effect){
+        this.responseEffect = effect;
+    }
+
+
+    public void setResponseDescription(String description){
+        this.responseDescription = description;
+    }
+
+
     // public boolean isResolved(){
     //     return isResolved(this); // send to handler
     // }
 
 
-    /**
+    /** MODIFIERS ARENT USED
      * Add a modifier to the list of modifiers (things that modify the score)
      * @param modifier
      */

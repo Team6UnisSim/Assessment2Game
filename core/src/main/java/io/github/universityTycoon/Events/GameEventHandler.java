@@ -1,20 +1,39 @@
 package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
+import java.util.*;
 
 /**
  * Abstract method used for all event hanlders to access the methods modifyScore and displayMessageToPlayer
  */
 public class GameEventHandler {
     GameModel gameModel;
+    // holds the responses to this event
+    private Map<Integer, Response> eventResponses = new HashMap<>();
     
 
     /**
-     * Constructor - AbstractGameEvent 
+     * Constructor - GameEventHandler 
      * @param gameModel
      */
     public GameEventHandler (GameModel gameModel){
         this.gameModel = gameModel;
+    }
+
+
+    public Response getResponse(int responseID){
+        Response response = eventResponses.get(responseID);
+        if (response == null){
+            return null;
+        }
+        return response;
+    }
+
+
+    public void handleResponse(int responseID, GameEvent event){
+        Response response = getResponse(responseID);
+        event.setResponseEffect(response.getEffect());
+        event.setResponseDescription(response.getDescription());
     }
 
 
@@ -24,8 +43,7 @@ public class GameEventHandler {
     public void handle(GameEvent event){
         modifyScore(event);
         displayMessageToPlayer(event);
-        placeIconOnMap(event); 
-        
+        placeIconOnMap(event);  
     }
 
     /**
