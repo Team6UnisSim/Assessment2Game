@@ -1,26 +1,22 @@
 package io.github.universityTycoon;
 
-import io.github.universityTycoon.Events.*;
 import java.util.function.Consumer;
-
-
-
 
 /**
  * The GameEventListener "listens" for events triggered by the EventManager.
- * It then creates a handler to delegate the event handling to. It calls the handle method 
- * in GameEventHandler that deals with the event.
- *
+ * It then creates a handler to delegate the event handling to.
+ * When created in GameModel it was passed the GamneModel.handleEvents which it accets in raiseEvent()
+ * essentially calling GameModel.handleEvent 
  */
 public class GameEventListener {
 
-    private Consumer<GameEvent> eventHandler;
-
+    private Consumer<GameEvent> eventHandler; 
 
     /**
-     * Constructor - GameEventListener
+     * Constructor - GameEventListener 
+     * Implements Consumer class to be alke to accept events in its constructor
      * 
-     * @param gameModel passes the current game model
+     * @param eventHandler eventHandler class passed 
      */
     public GameEventListener(Consumer<GameEvent> eventHandler) {  // by using this interace we can pass (this::handleEvent) to the listener during its construction
         this.eventHandler = eventHandler;
@@ -28,14 +24,11 @@ public class GameEventListener {
 
 
     /**
-     * Forwards the event to the gameModel which will call the approprate handler type
+     * Forwards the event to the GameModel which will call the approprate handler
      * 
-     * @param event triggered and passed from EventManager
+     * @param event triggered in and passed from EventManager
      */
     public void raiseEvent(GameEvent event){
-        // the GameModel.handleEvent method was passed to this during the construction of GameModel in the  
-        // MainScreen in line 97 will be invoked here - see GameModel constructor
-        eventHandler.accept(event); 
-        // gameModel.handleEvent(event); old code, but this is the method i want to call
+        eventHandler.accept(event); // GameModel.hanldleEvents() was passed to it in its construction in GameModel
     }
 }

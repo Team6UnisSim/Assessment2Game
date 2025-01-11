@@ -114,10 +114,11 @@ public class ScoreCalculator {
 
     // This will probably need a lot of parameters
     public float calculateEventScoreChange (GameEvent event) {
-        float scoreChange = 0;
-        for (GameModifiers modifier : event.getModifiers()){
-            scoreChange += modifier.getEffect();
-        }
-        return currentScore + scoreChange;
+        float effect = event.getResponseEffect();
+
+        currentScore += effect; // apply the effect
+        currentScore = Math.max(0, Math.min(100, currentScore)); // keep between 0 and 100%
+
+        return currentScore;
     }
 }
