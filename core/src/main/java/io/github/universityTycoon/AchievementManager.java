@@ -1,6 +1,7 @@
 package io.github.universityTycoon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
@@ -14,11 +15,11 @@ public class AchievementManager {
     float timeReachedEightyPercent;
     
     public AchievementManager() {
-        achievements = new boolean[9];
+        achievements = new boolean[8];
         previousSatisfactionScore = 0;
     }
 
-    public void checkGameEndAchievements(float satisfactionScore, MapObject[][] mapObjects) {
+    public void checkGameEndAchievements(float satisfactionScore, MapObject[][] mapObjects, HashMap<GameEvent, Float> handledEvents) {
         if (satisfactionScore == 100) {
             achievements[0] = true;
         } else if (satisfactionScore == 0) {
@@ -47,9 +48,25 @@ public class AchievementManager {
             achievements[5] = true;
         }
 
-        achievements[6] = true;
-        achievements[7] = true;
-        achievements[8] = true;
+        int avertedNegativeEvents = 0;
+        int mishandledNeutralEvents = 0;
+        for (GameEvent i : handledEvents.keySet()) {
+            if (i.getEventType() == EventTypes.FLOODING || i.getEventType() == EventTypes.HURRICANE || i.getEventType() == EventTypes.COFFEE_MACHINE_BREAKDOWN || i.getEventType() == EventTypes.STUDENT_PROTEST) {
+                if (handledEvents.get(i) == 0) {
+                    avertedNegativeEvents += 1;
+                }
+            } else if (i.getEventType() == EventTypes.GOOD_WEATHER || i.getEventType() == EventTypes.GEESE_INVASION) {
+                if (handledEvents.get(i) < 0) {
+                    mishandledNeutralEvents += 1;
+                }
+            }
+        }
+        if (avertedNegativeEvents >= 3) {
+            achievements[6] = true;
+        }
+        if (mishandledNeutralEvents >= 2) {
+            achievements[7] = true;
+        }
     }
 
     public void checkContinuousAchievements(float satisfactionScore, float timeRemainingSeconds) {
@@ -76,6 +93,12 @@ public class AchievementManager {
                 return 101f;
             } else {
                 return 100f;
+            }
+        } else if (satisfactionScore == 0) {
+            if(achievements[1] = true) {
+                return -1f;
+            } else {
+                return 0;
             }
         } else {
             return satisfactionScore;

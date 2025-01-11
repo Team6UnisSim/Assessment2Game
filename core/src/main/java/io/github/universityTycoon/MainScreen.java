@@ -1,6 +1,7 @@
 package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import io.github.universityTycoon.Events.GameEventHandler;
 import io.github.universityTycoon.PlaceableObjects.*;
 
 import java.time.format.DateTimeFormatter;
@@ -79,6 +82,8 @@ public class MainScreen implements Screen {
     boolean mouseDown;
     boolean placeMode;
     PlayerInputHandler playerInputHandler;
+    boolean handlingEvent;
+    boolean renderTutorial;
 
     String time;
     String dateTimeString;
@@ -133,11 +138,14 @@ public class MainScreen implements Screen {
         music.setLooping(true);
         music.play(); 
 
+        handlingEvent = false;
+        renderTutorial = false;
+
         gameModel.mapController.addObject(new Tree(), 3, 4);
         gameModel.mapController.addObject(new Tree(), 4, 6);
         gameModel.mapController.addObject(new LargeTrees(), 14, 4);
-        gameModel.mapController.addObject(new Road(), 5, 6);
-        gameModel.mapController.addObject(new Road(), 5, 13);
+        gameModel.mapController.addObject(new Road(), 6, 6);
+        gameModel.mapController.addObject(new Road(), 6, 13);
     }
 
 
@@ -189,6 +197,34 @@ public class MainScreen implements Screen {
         else {
             mouseDown = false;
         }
+
+        if (playerInputHandler.getKeyJustPressed(Input.Keys.H) || handlingEvent == true) {
+            if (!renderTutorial && handlingEvent == false) {
+                renderTutorial = true;
+            } else {
+                renderTutorial = false;
+            }
+        }
+
+        if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_1) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(1).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(1).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
+        } else if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_2) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(2).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(2).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
+        } else if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_3) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(3).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(3).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
+        }
     }
 
 
@@ -200,11 +236,16 @@ public class MainScreen implements Screen {
         viewport.getCamera().unproject(touch);
 
         // ________ ADDED ________
-        // Trigger events through the EventManager 
+        // Trigger events through the EventManager
         gameModel.eventManager.processEvents(delta);
+        if (gameModel.eventManager.getCurrentActiveEvent() != null) {
+            handlingEvent = true;
+        } else {
+            handlingEvent = false;
+        }
 
         // Checks to see if the building icon has been clicked
-        if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
+        if (mouseDown && buildingIcon.contains(touch.x, touch.y) && handlingEvent == false && renderTutorial == false) {
             placeMode = true;
         }
         // Places the building when the user has stopped dragging the mouse in place mode (ABOVE the Menu Bar)
@@ -212,7 +253,7 @@ public class MainScreen implements Screen {
             placeBuilding();
         }
         // Cancels place mode if the user lets go of the mouse in the Menu Bar
-        else if (!mouseDown && placeMode) {
+        else if (!mouseDown && placeMode || handlingEvent == true && placeMode || renderTutorial == true && placeMode) {
             placeMode = false;
         }
 
@@ -284,15 +325,7 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Food & Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-
-        // ________ ADDED ________
-        // Draws the current event description
-        GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
-        if (currentActiveEvent != null) {
-            String eventDescription = currentActiveEvent.getDescription();
-            GameModel.smallerFont.draw(batch, eventDescription, 6.8f, 8.9f); 
-        }
-
+        GameModel.smallerFont.draw(batch, "Press H for help!", 13.15f, 7.9f);
 
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
@@ -300,6 +333,17 @@ public class MainScreen implements Screen {
 
         // Draws all the textures for the building menu (bottom portion of the screen)
         drawBuildingMenu();
+
+        GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
+        if (currentActiveEvent != null || renderTutorial == true) {
+            sr.setProjectionMatrix(viewport.getCamera().combined);
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+
+            sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
+            sr.rect(3f, 2.8f, 10.4f, 5f);
+            
+            sr.end();
+        }
 
         // This text goes over the building menu, so must be drawn after.
         // This also therefore needs a new batch begin and end statement.
@@ -327,6 +371,33 @@ public class MainScreen implements Screen {
             batch.draw(mapObjTextures.get(buildingToAdd.getTexturePath()), screenPos.x, screenPos.y, tileSizeOnScreen * buildingToAdd.getWidth(), tileSizeOnScreen * buildingToAdd.getHeight());
         }
 
+        if (currentActiveEvent != null) {
+            String eventDescription = currentActiveEvent.getDescription();
+            GameModel.blackFont.draw(batch, "An event has occurred!",  3.2f, 7.6f);
+            GameModel.blackFont.draw(batch, eventDescription,  3.2f, 7f);
+            GameModel.blackFont.draw(batch, "Press 1, 2 or 3 to choose what to do",  3.2f, 6f);
+
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(currentActiveEvent.getEventType());
+            GameModel.blackFont.getData().setScale(0.0015f);
+            for(int i = 0; i < 3; i++) {
+                GameModel.blackFont.draw(batch, Integer.toString(i + 1) + ": " + currentEventHandler.getResponse(Integer.valueOf(i + 1)).getDescription(),  3.2f, 5.4f - (0.4f * i));
+            }
+            GameModel.blackFont.getData().setScale(0.002f);
+        }
+
+        if (renderTutorial) {
+            GameModel.blackFont.draw(batch, "Welcome to University Tycoon!",  3.2f, 7.6f);
+            GameModel.blackFont.draw(batch, "The aim of the game is maximising your student satisfaction score.",  3.2f, 7f);
+            GameModel.blackFont.draw(batch, "You can do this by strategically placing buildings,",  3.2f, 6.6f);
+            GameModel.blackFont.draw(batch, "and dealing with different events that occur during the game.",  3.2f, 6.3f);
+            GameModel.blackFont.draw(batch, "To place a building, just drag the icon from the bottom of the screen",  3.2f, 5.9f);
+            GameModel.blackFont.draw(batch, "or click on the arrow icons to swap between building types.",  3.2f, 5.6f);
+            GameModel.blackFont.draw(batch, "When events occur, you can select between 3 courses of action,",  3.2f, 5.2f);
+            GameModel.blackFont.draw(batch, "but make sure to choose wisely.",  3.2f, 4.9f);
+            GameModel.blackFont.draw(batch, "The game only lasts for 5 minutes of real time, so be careful to",  3.2f, 4.5f);
+            GameModel.blackFont.draw(batch, "consider the time it takes to construct your buildings!",  3.2f, 4.2f);
+            GameModel.blackFont.draw(batch, "To exit the tutorial, press H again.",  3.2f, 3.6f);
+        }
 
         batch.end();
 
@@ -400,8 +471,9 @@ public class MainScreen implements Screen {
                         batch.draw(percentTexture, screenPos.x + 0.17f, screenPos.y + 0.25f, 48 * 0.015f, 32 * 0.015f);
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
-               
-                // ----> ADDED <----: Draw events on the map 
+                    
+                // ----> ADDED <----: Draw events on map on the tile it is in MapObject grid
+                // NEED TO IMPLEMENT: remove events after they have beem dealt with or after a certain time has passed --> should probably be done in EventManager
                 } else if (mapObjects[i][j] instanceof Event event) {
                     // add event textures to MapObjTextures
                     String eventTexturePath = event.getTexturePath();
@@ -409,8 +481,10 @@ public class MainScreen implements Screen {
                         if (!mapObjTextures.containsKey(eventTexturePath)){
                             mapObjTextures.put(eventTexturePath, new Texture(eventTexturePath));
                         }
-                        // draw event textures
+                        // draw event textures 
                         batch.draw(mapObjTextures.get(eventTexturePath), screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                        // ----> need to add logic for removing from MapObjects and event when it is dealt with, if not in MapObject ->not drawn
+                        // EventManager holds 'currentActiveEvent' variable and clearActiveCurrentEvent method
                     }
                 } else if (mapObjects[i][j] instanceof Terrain terrain) {
                     // Get the texture for the object

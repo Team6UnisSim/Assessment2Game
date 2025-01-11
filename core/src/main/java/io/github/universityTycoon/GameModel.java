@@ -3,7 +3,9 @@ package io.github.universityTycoon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
+import io.github.universityTycoon.PlaceableObjects.Event;
 import io.github.universityTycoon.Events.*;
+
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -85,8 +87,8 @@ public class GameModel {
 
     // ---> ADDED <---
     // Links the eventType with their handlerType so the appropriate handler can be retrieved
-    private Map<EventTypes, GameEventHandler> handlers = new HashMap<>();     
-
+    private Map<EventTypes, GameEventHandler> handlers;     
+    HashMap<GameEvent, Float> handledEvents;
 
     /**
      * Enum representing the possible states of the game.
@@ -133,6 +135,9 @@ public class GameModel {
 
         blackFont.setUseIntegerPositions(false);
         blackFont.getData().setScale(0.002f, 0.002f);
+
+        handlers =  new HashMap<>();
+        handledEvents = new HashMap<>();
     }
 
     /**
@@ -143,6 +148,7 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
+            mapController.updateEvents(getGameTimeGMT());
             satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
             achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
         }
@@ -154,6 +160,20 @@ public class GameModel {
      */
     public MapObject[][] getMapObjects() {
         return mapController.mapObjects;
+    }
+
+
+    /**
+     * Remove event from the MapObject grid
+     * 
+     * @param x x coordinate in MapObjedt of event to remove
+     * @param y y coordinate in MapObjedt of event to remove
+     */
+    public void removeEvent(int x, int y){
+        MapObject[][] mapObjects = getMapObjects();
+        if (mapObjects[x][y] instanceof Event){
+            mapObjects[x][y] = null;
+        };
     }
 
     /**
@@ -305,6 +325,13 @@ public class GameModel {
         return mapController;
     }
 
+    public Map<EventTypes, GameEventHandler> getHandlers() {
+        return handlers;
+    }
+
+    public HashMap<GameEvent, Float> getHandledEvents() {
+        return handledEvents;
+    }
 
     // ---> IMPLEMENTED <---
     /**
@@ -326,7 +353,7 @@ public class GameModel {
             throw new IllegalStateException("Handler for event type: " + eventType + "not found.");
         }
 
-        // If eventType is flooding, flooding handler is created corresponding class methods are called    
+        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler   
         handler.handle(event);  
     }
 

@@ -9,21 +9,21 @@ package io.github.universityTycoon;
 public enum EventTypes {
     // Negative events:
     FLOODING(-3, 1, "Flooding has occured in the campus.", "images/tree.png"),
-    HURRICANE(-2, 3, "Bad weather has caused damange to the buildings.", "images/tree.png"),
+    HURRICANE(-2, 3, "Bad weather has caused damage to the buildings.", "images/tree.png"),
     COFFEE_MACHINE_BREAKDOWN(-1, 4, "The coffee machine has broken.", "images/tree.png"),
-    STUDENT_PROTEST(-4, 2, "Students protest about the campus poor conditions.", "images/tree.png"), 
+    STUDENT_PROTEST(-4, 2, "Students protest about poor conditions on campus.", "images/tree.png"), 
     // Positive events:
-    CELEBRITY_GUEST(1, 2, "A celebrity guest will be giving a lecture in campus", "images/tree.png" ),
-    FOOTBALL_VICTORY(3, 3, "The university football team beat the neighbouring university team", "images/tree.png"), 
-    ANONYMOUS_GRANT(2, 1, "An anonymouys donot has donated a large amount of money to the University", "images/tree.png"), 
-    CULTURAL_FAIR(4, 4, "A cultural fair has been organised by the  university for the weekend", "images/tree.png"),
+    CELEBRITY_GUEST(1, 2, "A celebrity guest will be giving a lecture in campus.", "images/tree.png" ),
+    FOOTBALL_VICTORY(3, 3, "The university football team beat their local rivals.", "images/tree.png"), 
+    ANONYMOUS_GRANT(2, 1, "A large anonymous donation has been made to the university.", "images/tree.png"), 
+    CULTURAL_FAIR(4, 4, "A cultural fair has been organised by the university for the weekend.", "images/tree.png"),
     // NeutralEvents:
-    GOOD_WEATHER(0, 4, "A few days of good weather have improved everyone's mood", "images/tree.png"),
-    GEESE_INVASION(0,2, "The geese have inVaded the campus.", "images/tree.png");
+    GOOD_WEATHER(0, 4, "A few days of good weather have improved everyone's mood.", "images/tree.png"),
+    GEESE_INVASION(0,2, "A flock of geese have invaded the campus.", "images/tree.png");
     
     private final int effect; // effect the event has on the satisfaction score
     private final String description; // short description of the event
-    private final int rarity; // probability of the event occuring -> 1:rare - 4:common
+    private final int rarity; // probability of the event occuring -> [1 = rare] -- [4 = common]
     private final String iconPath; // the file path for that event-specific icon to be displayed
 
 
@@ -41,7 +41,7 @@ public enum EventTypes {
             throw new IllegalArgumentException("Invalid rarity");         
         }
         if (iconPath == null){
-            throw new IllegalArgumentException("Invalid iconPath");
+            throw new IllegalArgumentException("Invalid icon file path");
         }
 
         this.effect = effect;

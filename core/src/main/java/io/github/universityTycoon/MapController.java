@@ -7,7 +7,6 @@ import io.github.universityTycoon.PlaceableObjects.Event;
 import java.util.Random;
 
 import java.time.LocalDateTime;
-import java.time.Duration;
 
 /**
  * Controls the map.
@@ -161,30 +160,18 @@ public class MapController {
         return freeTile; // return free tile
     }
 
-
-
     /**
-     * This function checks all the events against the current game time, and removes them.
-     * Only one 
+     * This function checks all the buildings against the current game time, and updates them when they've finished
+     * being constructed. Call this to ensure buildings progress from under construction to complete
      * @param gameTime The current in game time.
      */
-    public boolean updateEvent(LocalDateTime gameTime, int[] eventTile) {
-        Event event = (Event) mapObjects[eventTile[0]][eventTile[1]]; // retrieve event
-        if (event == null){
-            return false; // no event exists at this time
+    public void updateEvents(LocalDateTime gameTime) {
+        for (int x = 0; x < tilesWide; x++) {
+            for (int y = 0; y < tilesHigh; y++) {
+                if (mapObjects[x][y] instanceof Event) {
+                    ((Event) mapObjects[x][y]).getGameEvent().updateEvent(gameTime, x, y, mapObjects);
+                }
+            }
         }
-
-        GameEvent gameEvent = event.getGameEvent();
-        LocalDateTime timeEventStarted = gameEvent.getEventStartedAt();
-
-        // duration the event has been taking place
-        Duration durationOfEvent = Duration.between(timeEventStarted , gameTime);
-
-        // ----> !!! ADD !!!: isEventDealtWith() -> check if the event has been dealth with
-        if (durationOfEvent.getSeconds() >= 60){ 
-            mapObjects[eventTile[0]][eventTile[1]] = null; // remove event
-            return true;
-        }
-        return false; // event is still ongoing
     }
 }

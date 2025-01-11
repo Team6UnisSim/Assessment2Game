@@ -1,9 +1,10 @@
 package io.github.universityTycoon;
 
 import io.github.universityTycoon.PlaceableObjects.Event;
+import io.github.universityTycoon.PlaceableObjects.MapObject;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 /**
  * Represents a specific instance of a event currently taking place.
@@ -17,10 +18,12 @@ public class GameEvent {
     private String description;
     private float rarity; // 1(rare) - 5 (common)
     private String iconPath; // E.g. "assets/icons/goose_event.png"
-    private ArrayList<GameModifiers> modifiers; // The effects the event (e.g. flooding) applies (e.g. -3 score)
     private Event mapEvent; // Corresponding MapObject for placement of the event icon -> used in EventHandler
     private boolean isActive; // True/false if active/inactive
     private LocalDateTime eventStartedAt;
+    private float responseEffect; // the effect on the score the picked event response caused - this will be applied to the total score
+    private String responseDescription; 
+    private boolean dealtWith;
 
 
     /**
@@ -37,8 +40,8 @@ public class GameEvent {
         this.description = eventType.getDescription();
         this.rarity = eventType.getRarity();
         this.iconPath = eventType.getIconPath();
-        this.modifiers = new ArrayList<>();
         this.mapEvent = new Event(this); // Create the corresponding map Event in the PlaceableObjects package
+        dealtWith = false;
     }
 
 
@@ -76,23 +79,9 @@ public class GameEvent {
     public String getIconPath(){
         return iconPath;
     }
-
-
-    /**
-     * Retrieve the list of existing modifiers
-     */
-    public ArrayList<GameModifiers> getModifiers(){
-        return modifiers;
-    }
-
     
     public Event getMapEvent(){
         return mapEvent;
-    }
-
-
-    public LocalDateTime getEventStartedAt() {
-        return eventStartedAt;
     }
 
 
@@ -110,16 +99,54 @@ public class GameEvent {
     }
 
 
+    public float getResponseEffect(){
+        return responseEffect;
+    }
+
+
+    public String getResponseDescription(){
+        return responseDescription;
+    }
+
+
+    public void setResponseEffect(float effect){
+        this.responseEffect = effect;
+    }
+
+
+    public void setResponseDescription(String description){
+        this.responseDescription = description;
+    }
+
+    public LocalDateTime getEventStartedAt() {
+        return eventStartedAt;
+    }
+
+    public void setEventDealtWith(boolean eventDealtWith) {
+        dealtWith = eventDealtWith;
+    }
+
+    public boolean getEventDealtWith() {
+        return dealtWith;
+    }
+
+    /**
+     * This function checks all the events against the current game time, and removes them.
+     * Only one 
+     * @param gameTime The current in game time.
+     */
+    public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, MapObject[][] mapObjects) {
+        // duration the event has been taking place
+        Duration durationOfEvent = Duration.between(eventStartedAt , gameTime);
+
+        if (durationOfEvent.getSeconds() >= 60 && dealtWith){ 
+            mapObjects[eventX][eventY] = null; // remove event
+            return true;
+        }
+        return false; // event is still ongoing
+    }
+
     // public boolean isResolved(){
     //     return isResolved(this); // send to handler
     // }
-
-
-    /**
-     * Add a modifier to the list of modifiers (things that modify the score)
-     * @param modifier
-     */
-    public void addModifier(GameModifiers modifier){
-        modifiers.add(modifier);
-    }
 }
