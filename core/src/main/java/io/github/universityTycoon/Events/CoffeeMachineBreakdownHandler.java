@@ -1,11 +1,43 @@
 package io.github.universityTycoon.Events;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.universityTycoon.*;
 
 public class CoffeeMachineBreakdownHandler extends GameEventHandler {
+    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
+    private Map<Integer, Response> eventResponses = new HashMap<>(); 
 
     public CoffeeMachineBreakdownHandler(GameModel gameModel){
         super(gameModel);
+        initialiseEventResponses();
+    }
+
+    public void initialiseEventResponses(){
+        eventResponses.put(1, new Response(-5,"Call a repair technician to resolve issue within 2 days."));
+        eventResponses.put(2, new Response(-10, "Wait for the next scheduled maintenance which is in a week."));
+        eventResponses.put(3, new Response(0, "Provide a temporary coffee station offering free instant coffee."));
+    }
+
+    /**
+     * Get specific response using response ID
+     * @param responseID
+     * @return
+     */
+    public Response getResponse(int responseID){
+        if (responseID < 1 || responseID > 3){
+            throw new IllegalArgumentException("Response ID must be 1, 2 or 3");
+        }
+        return eventResponses.get(responseID);
+    }
+
+    /**
+     * Get all ther event responses as a map
+     *
+     */
+    public Map<Integer, Response> getAllResponses(){
+        return eventResponses;
     }
 
     /**
