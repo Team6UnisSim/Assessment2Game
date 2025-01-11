@@ -106,7 +106,7 @@ public class GameModel {
     public GameModel() {
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern"
-        eventManager = new EventManager(eventListener);
+        eventManager = new EventManager(this, eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
@@ -372,6 +372,36 @@ public class GameModel {
             case GEESE_INVASION -> new GeeseInvasionHandler(this);
             default -> null;
         };
+    }
+
+
+
+    /**
+     * Returns the responses as a String which will be displayed at the MainScreen
+     * @param event to retrieve its possible responses for
+     * @return String description of the event's responses 
+     */
+    public String displayResponse(GameEvent event){
+        EventTypes eventType = event.getEventType(); // retrieve the GameEvent obects's eventType
+        GameEventHandler handler = handlers.get(eventType); // retrieve corresponding handler type
+
+        if (handler == null){
+            throw new IllegalStateException("no corresponding handler found for " + eventType);
+        }
+
+        // initialise response message and append relevant info
+        StringBuilder responseMessage = new StringBuilder();
+        responseMessage.append("Event: ").append(eventType.getDescription() + "\n");
+        responseMessage.append("Choose one of the following responses: \n");
+
+        // retrieve responses for  that event
+        Map<Integer, Response> responses = handler.getAllResponses();
+        for (Map.Entry<Integer, Response> entry : responses.entrySet()){
+            int responseID = entry.getKey();
+            Response response = entry.getValue();
+            responseMessage.append(responseID + ": ").append(response.getDescription() + "\n");
+        }
+        return responseMessage.toString();
     }
 
 

@@ -2,12 +2,9 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 import java.util.Map;
-import java.util.HashMap;
 
 public class StudentProtestHandler extends GameEventHandler {
-    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
-    private Map<Integer, Response> eventResponses = new HashMap<>(); 
-
+    
     public StudentProtestHandler(GameModel gameModel){
         super(gameModel);
         initialiseEventResponses();

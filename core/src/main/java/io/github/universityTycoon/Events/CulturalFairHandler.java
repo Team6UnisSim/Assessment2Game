@@ -2,18 +2,15 @@ package io.github.universityTycoon.Events;
 
 import io.github.universityTycoon.*;
 import java.util.Map;
-import java.util.HashMap;
 
 public class CulturalFairHandler extends GameEventHandler {
-    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
-    private Map<Integer, Response> eventResponses = new HashMap<>(); 
-
+    
     public CulturalFairHandler(GameModel gameModel){
         super(gameModel);
         initialiseEventResponses();
     }
 
-    
+
     /**
      * Initialises the response pool for this event
      */

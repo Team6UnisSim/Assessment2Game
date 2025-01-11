@@ -93,6 +93,10 @@ public class GameEvent {
     }
 
 
+    public LocalDateTime getEventStartedAt(){
+        return eventStartedAt;
+    }
+
     public void setEventStartedAt(LocalDateTime eventStartedAt) {
         this.eventStartedAt = eventStartedAt;
     }

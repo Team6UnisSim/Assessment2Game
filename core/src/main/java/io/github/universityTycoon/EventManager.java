@@ -111,7 +111,7 @@ public class EventManager {
      * the rarity of said event.
      * @param delta time in seconds since the last frame
      */
-    public void processEvents(float delta) {
+    public String processEvents(float delta) {
         // increment this with every frame delta time
         timeSinceLastEvent += delta;
 
@@ -125,17 +125,29 @@ public class EventManager {
             if (pickedEvent != null){
                 pickedEvent.setEventStartedAt(LocalDateTime.now());
                 listener.raiseEvent(pickedEvent);
-
-                responseCountdown = 10.0f; 
+                responseCountdown = 10.0f; // start countdown from event triggered to responses display
             }
         } 
         // keeps track of time for 10 sec to display responses message
         if (responseCountdown > 0){
             responseCountdown -= delta;
             if (responseCountdown <= 0){ // once 10 sec have passed, call displayMessage
-                displayResponses();
+                return getResponsesForCurrentEvent();
             }
         }
+        return null;
+    }
+
+
+    /**
+     * Retrieves the description message for current event and calls a method in MainScreen to display to player
+     */
+    public String getResponsesForCurrentEvent(){
+        if (currentActiveEvent == null){
+            throw new IllegalStateException("No active event.");
+        }
+        // retrieve response descriptions
+        return gameModel.displayResponse(currentActiveEvent);
     }
 
 
@@ -150,17 +162,6 @@ public class EventManager {
         return 30 +  random.nextFloat() * 30; // times 30 cause this returns a float between 0 and 1
     }
 
-
-    /**
-     * Retrieves the description message for current event and calls a method in MainScreen to display to player
-     */
-    public String getResponsesForCurrentEvent(){
-        if (currentActiveEvent == null){
-            throw new IllegalStateException("No active event.");
-        }
-        // retrieve response descriptions
-        return gameModel.displayResponse(currentActiveEvent);
-    }
 
     /**
      * Handles the chosen response by the player -> modifies score
