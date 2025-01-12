@@ -11,11 +11,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
+ * CHANGED IN ASSESSMENT 2 - Leaderboard added 
  * FirstScreen is an implementation of the screen interface.
  * It is used for the initial startup screen, and an instance of it is created within ScreenManager.
  *
@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * @param mousePos The vector position of the mouse.
  * @param mouseDown The updated when the mouse is clicked.
  * @param music The music.
+ * @param sr the instance of ShapeRenderer used to draw the leaderboard background.
  *
  * @param game An instance of the ScreenManager class, used in the constructor so that stuff works.
  */
@@ -48,9 +49,6 @@ public class FirstScreen implements Screen {
 
     final ScreenManager game;
     public FirstScreen(ScreenManager main) {
-        if (main == null) {
-            throw new IllegalArgumentException("ScreenManager instance cannot be null.");
-        }
         this.game = main;
     }
 
@@ -59,31 +57,26 @@ public class FirstScreen implements Screen {
      * Show is responsible for setting all variables.
      * It is effectively the constructor.
      */
-    // errorhandled try except
     @Override
     public void show() {
-        try {
-            batch = new SpriteBatch();
-            viewport = new FitViewport(16, 9);
-            input = new PlayerInputHandler();
+        batch = new SpriteBatch();
+        viewport = new FitViewport(16, 9);
+        input = new PlayerInputHandler();
 
-            music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
-            music.setVolume(0.3f);
-            music.setLooping(true);
-            music.play();
+        music.setVolume(0.3f);
+        music.setLooping(true);
+        music.play(); 
 
-            startButton = new Rectangle();
-            mousePos = new Vector2(0, 0);
+        startButton = new Rectangle();
+        mousePos = new Vector2(0,0);
 
-            background = new Texture(Gdx.files.internal("images/title_page.png"));
-            logo = new Texture(Gdx.files.internal("images/logo.png"));
-            start = new Texture(Gdx.files.internal("images/start.png"));
+        background = new Texture(Gdx.files.internal("images/title_page.png"));
+        logo = new Texture(Gdx.files.internal("images/logo.png"));
+        start = new Texture(Gdx.files.internal("images/start.png"));
 
-            sr = new ShapeRenderer();
-        } catch (Exception e) {
-            Gdx.app.error("FirstScreen", "Error initializing screen resources", e);
-        }
+        sr = new ShapeRenderer();
     }
+
     /**
      * Calls three functions which are used to split up the rendering method.
      *
@@ -178,11 +171,7 @@ public class FirstScreen implements Screen {
 
         batch.end();
     }
-    private void stopMusic() {
-        if (music != null) {
-            music.stop();
-        }
-    }
+
 
     @Override
     public void pause() {
@@ -201,21 +190,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
-        safeDispose(batch);
-        safeDispose(background);
-        safeDispose(logo);
-        safeDispose(start);
-        safeDispose(sr);
-        if (music != null) {
-            music.dispose();
-        }
-    }
-
-    private void safeDispose(Object resource) {
-        if (resource instanceof Disposable disposable) {
-            disposable.dispose();
-        }
+        background.dispose();
+        logo.dispose();
+        start.dispose();
     }
 }
-// Adam Comments: ive errorhandled alot overall, largely adding try..excepts, no real change to main code 
-// cleaning up code and reaffirming operations for start and closing things

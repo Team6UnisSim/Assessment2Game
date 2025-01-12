@@ -14,6 +14,7 @@ import java.util.Map;
 
 
 /**
+ * CHANGED IN ASSESSMENT 2 - Support for events added, and a number of other methods.
  * GameModel holds all the variables the game uses that may need access across multiple classes.
  *
  * @param YEARS_PER_MINUTE Conversion rate from real-world time to in-game years.
@@ -47,6 +48,7 @@ import java.util.Map;
  * @param scoreCalculator Calculates player scores based on game state.
  * @param audioSelector Selects which audio to play.
  * @param mapController Controls the map and its objects, updating the state of buildings.
+ * @param achievementManager Keeps track of what achievements the user has completed.
  */
 public class GameModel {
 
@@ -66,7 +68,7 @@ public class GameModel {
     public int tilesWide = 32;
     public int tilesHigh = 14;
 
-    int noBuildingTypes;
+    int noBuildingTypes; 
     public int foodAndDrinkBuildingCount;
     public int accommodationBuildingCount;
     public int leisureBuildingCount;
@@ -78,14 +80,14 @@ public class GameModel {
     
     // Objects
     GameState gameState;
-    EventManager eventManager;
-    GameEventListener eventListener;
+    EventManager eventManager; // ADDED IN ASSESSMENT 2
+    GameEventListener eventListener; // ADDED IN ASSESSMENT 2
     ScoreCalculator scoreCalculator;
     AudioSelector audioSelector;
     MapController mapController;
-    AchievementManager achievementManager;
+    AchievementManager achievementManager; // ADDED IN ASSESSMENT 2
 
-    // ---> ADDED <---
+    // ADDED IN ASSESSMENT 2
     // Links the eventType with their handlerType so the appropriate handler can be retrieved
     private Map<EventTypes, GameEventHandler> handlers;     
     HashMap<GameEvent, Float> handledEvents;
@@ -110,7 +112,7 @@ public class GameModel {
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
-        achievementManager = new AchievementManager();
+        achievementManager = new AchievementManager(); // ADDED IN ASSESSMENT 2
 
         isPaused = false;
 
@@ -148,9 +150,9 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
-            mapController.updateEvents(getGameTimeGMT(), this);
+            mapController.updateEvents(getGameTimeGMT(), this); // ADDED IN ASSESSMENT 2
             satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
-            achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
+            achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds); // ADDED IN ASSESSMENT 2
         }
     }
 
@@ -164,6 +166,7 @@ public class GameModel {
 
 
     /**
+     * ADDED IN ASSESSMENT 2
      * Remove event from the MapObject grid
      * 
      * @param x x coordinate in MapObjedt of event to remove
@@ -217,6 +220,7 @@ public class GameModel {
     }
 
     /**
+     * CHANGED IN ASSESSMENT 2 - renamed from getCafeteriaBuilingCount
      * Gets the count of cafeteria buildings.
      * @return The number of cafeteria buildings.
      */
@@ -267,8 +271,8 @@ public class GameModel {
     }
 
 
-    // ---> ADDED <---
     /**
+     * ADDED IN ASSESSMENT 2
      * Returns EventManager object
      */
     public EventManager getEventManager(){
@@ -276,8 +280,8 @@ public class GameModel {
     }
 
 
-    // ---> ADDED <---
-    /**
+    /** 
+     * ADDED IN ASSESSMENT 2
      * Returns the current event -> taking place now
      */
     public GameEvent getCurrentActiveEvent(){
@@ -285,8 +289,8 @@ public class GameModel {
     }
 
 
-    // ---> ADDED <---
     /**
+     * ADDED IN ASSESSMENT 2
      * Returns the current player satisfaction score.
      * @return The satisfaction score as a float.
      */
@@ -295,8 +299,8 @@ public class GameModel {
     }
 
 
-    // ---> ADDED <---
     /**
+     * ADDED IN ASSESSMENT 2
      * Retrieves the score calculator object
      * @return
      */
@@ -305,8 +309,8 @@ public class GameModel {
     }
 
 
-    // ---> ADDED <---
     /**
+     * ADDED IN ASSESSMENT 2
      * Updates the satisfaction score with a new value
      * @param updatedScore new updated value for the score
      */
@@ -314,27 +318,35 @@ public class GameModel {
         satisfactionScore = updatedScore;
     }
 
-
-    public void addDescriptionMessage(String message) {
-        // Add logic to store or display the message to the player
-        System.out.println("Event Message: " + message);
-    }
-
-
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Get the current map controller.
+     * @return the current map controller.
+     */
     public MapController getMapController(){
         return mapController;
     }
 
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Get the mapping of event types to handlers.
+     * @return the map of event types and associated handlers.
+     */
     public Map<EventTypes, GameEventHandler> getHandlers() {
         return handlers;
     }
 
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Gets the mapping of handled events to their effect.
+     * @return the map of handled events and score effects.
+     */
     public HashMap<GameEvent, Float> getHandledEvents() {
         return handledEvents;
     }
 
-    // ---> IMPLEMENTED <---
     /**
+     * ADDED IN ASSESSMENT 2
      * Handles game events by doing something.
      * @param event The GameEvent to handle.
      */
@@ -354,12 +366,12 @@ public class GameModel {
         }
 
         // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler   
-        handler.handle(event);  
+        handler.placeIconOnMap(event);  
     }
 
-
-    // ---> ADDED <---  
+ 
     /**
+     * ADDED IN ASSESSMENT 2
      * HELPER METHOD FOR ABOVE: handleEvent()
      * Creates relevant type handler object based on eventType passed
      * 
