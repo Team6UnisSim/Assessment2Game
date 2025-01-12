@@ -51,9 +51,12 @@ public class ScoreSummaryScreen implements Screen {
     String[] playerName;
     int namePointer;
     GlyphLayout layout;
-
     final ScreenManager game;
+    
     public ScoreSummaryScreen(ScreenManager main, GameModel gameModel) {
+        if (main == null || gameModel == null) {
+            throw new IllegalArgumentException("main or gamemodel is null");
+        }
         this.game = main;
         this.gameModel = gameModel;
     }
@@ -276,9 +279,12 @@ public class ScoreSummaryScreen implements Screen {
 
     @Override
     public void dispose() {
-        background.dispose();
-        save.dispose();
-        exit.dispose();
+        if (batch != null) batch.dispose();
+        if (sr != null) sr.dispose();
+        if (background != null) background.dispose();
+        if (save != null) save.dispose();
+        if (exit != null) exit.dispose();
+        if (music != null) music.dispose();
     }
 }
 
