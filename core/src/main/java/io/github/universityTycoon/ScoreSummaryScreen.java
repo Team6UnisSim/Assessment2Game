@@ -34,14 +34,16 @@ public class ScoreSummaryScreen implements Screen {
     PlayerInputHandler input;
     FitViewport viewport;
 
-    Rectangle startButton;
+    Rectangle continueButton;
+    Rectangle exitButton;
     Vector2 mousePos;
     boolean mouseDown;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
 
     Texture background;
-    Texture start; 
+    Texture save;
+    Texture exit; 
 
     ShapeRenderer sr;
 
@@ -72,11 +74,13 @@ public class ScoreSummaryScreen implements Screen {
         music.setLooping(true);
         music.play(); 
 
-        startButton = new Rectangle();
+        continueButton = new Rectangle();
+        exitButton = new Rectangle();
         mousePos = new Vector2(0,0);
 
         background = new Texture(Gdx.files.internal("images/title_page.png"));
-        start = new Texture(Gdx.files.internal("images/start.png"));
+        save = new Texture(Gdx.files.internal("images/save.png"));
+        exit = new Texture(Gdx.files.internal("images/exit.png"));
 
         sr = new ShapeRenderer();
 
@@ -118,6 +122,12 @@ public class ScoreSummaryScreen implements Screen {
             music.stop();
             changeScreen();
         }
+
+        if (input.getKeyJustPressed(Input.Keys.ESCAPE)) {
+            music.stop();
+            dispose();
+            Gdx.app.exit();
+        }
         
         for (int i = 29; i < 55; i++) {
             if (input.getKeyJustPressed(i)) {
@@ -152,9 +162,15 @@ public class ScoreSummaryScreen implements Screen {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
 
-        if (mouseDown && startButton.contains(touch.x, touch.y)) {
+        if (mouseDown && continueButton.contains(touch.x, touch.y)) {
             music.stop();
             changeScreen();
+        }
+
+        if (mouseDown && exitButton.contains(touch.x, touch.y)) {
+            music.stop();
+            dispose();
+            Gdx.app.exit();
         }
     }
 
@@ -169,7 +185,8 @@ public class ScoreSummaryScreen implements Screen {
 
         ScreenUtils.clear(Color.BLACK);
 
-        startButton.set(3.8f, 0.7f, 4f, 0.55f);
+        exitButton.set(3.8f, 0.7f, 4f, 0.55f);
+        exitButton.set(8.3f, 0.7f, 4f, 0.55f);
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -218,8 +235,8 @@ public class ScoreSummaryScreen implements Screen {
         }
         GameModel.blackFont.getData().setScale(0.002f);
 
-        batch.draw(start, 3.8f, 0.7f, 4, 0.55f);
-        batch.draw(start, 8.3f, 0.7f, 4, 0.55f);
+        batch.draw(save, 3.8f, 0.7f, 4, 0.55f);
+        batch.draw(exit, 8.3f, 0.7f, 4, 0.55f);
 
         batch.end();
     }
@@ -261,7 +278,8 @@ public class ScoreSummaryScreen implements Screen {
     @Override
     public void dispose() {
         background.dispose();
-        start.dispose();
+        save.dispose();
+        exit.dispose();
     }
 }
 

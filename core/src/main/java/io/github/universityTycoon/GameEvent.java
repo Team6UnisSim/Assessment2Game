@@ -1,7 +1,6 @@
 package io.github.universityTycoon;
 
 import io.github.universityTycoon.PlaceableObjects.Event;
-import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -39,7 +38,7 @@ public class GameEvent {
         this.isActive = true; // default is active
         this.description = eventType.getDescription();
         this.rarity = eventType.getRarity();
-        this.iconPath = eventType.getIconPath();
+        this.iconPath = "images/event.jpeg";
         this.mapEvent = new Event(this); // Create the corresponding map Event in the PlaceableObjects package
         dealtWith = false;
     }
@@ -135,12 +134,12 @@ public class GameEvent {
      * Only one 
      * @param gameTime The current in game time.
      */
-    public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, MapObject[][] mapObjects) {
+    public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, GameModel gameModel) {
         // duration the event has been taking place
-        Duration durationOfEvent = Duration.between(eventStartedAt , gameTime);
+        Duration durationOfEvent = Duration.between(eventStartedAt, gameTime);
 
-        if (durationOfEvent.getSeconds() >= 60 && dealtWith){ 
-            mapObjects[eventX][eventY] = null; // remove event
+        if (durationOfEvent.getSeconds() >= 10000000 || dealtWith){ 
+            gameModel.removeEvent(eventX, eventY);; // remove event
             return true;
         }
         return false; // event is still ongoing

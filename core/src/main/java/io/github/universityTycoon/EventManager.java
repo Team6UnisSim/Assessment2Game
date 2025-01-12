@@ -3,6 +3,7 @@ package io.github.universityTycoon;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Random;
+
 import java.util.Map;
 
 
@@ -15,6 +16,7 @@ public class EventManager {
     private float timeSinceLastEvent = 0.0f;
     private float eventInterval = 60; // 60 sec before first event is triggered
     private GameEvent currentActiveEvent; // holds the current event taking place 
+    private GameEvent currentPlannedEvent;
 
     /**
      * Assigns the GameEventListener
@@ -22,6 +24,7 @@ public class EventManager {
      */
     public EventManager(GameEventListener listener) {
         this.listener = listener;
+        currentPlannedEvent = null;
         initialiseEventMap(); 
     }
 
@@ -107,20 +110,24 @@ public class EventManager {
      * the rarity of said event.
      * @param delta time in seconds since the last frame
      */
-    public void processEvents(float delta) {
+    public void processEvents(float delta, LocalDateTime gameTimeGMT) {
         // increment this with every frame delta time
         timeSinceLastEvent += delta;
 
         // when interval reached, pick an event to generate
-        if (timeSinceLastEvent >= eventInterval){
+        if (timeSinceLastEvent >= eventInterval && currentPlannedEvent == null){
              
             GameEvent pickedEvent = pickRandomEvent();
-            currentActiveEvent = pickedEvent; // Label it as current active event
-            timeSinceLastEvent -= eventInterval; // reset
-            eventInterval = generateRandomInterval(); // set this for the event to be generated
+            if (!pickedEvent.getEventType().getPlanned()) {
+                currentActiveEvent = pickedEvent; // Label it as current active event
+                timeSinceLastEvent -= eventInterval; // reset
+                eventInterval = generateRandomInterval(); // set this for the event to be generated
+            } else {
+                currentPlannedEvent = pickedEvent;
+            }
 
             if (pickedEvent != null){
-                pickedEvent.setEventStartedAt(LocalDateTime.now());
+                pickedEvent.setEventStartedAt(gameTimeGMT);
                 listener.raiseEvent(pickedEvent);
             }
 
@@ -129,6 +136,21 @@ public class EventManager {
         }
     }
 
+    public void processPlannedEvent(float delta, LocalDateTime gameTimeGMT, GameEvent pickedEvent) {
+        if (gameTimeGMT.isAfter(pickedEvent.getEventStartedAt().plusDays(110))) {
+            currentActiveEvent = pickedEvent; // Label it as current active event
+            timeSinceLastEvent -= eventInterval; // reset
+            eventInterval = generateRandomInterval(); // set this for the event to be generated
+            currentPlannedEvent = null;
+        }
+
+        // increment this with every frame delta time
+        timeSinceLastEvent += delta;
+    }
+
+    public GameEvent getPlannedEvent() {
+        return currentPlannedEvent;
+    }
 
     /**
      * Generate a random event time interval between 30-60 sec

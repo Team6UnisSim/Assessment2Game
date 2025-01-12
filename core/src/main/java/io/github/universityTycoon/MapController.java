@@ -1,9 +1,7 @@
 package io.github.universityTycoon;
 
-import io.github.universityTycoon.PlaceableObjects.Building;
-import io.github.universityTycoon.PlaceableObjects.MapObject;
-import io.github.universityTycoon.PlaceableObjects.MapObjectPointer;
-import io.github.universityTycoon.PlaceableObjects.Event;
+import io.github.universityTycoon.PlaceableObjects.*;
+
 import java.util.Random;
 
 import java.time.LocalDateTime;
@@ -34,7 +32,26 @@ public class MapController {
         this.tilesHigh = tilesHigh;
         this.mapObjects = new MapObject[tilesWide][tilesHigh];
 
+        addObject(new Road(), 4, 6);
+        addObject(new Road(), 4, 13);
+        addObject(new Water(), 10, 7);
+        addObject(new Water(), 17, 9);
+        addObject(new Tree(), 16, 8);
+        addObject(new Tree(), 16, 6);
+        addObject(new Tree(), 5, 11);
+        addObject(new Tree(), 6, 7);
+        addObject(new Tree(), 5, 2);
+        addObject(new Tree(), 25, 8);
+        addObject(new Tree(), 29, 3);
+        addObject(new Tree(), 22, 11);
+        addObject(new LargeTrees(), 0, 13);
+        addObject(new LargeTrees(), 0, 11);
+        addObject(new LargeTrees(), 6, 1);
+        addObject(new LargeTrees(), 18, 5);
+        addObject(new LargeTrees(), 24, 12);
+        addObject(new LargeTrees(), 27, 7);
     }
+
 
     /**
      * Adds a building to the map, if the attempted location is acceptable. Meaning it doesn't overlap with something else.
@@ -165,11 +182,11 @@ public class MapController {
      * being constructed. Call this to ensure buildings progress from under construction to complete
      * @param gameTime The current in game time.
      */
-    public void updateEvents(LocalDateTime gameTime) {
+    public void updateEvents(LocalDateTime gameTime, GameModel gameModel) {
         for (int x = 0; x < tilesWide; x++) {
             for (int y = 0; y < tilesHigh; y++) {
                 if (mapObjects[x][y] instanceof Event) {
-                    ((Event) mapObjects[x][y]).getGameEvent().updateEvent(gameTime, x, y, mapObjects);
+                    ((Event) mapObjects[x][y]).getGameEvent().updateEvent(gameTime, x, y, gameModel);
                 }
             }
         }

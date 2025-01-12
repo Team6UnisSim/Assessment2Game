@@ -140,12 +140,6 @@ public class MainScreen implements Screen {
 
         handlingEvent = false;
         renderTutorial = false;
-
-        gameModel.mapController.addObject(new Tree(), 3, 4);
-        gameModel.mapController.addObject(new Tree(), 4, 6);
-        gameModel.mapController.addObject(new LargeTrees(), 14, 4);
-        gameModel.mapController.addObject(new Road(), 6, 6);
-        gameModel.mapController.addObject(new Road(), 6, 13);
     }
 
 
@@ -237,7 +231,10 @@ public class MainScreen implements Screen {
 
         // ________ ADDED ________
         // Trigger events through the EventManager
-        gameModel.eventManager.processEvents(delta);
+        gameModel.eventManager.processEvents(delta, gameModel.getGameTimeGMT());
+        if (gameModel.eventManager.getPlannedEvent() != null) {
+            gameModel.eventManager.processPlannedEvent(delta, gameModel.getGameTimeGMT(), gameModel.eventManager.getPlannedEvent());
+        }
         if (gameModel.eventManager.getCurrentActiveEvent() != null) {
             handlingEvent = true;
         } else {
@@ -397,6 +394,13 @@ public class MainScreen implements Screen {
             GameModel.blackFont.draw(batch, "The game only lasts for 5 minutes of real time, so be careful to",  3.2f, 4.5f);
             GameModel.blackFont.draw(batch, "consider the time it takes to construct your buildings!",  3.2f, 4.2f);
             GameModel.blackFont.draw(batch, "To exit the tutorial, press H again.",  3.2f, 3.6f);
+        }
+
+        GameEvent plannedEvent = gameModel.eventManager.getPlannedEvent();
+        if (plannedEvent != null) {
+            GameModel.font.draw(batch, "Warning: a planned event will occur soon!", 2.3f, 6f);
+            GameModel.font.draw(batch, plannedEvent.getDescription(), 2.3f, 5.5f);
+            GameModel.font.draw(batch, "Think through how this would be best dealt with.", 2.3f, 5f);
         }
 
         batch.end();

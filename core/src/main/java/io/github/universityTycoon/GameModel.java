@@ -148,7 +148,7 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
-            mapController.updateEvents(getGameTimeGMT());
+            mapController.updateEvents(getGameTimeGMT(), this);
             satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
             achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
         }

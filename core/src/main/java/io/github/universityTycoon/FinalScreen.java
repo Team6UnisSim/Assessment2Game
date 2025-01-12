@@ -42,7 +42,8 @@ public class FinalScreen implements Screen {
 
     Texture background;
     Texture logo;
-    Texture start; 
+    Texture restart;
+    Texture exit; 
 
     ShapeRenderer sr;
 
@@ -72,7 +73,8 @@ public class FinalScreen implements Screen {
 
         background = new Texture(Gdx.files.internal("images/title_page.png"));
         logo = new Texture(Gdx.files.internal("images/logo.png"));
-        start = new Texture(Gdx.files.internal("images/start.png"));
+        restart = new Texture(Gdx.files.internal("images/restart.png"));
+        exit = new Texture(Gdx.files.internal("images/exit.png"));
 
         sr = new ShapeRenderer();
     }
@@ -175,8 +177,8 @@ public class FinalScreen implements Screen {
         
         batch.draw(logo, 6, 4.5f, 4, 4);
     
-        batch.draw(start, 6.05f, 1, 4, 0.55f);
-        batch.draw(start, 6.05f, 0.4f, 4f, 0.55f);
+        batch.draw(restart, 6.05f, 1, 4, 0.55f);
+        batch.draw(exit, 6.05f, 0.4f, 4f, 0.55f);
 
         GameModel.blackFont.draw(batch, "Leaderboard:", 6, 4);
         for(SavedScore i : game.leaderboard) {
@@ -206,7 +208,8 @@ public class FinalScreen implements Screen {
     public void dispose() {
         background.dispose();
         logo.dispose();
-        start.dispose();
+        restart.dispose();
+        exit.dispose();
     }
 }
 

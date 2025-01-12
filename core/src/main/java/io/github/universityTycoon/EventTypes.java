@@ -8,23 +8,23 @@ package io.github.universityTycoon;
  */
 public enum EventTypes {
     // Negative events:
-    FLOODING(-3, 1, "Flooding has occured in the campus.", "images/tree.png"),
-    HURRICANE(-2, 3, "Bad weather has caused damage to the buildings.", "images/tree.png"),
-    COFFEE_MACHINE_BREAKDOWN(-1, 4, "The coffee machine has broken.", "images/tree.png"),
-    STUDENT_PROTEST(-4, 2, "Students protest about poor conditions on campus.", "images/tree.png"), 
+    FLOODING(1, "Flooding has occured in the campus.", "images/tree.png", false),
+    HURRICANE(3, "Bad weather has caused damage to the buildings.", "images/tree.png", false),
+    COFFEE_MACHINE_BREAKDOWN(4, "The coffee machine has broken.", "images/tree.png", false),
+    STUDENT_PROTEST(2, "Students protest about poor conditions on campus.", "images/tree.png", true), 
     // Positive events:
-    CELEBRITY_GUEST(1, 2, "A celebrity guest will be giving a lecture in campus.", "images/tree.png" ),
-    FOOTBALL_VICTORY(3, 3, "The university football team beat their local rivals.", "images/tree.png"), 
-    ANONYMOUS_GRANT(2, 1, "A large anonymous donation has been made to the university.", "images/tree.png"), 
-    CULTURAL_FAIR(4, 4, "A cultural fair has been organised by the university for the weekend.", "images/tree.png"),
+    CELEBRITY_GUEST(2, "A celebrity guest will be giving a lecture in campus.", "images/tree.png", true),
+    FOOTBALL_VICTORY(3, "The university football team beat their local rivals.", "images/tree.png", false), 
+    ANONYMOUS_GRANT(1, "A large anonymous donation has been made to the university.", "images/tree.png", false), 
+    CULTURAL_FAIR(4, "A cultural fair has been organised by the university for the weekend.", "images/tree.png", true),
     // NeutralEvents:
-    GOOD_WEATHER(0, 4, "A few days of good weather have improved everyone's mood.", "images/tree.png"),
-    GEESE_INVASION(0,2, "A flock of geese have invaded the campus.", "images/tree.png");
+    GOOD_WEATHER(4, "A few days of good weather have improved everyone's mood.", "images/tree.png", false),
+    GEESE_INVASION(2, "A flock of geese have invaded the campus.", "images/tree.png", false);
     
-    private final int effect; // effect the event has on the satisfaction score
     private final String description; // short description of the event
     private final int rarity; // probability of the event occuring -> [1 = rare] -- [4 = common]
     private final String iconPath; // the file path for that event-specific icon to be displayed
+    private boolean planned;
 
 
     /**
@@ -35,7 +35,7 @@ public enum EventTypes {
      * @param rarity chances of the event occuring
      * @param icon the file path for that event-specific icon to be displayed
      */
-    EventTypes(int effect, int rarity, String description, String iconPath){
+    EventTypes(int rarity, String description, String iconPath, boolean planned){
     
         if (rarity < 1 || rarity > 4){
             throw new IllegalArgumentException("Invalid rarity");         
@@ -44,14 +44,10 @@ public enum EventTypes {
             throw new IllegalArgumentException("Invalid icon file path");
         }
 
-        this.effect = effect;
         this.rarity = rarity;
         this.description = description;
         this.iconPath = iconPath;
-    }
-
-    public int getEffect(){
-        return effect;
+        this.planned = planned;
     }
 
     public int getRarity(){
@@ -64,5 +60,9 @@ public enum EventTypes {
 
     public String getIconPath(){
         return iconPath;
+    }
+
+    public boolean getPlanned() {
+        return planned;
     }
 }
