@@ -147,7 +147,6 @@ public class EventManager {
      * E3 picked if randomNumber = 7,8,9,10 (40% chance)
      * E4 picked if randomNumber = 4,5,6 (30% chance)
      * 
-     * @param eventMap map that contains all the events 
      * @return single GameEvent
      */
     public GameEvent pickRandomEvent() {
