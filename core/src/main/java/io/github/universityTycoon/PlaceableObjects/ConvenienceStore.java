@@ -15,7 +15,7 @@ public class ConvenienceStore extends FoodAndDrinkBuilding {
         name = "Convenience Store";
         width = 2;
         height = 2;
-        constructionGameTime = Duration.ofDays(10);
+        constructionGameTime = Duration.ofDays(120);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 100;
         studentRating = 3;

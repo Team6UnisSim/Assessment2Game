@@ -20,7 +20,7 @@ public class CommonRoom extends LeisureBuilding  {
         width = 2;
         height = 2;
         satisfactionBonus = 0;
-        constructionGameTime = Duration.ofDays(45);
+        constructionGameTime = Duration.ofDays(120);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 150;
         studentRating = 4;

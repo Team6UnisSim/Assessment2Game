@@ -15,9 +15,9 @@ public class Library extends TeachingBuilding {
         name = "Library";
         width = 5;
         height = 4;
-        constructionGameTime = Duration.ofDays(60);
+        constructionGameTime = Duration.ofDays(365);
         finishDate = constructionStartedAt.plus(constructionGameTime);
-        buildingCapacity = 400;
-        studentRating = 1;
+        buildingCapacity = 1000;
+        studentRating = 2;
     }
 }

@@ -15,9 +15,9 @@ public class DiningHall extends FoodAndDrinkBuilding {
         name = "Dining Hall";
         width = 4;
         height = 3;
-        constructionGameTime = Duration.ofDays(10);
+        constructionGameTime = Duration.ofDays(200);
         finishDate = constructionStartedAt.plus(constructionGameTime);
-        buildingCapacity = 100;
+        buildingCapacity = 200;
         studentRating = 2;
     }
 }

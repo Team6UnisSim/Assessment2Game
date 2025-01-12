@@ -19,7 +19,7 @@ public class StudentBar extends LeisureBuilding  {
         name = "Student Bar";
         width = 2;
         height = 4;
-        constructionGameTime = Duration.ofDays(45);
+        constructionGameTime = Duration.ofDays(80);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 150;
         studentRating = 5;

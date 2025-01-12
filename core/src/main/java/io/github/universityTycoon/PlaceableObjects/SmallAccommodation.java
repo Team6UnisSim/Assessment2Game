@@ -10,7 +10,7 @@ public class SmallAccommodation extends AccommodationBuilding {
         name = "Small Accommodation";
         width = 2;
         height = 2;
-        constructionGameTime = Duration.ofDays(30);
+        constructionGameTime = Duration.ofDays(60);
         buildingCapacity = 300;
         finishDate = constructionStartedAt.plus(constructionGameTime);
         studentRating = 4;

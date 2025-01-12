@@ -15,9 +15,9 @@ public class Cafe extends FoodAndDrinkBuilding {
         name = "Cafe";
         width = 1;
         height = 1;
-        constructionGameTime = Duration.ofDays(10);
+        constructionGameTime = Duration.ofDays(60);
         finishDate = constructionStartedAt.plus(constructionGameTime);
-        buildingCapacity = 100;
+        buildingCapacity = 30;
         studentRating = 4;
     }
 }

@@ -10,7 +10,7 @@ public class MediumAccommodation extends AccommodationBuilding {
         name = "Medium Accommodation";
         width = 3;
         height = 3;
-        constructionGameTime = Duration.ofDays(50);
+        constructionGameTime = Duration.ofDays(200);
         buildingCapacity = 500;
         finishDate = constructionStartedAt.plus(constructionGameTime);
         studentRating = 4;

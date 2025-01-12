@@ -10,7 +10,7 @@ public class LargeAccommodation extends AccommodationBuilding {
         name = "Large Accommodation";
         width = 4;
         height = 4;
-        constructionGameTime = Duration.ofDays(80);
+        constructionGameTime = Duration.ofDays(365);
         buildingCapacity = 1000;
         finishDate = constructionStartedAt.plus(constructionGameTime);
         studentRating = 3;

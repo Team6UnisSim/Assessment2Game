@@ -19,7 +19,7 @@ public class BasketballCourt extends LeisureBuilding  {
         name = "Basketball Court";
         width = 3;
         height = 2;
-        constructionGameTime = Duration.ofDays(60);
+        constructionGameTime = Duration.ofDays(100);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 30;
         studentRating = 3;

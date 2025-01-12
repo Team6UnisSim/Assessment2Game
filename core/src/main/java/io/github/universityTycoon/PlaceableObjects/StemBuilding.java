@@ -15,7 +15,7 @@ public class StemBuilding extends TeachingBuilding {
         name = "STEM Building";
         width = 2;
         height = 2;
-        constructionGameTime = Duration.ofDays(60);
+        constructionGameTime = Duration.ofDays(180);
         finishDate = constructionStartedAt.plus(constructionGameTime);
         buildingCapacity = 400;
         studentRating = 2;
