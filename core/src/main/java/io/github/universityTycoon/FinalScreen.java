@@ -53,30 +53,48 @@ public class FinalScreen implements Screen {
     }
 
 
-    /**
+     /**
      * Show is responsible for setting all variables.
      * It is effectively the constructor.
+     * Testing was done here to ensure efficiency
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        viewport = new FitViewport(16, 9);
-        input = new PlayerInputHandler();
+        try {
+            batch = new SpriteBatch();
+            viewport = new FitViewport(16, 9);
+            input = new PlayerInputHandler();
 
-        music.setVolume(0.3f);
-        music.setLooping(true);
-        music.play();
+            music.setVolume(0.3f);
+            music.setLooping(true);
+            music.play();
 
-        playAgainButton = new Rectangle();
-        exitButton = new Rectangle();
-        mousePos = new Vector2(0,0);
+            playAgainButton = new Rectangle();
+            exitButton = new Rectangle();
+            mousePos = new Vector2(0, 0);
 
-        background = new Texture(Gdx.files.internal("images/title_page.png"));
-        logo = new Texture(Gdx.files.internal("images/logo.png"));
-        restart = new Texture(Gdx.files.internal("images/restart.png"));
-        exit = new Texture(Gdx.files.internal("images/exit.png"));
+            try {
+                background = new Texture(Gdx.files.internal("images/title_page.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load background texture", e);
+            }
 
-        sr = new ShapeRenderer();
+            try {
+                logo = new Texture(Gdx.files.internal("images/logo.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load logo texture", e);
+            }
+
+            try {
+                start = new Texture(Gdx.files.internal("images/start.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load start texture", e);
+            }
+
+            sr = new ShapeRenderer();
+        } catch (Exception e) {
+            Gdx.app.error("Show Method", "Failed to initialize resources", e);
+        }
     }
 
     /**
