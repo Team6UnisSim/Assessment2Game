@@ -3,6 +3,11 @@ package io.github.universityTycoon.PlaceableObjects;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+
+/**
+ * ADDED IN ASSESSMENT 2
+ * Library extends the TeachingBuilding class, and is one of the placeable building types.
+ */
 public class Library extends TeachingBuilding {
 
     /**

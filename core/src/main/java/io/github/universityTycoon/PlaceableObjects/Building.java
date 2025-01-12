@@ -8,32 +8,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
+ * CHANGED IN ASSESSMENT 2 - all static variables made instance variables, height/width and student rating added, size removed.
  * Building extends the abstract class MapObject, and is the superclass of all other building types.
  *
  * @param constructionGameTime The duration it will take for the building to be built.
  * @param finishDate The in game date the building will finish being built.
  * @param isUnderConstruction A property that states whether the building is under construction.
+ * @param buildingCapacity How many people can live in a building / how many people it can hold.
+ * @param studentRating How much students like the building - used to calculate building satisfaction scores.
  */
 public class Building extends MapObject {
 
-    public Duration constructionGameTime;
+    public Duration constructionGameTime; // CHANGED IN ASSESSMENT 2 - changed from a static value.
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
+    public float satisfactionBonus; // CHANGED IN ASSESSMENT 2 - changed from a static value.
+    public float buildingCapacity; // CHANGED IN ASSESSMENT 2 - changed from a static value.
+    public int studentRating; // ADDED IN ASSESSMENT 2
 
-    // All of these building statistics (such as buildingCapacity), and those for its subclasses are currently static,
-    // as we are not currently making subclasses of accommodation buildings for example, when that is the case,
-    // those classes will have their own values, and at that point, these statistics should be made no longer static.
-    public float satisfactionBonus;
-
-    // This is multipurpose, it's how many people can live in an accommodation building, how many can eat in the cafeteria
-    // at any given time, how many can leisure? in a leisure building, and how many can be taught at once in a teaching building.
-    // These should affect the satisfaction later on, meaning if 2000 students attend the university, the other buildings
-    // should have a capacity that is high enough to accommodate for that, or the satisfaction score reduces.
-    public float buildingCapacity;
-
-    LocalDateTime constructionStartedAt; // IN-GAME TIME
-
-    int studentRating;
+    LocalDateTime constructionStartedAt; // In-game time.
 
     /**
      * Constructor with the following parameters.
@@ -58,7 +51,7 @@ public class Building extends MapObject {
         this.constructionStartedAt = constructionStartedAt;
         this.constructionGameTime = constructionGameTime;
         this.texturePath = texturePath;
-        finishDate = constructionStartedAt.plus(constructionGameTime);
+        finishDate = constructionStartedAt.plus(constructionGameTime); // CHANGED IN ASSESSMENT 2 - moved from individual building types.
         satisfactionBonus = 0;
     }
 
@@ -79,6 +72,7 @@ public class Building extends MapObject {
     }
 
     /**
+     * CHANGED IN ASSESSMENT 2 - changed from a static method.
      * Retrieves the satisfaction bonus provided by this building.
      *
      * @return The bonus.
@@ -88,6 +82,7 @@ public class Building extends MapObject {
     }
 
     /**
+     * CHANGED IN ASSESSMENT 2 - changed from a static method.
      * Retrieves the capacity of the building.
      *
      * @return The capacity.
@@ -97,6 +92,7 @@ public class Building extends MapObject {
     }
 
     /**
+     * // CHANGED IN ASSESSMENT 2 - changed from a static method.
      * Retrieves the time taken to construct the building.
      *
      * @return The time taken to construct the building.
@@ -115,15 +111,27 @@ public class Building extends MapObject {
         return isStackable;
     }
 
+    /**
+     * CHANGED IN ASSESSMENT 2 - not implemented in Assessment 1.
+     * Calculates the satisfaction score for this instance of Building based on the nearby instances of MapObjects,
+     * by adding them to an array, iterating through and checking if their cumulative scores (capacity multiplied by rating)
+     * meet a minimum score based on the capacity of this instance.
+     * 
+     * @param ownX the X coordinate of this instance of Building.
+     * @param ownY the Y coordinate of this instance of Building.
+     * @param mapObjects the array of MapObject that represents the game's map.
+     * @return the satisfaction score (as a percentage) for this instance.
+     */
     public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
-        ArrayList<MapObject> nearbyObjects = new ArrayList<>();
+
+        ArrayList<MapObject> nearbyObjects = new ArrayList<>(); // all nearby objects are added to this.
         float satisfaction = 0;
 
         // Checks for nearby objects up and right - needed splitting to avoid going out of bounds.
         for (int i = ownX; i < ownX + width + 6 && i < mapObjects.length; i++) {
             for (int j = ownY; j < ownY + height + 6 && j < mapObjects[i].length; j++) {
                 if(mapObjects[i][j] != null && mapObjects[i][j] != this) {
-                    if (mapObjects[i][j] instanceof MapObjectPointer pointer) {
+                    if (mapObjects[i][j] instanceof MapObjectPointer pointer) { // checks for buildings out of bounds with pointers nearby
                         if(!nearbyObjects.contains(pointer.original) && pointer.original != this) {
                             nearbyObjects.add(pointer.original);
                         }
@@ -153,8 +161,9 @@ public class Building extends MapObject {
             }
         }
 
-        float minimumNearbyScore = 6 * buildingCapacity;
+        float minimumNearbyScore = 9 * buildingCapacity; // since there are 3 building types (assumes average student rating of 3).
         float nearbyScore = 0f;
+        // Iterates through and finds the combined score of all nearby buildings.
         for(MapObject i : nearbyObjects) {
             if (i instanceof Building building) {
                 if(!building.isUnderConstruction) {
@@ -163,16 +172,18 @@ public class Building extends MapObject {
                     satisfaction -= 10;
                 }
             } else {
-                satisfaction += i.getSatisfactionBonus();
+                satisfaction += i.getSatisfactionBonus(); // Adds the bonus for nearby non-buildings (e.g. Terrain).
             }
         }
 
+        // Updates satisfaction with how close the nearby score is to the minimum.
         if(nearbyScore >= minimumNearbyScore) {
             satisfaction += 100;
         } else {
             satisfaction += 100 * (nearbyScore / minimumNearbyScore);
         }
 
+        // Always returns a valid percentage.
         if(satisfaction > 100) {
             return 100f;
         } else {
@@ -202,6 +213,7 @@ public class Building extends MapObject {
     }
 
     /**
+     * ADDED IN ASSESSMENT 2
      * Gets the width of the building.
      * @return The width of the building
      */
@@ -210,6 +222,7 @@ public class Building extends MapObject {
     }
 
     /**
+     * ADDED IN ASSESSMENT 2
      * Gets the height of the building.
      * @return The height of the building
      */
@@ -217,18 +230,23 @@ public class Building extends MapObject {
         return height;
     }
 
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Gets the student rating of the building.
+     * @return The student rating of the building
+     */
     public int getStudentRating() {
         return studentRating;
     }
 
 
     /**
+     * CHANGED IN ASSESSMENT 2 - more building types added.
      * Creates and returns a new instance of a specific building type based on the provided enum type.
      * The type of building returned corresponds to the 'BuildingTypes' enum value.
      *
      * @param type The type of building to create, specified as a 'BuildingTypes' enum value.
      * @param time The time the building will be constructed at.
-     * @param <T> A generic type parameter that extends the 'Building' class, representing the type of building to create.
      *
      * @return A new instance of the specified building type, constructed at the specified time.
      */

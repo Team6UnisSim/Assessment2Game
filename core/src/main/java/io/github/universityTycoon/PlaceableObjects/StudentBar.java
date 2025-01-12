@@ -4,8 +4,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * LeisureBuilding extends the Building class, and will be the superclass to different types of leisure building.
- *
+ * ADDED IN ASSESSMENT 2
+ * StudentBar extends the LeisureBuilding class, and is one of the placeable building types.
  */
 public class StudentBar extends LeisureBuilding  {
 

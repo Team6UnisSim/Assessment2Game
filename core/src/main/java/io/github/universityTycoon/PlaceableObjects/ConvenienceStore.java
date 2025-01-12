@@ -3,6 +3,10 @@ package io.github.universityTycoon.PlaceableObjects;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * ADDED IN ASSESSMENT 2
+ * ConvenienceStore extends the FoodAndDrinkBuilding class, and is one of the placeable building types.
+ */
 public class ConvenienceStore extends FoodAndDrinkBuilding {
 
     /**

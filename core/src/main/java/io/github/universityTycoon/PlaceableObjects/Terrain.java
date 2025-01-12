@@ -5,13 +5,12 @@ import io.github.universityTycoon.TerrainTypes;
 import java.time.LocalDateTime;
 
 /**
- * Terrain extends the abstract class MapObject, and is the superclass of all other building types.
+ * ADDED IN ASSESSMENT 2
+ * Terrain extends the abstract class MapObject, and is the superclass of all other terrain types.
+ * @param satisfactionBonus the bonus added to the scores of nearby instances of Building. 
  */
 public class Terrain extends MapObject {
 
-    // All of these building statistics (such as buildingCapacity), and those for its subclasses are currently static,
-    // as we are not currently making subclasses of accommodation buildings for example, when that is the case,
-    // those classes will have their own values, and at that point, these statistics should be made no longer static.
     public float satisfactionBonus;
 
     /**
@@ -24,7 +23,7 @@ public class Terrain extends MapObject {
     }
 
     /**
-     * Retrieves the building name.
+     * Retrieves the terrain name.
      * @return The name.
      */
     public String getName() {
@@ -54,34 +53,37 @@ public class Terrain extends MapObject {
     }
 
     /**
-     * Gets the width of the building.
-     * @return The width of the building
+     * Gets the width of the terrain.
+     * @return The width of the terrain
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Gets the height of the building.
-     * @return The height of the building
+     * Gets the height of the terrain.
+     * @return The height of the terrain
      */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gets the satisfaction bonus of the terrain.
+     * @return the satisfaction bonus of the terrain.
+     */
     public float getSatisfactionBonus() {
         return satisfactionBonus;
     }
 
     /**
-     * Creates and returns a new instance of a specific building type based on the provided enum type.
-     * The type of building returned corresponds to the `BuildingTypes` enum value.
+     * Creates and returns a new instance of a specific terrain type based on the provided enum type.
+     * The type of terrain returned corresponds to the TerrainTypes enum value.
      *
-     * @param type The type of building to create, specified as a `BuildingTypes` enum value.
-     * @param time The time the building will be constructed at.
-     * @param <T> A generic type parameter that extends the `Building` class, representing the type of building to create.
+     * @param type The type of terrain to create, specified as a TerrainTypes enum value.
+     * @param time The time the terrain will be constructed at.
      *
-     * @return A new instance of the specified building type, constructed at the specified time.
+     * @return A new instance of the specified terrain type, constructed at the specified time.
      */
     public static Terrain getObjectFromEnum(TerrainTypes type, LocalDateTime time) {
         return switch (type) {

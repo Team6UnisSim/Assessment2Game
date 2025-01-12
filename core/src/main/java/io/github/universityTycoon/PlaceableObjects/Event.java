@@ -5,8 +5,10 @@ package io.github.universityTycoon.PlaceableObjects;
 import io.github.universityTycoon.GameEvent;
 
 /**
- * Represents events as placeable objects on the map. 
- * Doesn't deal with their logic.
+ * ADDED IN ASSESSMENT 2
+ * Represents events as placeable objects on the map (extending MapObject), but doesn't deal with their logic.
+ * 
+ * @param gameEvent the instance of GameEvent being represented on the map.
  */
 public class Event extends MapObject {
 
@@ -14,8 +16,9 @@ public class Event extends MapObject {
 
 
     /**
-     * Constructor for Event class
-     * @param gameEvent 
+     * Constructor taking the following parameters.
+     * 
+     * @param gameEvent the instance of GameEvent being represented on the map.
      */
     public Event(GameEvent gameEvent) {
         if (gameEvent == null) {
@@ -24,19 +27,30 @@ public class Event extends MapObject {
         this.gameEvent = gameEvent;
     }
 
-    // public void update(LocalDateTime currentGameTime){
-    // }
-
+    /**
+     * Returns the GameEvent associated with this instance of Event.
+     * 
+     * @return an instance of GameEvent.
+     */
     public GameEvent getGameEvent(){
         return gameEvent;
     }
 
+    /**
+     * Returns the name of the GameEvent associated with this instance of Event.
+     * 
+     * @return the name for the given event type.
+     */
     @Override
     public String getName(){
         return gameEvent.getEventType().name();
     }
 
-
+    /**
+     * Returns the texture path of the GameEvent associated with this instance of Event.
+     * 
+     * @return the texture path for the given event type.
+     */
     @Override
     public String getTexturePath(){
         return gameEvent.getIconPath();
@@ -45,12 +59,12 @@ public class Event extends MapObject {
 
     @Override
     public boolean getIsStackable(){
-        return false; // eventnts are not stackable
+        return false; // events are not stackable
     }
 
     // As a percentage (not implemented)
     public float calculateSatisfaction(int ownX, int ownY, MapObject[][] mapObjects) {
-        return 1f;
+        return 0f;
     }
 
     /**
