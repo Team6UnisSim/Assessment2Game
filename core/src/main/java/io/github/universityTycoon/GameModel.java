@@ -87,10 +87,8 @@ public class GameModel {
 
     // ---> ADDED <---
     // Links the eventType with their handlerType so the appropriate handler can be retrieved
-    private Map<EventTypes, GameEventHandler> handlers = new HashMap<>();   
-    // added
-    int[] currentEventTile;
-
+    private Map<EventTypes, GameEventHandler> handlers;     
+    HashMap<GameEvent, Float> handledEvents;
 
     /**
      * Enum representing the possible states of the game.
@@ -108,7 +106,7 @@ public class GameModel {
     public GameModel() {
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern"
-        eventManager = new EventManager(this, eventListener);
+        eventManager = new EventManager(eventListener, this); // ######## ADDED FOR YEAR REPOR ########
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
@@ -137,6 +135,9 @@ public class GameModel {
 
         blackFont.setUseIntegerPositions(false);
         blackFont.getData().setScale(0.002f, 0.002f);
+
+        handlers =  new HashMap<>();
+        handledEvents = new HashMap<>();
     }
 
     /**
@@ -147,6 +148,7 @@ public class GameModel {
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
             mapController.updateBuildings(getGameTimeGMT());
+            mapController.updateEvents(getGameTimeGMT());
             satisfactionScore = scoreCalculator.calculateScore(mapController.mapObjects);
             achievementManager.checkContinuousAchievements(satisfactionScore, timeRemainingSeconds);
         }
@@ -162,32 +164,17 @@ public class GameModel {
 
 
     /**
-     * Removes Event objects from MapObjects
-     * Once responses are displayed, event icns should stop being drawn.
+     * Remove event from the MapObject grid
      * 
-     * @param currentEventTile current event's tile coordinates -> remove it from map
+     * @param x x coordinate in MapObjedt of event to remove
+     * @param y y coordinate in MapObjedt of event to remove
      */
-    public void removeEventFromMapObjects(int[] currentEventTile){
-        if (currentEventTile == null || currentEventTile.length != 2){
-            throw new NullPointerException("Invalid event tile coordinates");
-        }   
-        int x = currentEventTile[0];
-        int y = currentEventTile[1];
+    public void removeEvent(int x, int y){
         MapObject[][] mapObjects = getMapObjects();
         if (mapObjects[x][y] instanceof Event){
-            mapObjects[x][y] = null; // remove the event
-        }
+            mapObjects[x][y] = null;
+        };
     }
-
-
-    /**
-     * Retrieves the current event tile
-     * @return the current event tile
-     */
-    public int[] getCurrentEventTile(){
-        return currentEventTile;
-    }
-
 
     /**
      * Calculates the elapsed game time since the start.
@@ -338,6 +325,13 @@ public class GameModel {
         return mapController;
     }
 
+    public Map<EventTypes, GameEventHandler> getHandlers() {
+        return handlers;
+    }
+
+    public HashMap<GameEvent, Float> getHandledEvents() {
+        return handledEvents;
+    }
 
     // ---> IMPLEMENTED <---
     /**
@@ -359,10 +353,8 @@ public class GameModel {
             throw new IllegalStateException("Handler for event type: " + eventType + "not found.");
         }
 
-        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler 
-        // currentEventTile holds the chosen event's tile for later removal  
-        currentEventTile = handler.handle(event);  
-        
+        // If eventType is flooding, flooding handler is created corresponding class methods are called  - for now it gores to AbstractGameHandler   
+        handler.handle(event);  
     }
 
 
@@ -391,36 +383,6 @@ public class GameModel {
             case GEESE_INVASION -> new GeeseInvasionHandler(this);
             default -> null;
         };
-    }
-
-
-
-    /**
-     * Returns the responses as a String which will be displayed at the MainScreen
-     * @param event to retrieve its possible responses for
-     * @return String description of the event's responses 
-     */
-    public String displayResponse(GameEvent event){
-        EventTypes eventType = event.getEventType(); // retrieve the GameEvent obects's eventType
-        GameEventHandler handler = handlers.get(eventType); // retrieve corresponding handler type
-
-        if (handler == null){
-            throw new IllegalStateException("no corresponding handler found for " + eventType);
-        }
-
-        // initialise response message and append relevant info
-        StringBuilder responseMessage = new StringBuilder();
-        responseMessage.append("Event: ").append(eventType.getDescription() + "\n");
-        responseMessage.append("Choose one of the following responses: \n");
-
-        // retrieve responses for  that event
-        Map<Integer, Response> responses = handler.getAllResponses();
-        for (Map.Entry<Integer, Response> entry : responses.entrySet()){
-            int responseID = entry.getKey();
-            Response response = entry.getValue();
-            responseMessage.append(responseID + ": ").append(response.getDescription() + "\n");
-        }
-        return responseMessage.toString();
     }
 
 

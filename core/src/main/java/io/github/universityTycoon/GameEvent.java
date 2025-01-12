@@ -1,9 +1,10 @@
 package io.github.universityTycoon;
 
 import io.github.universityTycoon.PlaceableObjects.Event;
+import io.github.universityTycoon.PlaceableObjects.MapObject;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 /**
  * Represents a specific instance of a event currently taking place.
@@ -17,12 +18,12 @@ public class GameEvent {
     private String description;
     private float rarity; // 1(rare) - 5 (common)
     private String iconPath; // E.g. "assets/icons/goose_event.png"
-    private ArrayList<GameModifiers> modifiers; // The effects the event (e.g. flooding) applies (e.g. -3 score)
     private Event mapEvent; // Corresponding MapObject for placement of the event icon -> used in EventHandler
     private boolean isActive; // True/false if active/inactive
     private LocalDateTime eventStartedAt;
-    private float responseEffect; // the effect on the score the picked event response caused - tjis will be applied to the total score
+    private float responseEffect; // the effect on the score the picked event response caused - this will be applied to the total score
     private String responseDescription; 
+    private boolean dealtWith;
 
 
     /**
@@ -39,8 +40,8 @@ public class GameEvent {
         this.description = eventType.getDescription();
         this.rarity = eventType.getRarity();
         this.iconPath = eventType.getIconPath();
-        this.modifiers = new ArrayList<>();
         this.mapEvent = new Event(this); // Create the corresponding map Event in the PlaceableObjects package
+        dealtWith = false;
     }
 
 
@@ -78,24 +79,11 @@ public class GameEvent {
     public String getIconPath(){
         return iconPath;
     }
-
-
-    /**
-     * Retrieve the list of existing modifiers
-     */
-    public ArrayList<GameModifiers> getModifiers(){
-        return modifiers;
-    }
-
     
     public Event getMapEvent(){
         return mapEvent;
     }
 
-
-    public LocalDateTime getEventStartedAt(){
-        return eventStartedAt;
-    }
 
     public void setEventStartedAt(LocalDateTime eventStartedAt) {
         this.eventStartedAt = eventStartedAt;
@@ -131,16 +119,8 @@ public class GameEvent {
     }
 
 
+
     // public boolean isResolved(){
     //     return isResolved(this); // send to handler
     // }
-
-
-    /** MODIFIERS ARENT USED
-     * Add a modifier to the list of modifiers (things that modify the score)
-     * @param modifier
-     */
-    public void addModifier(GameModifiers modifier){
-        modifiers.add(modifier);
-    }
 }

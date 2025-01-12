@@ -1,25 +1,23 @@
 package io.github.universityTycoon.Events;
 
-import io.github.universityTycoon.*;
+import java.util.HashMap;
 import java.util.Map;
 
+import io.github.universityTycoon.*;
+
 public class FloodingHandler extends GameEventHandler {  
-    
+    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
+    private Map<Integer, Response> eventResponses = new HashMap<>();   
+
     public FloodingHandler(GameModel gameModel) {
         super(gameModel);
         initialiseEventResponses();
     }
 
-
-    /**
-     * Initialises the response pool for this event
-     */
-    @Override
     public void initialiseEventResponses(){
-        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(0,"Temporarily relocate affected classes to other parts of the campus."));
         eventResponses.put(2, new Response(-5, "Focus on immediate repair of only the most damaged buildings."));
-        eventResponses.put(3, new Response(-20, "Commit to a long-term plan to repair all flood-affected areas so this doesn't happen again. This may delay immediate repairs."));
+        eventResponses.put(3, new Response(-12, "Commit to a long-term plan to repair all flood-affected areas, delaying immediate repairs."));
     }
 
     /**

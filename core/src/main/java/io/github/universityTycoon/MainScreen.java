@@ -1,6 +1,7 @@
 package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import io.github.universityTycoon.Events.GameEventHandler;
 import io.github.universityTycoon.PlaceableObjects.*;
 
 import java.time.format.DateTimeFormatter;
@@ -79,6 +82,8 @@ public class MainScreen implements Screen {
     boolean mouseDown;
     boolean placeMode;
     PlayerInputHandler playerInputHandler;
+    boolean handlingEvent;
+    boolean renderTutorial;
 
     String time;
     String dateTimeString;
@@ -86,11 +91,6 @@ public class MainScreen implements Screen {
     // ________ ADDED ________
     // added this to pass to EventManager.processEvents() from MainScreen.render()
     float delta;
-    // added too
-    private String currentEventDetails = null; // Holds the current event's details and responses
-    // added too
-    private boolean isEventMessageActive = false;
-
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
@@ -138,11 +138,14 @@ public class MainScreen implements Screen {
         music.setLooping(true);
         music.play(); 
 
+        handlingEvent = false;
+        renderTutorial = false;
+
         gameModel.mapController.addObject(new Tree(), 3, 4);
         gameModel.mapController.addObject(new Tree(), 4, 6);
         gameModel.mapController.addObject(new LargeTrees(), 14, 4);
-        gameModel.mapController.addObject(new Road(), 5, 6);
-        gameModel.mapController.addObject(new Road(), 5, 13);
+        gameModel.mapController.addObject(new Road(), 6, 6);
+        gameModel.mapController.addObject(new Road(), 6, 13);
     }
 
 
@@ -187,20 +190,40 @@ public class MainScreen implements Screen {
             }  // Toggle the pause state
         }
 
-        // _____ ADDED ______
-        // check if player has interacted with event message display
-        if (isEventMessageActive && playerInputHandler.getIsMouseDown()){
-            isEventMessageActive = false; // hide event response message 
-            currentEventDetails = null; // clear the even details for the next event message that will occur
-            resume();
-        }
-
         if (playerInputHandler.getIsMouseDown()) {
             mousePos = playerInputHandler.getMousePos();
             mouseDown = true;
         }
         else {
             mouseDown = false;
+        }
+
+        if (playerInputHandler.getKeyJustPressed(Input.Keys.H) || handlingEvent == true) {
+            if (!renderTutorial && handlingEvent == false) {
+                renderTutorial = true;
+            } else {
+                renderTutorial = false;
+            }
+        }
+
+        if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_1) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(1).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(1).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
+        } else if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_2) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(2).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(2).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
+        } else if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_3) && handlingEvent == true) {
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
+            gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(3).getEffect());
+            gameModel.eventManager.getCurrentActiveEvent().setEventDealtWith(true);
+            gameModel.handledEvents.put(gameModel.eventManager.getCurrentActiveEvent(), currentEventHandler.getResponse(3).getEffect());
+            gameModel.eventManager.clearActiveCurrentEvent();
         }
     }
 
@@ -213,14 +236,16 @@ public class MainScreen implements Screen {
         viewport.getCamera().unproject(touch);
 
         // ________ ADDED ________
-        // Trigger events through the EventManager and retrieve the event details 
-        String eventDetails = gameModel.eventManager.processEvents(delta);
-        if (eventDetails != null){
-            displayEventDetails(eventDetails);
+        // Trigger events through the EventManager
+        gameModel.eventManager.processEvents(delta);
+        if (gameModel.eventManager.getCurrentActiveEvent() != null) {
+            handlingEvent = true;
+        } else {
+            handlingEvent = false;
         }
 
         // Checks to see if the building icon has been clicked
-        if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
+        if (mouseDown && buildingIcon.contains(touch.x, touch.y) && handlingEvent == false && renderTutorial == false) {
             placeMode = true;
         }
         // Places the building when the user has stopped dragging the mouse in place mode (ABOVE the Menu Bar)
@@ -228,7 +253,7 @@ public class MainScreen implements Screen {
             placeBuilding();
         }
         // Cancels place mode if the user lets go of the mouse in the Menu Bar
-        else if (!mouseDown && placeMode) {
+        else if (!mouseDown && placeMode || handlingEvent == true && placeMode || renderTutorial == true && placeMode) {
             placeMode = false;
         }
 
@@ -261,6 +286,19 @@ public class MainScreen implements Screen {
             game.switchToScoreSummaryScreen();
         }
     }
+
+
+
+    
+
+    // ++++++++++++++++++++++++++++++++++ ADDED FOR YEAR REPORT ++++++++++++++++++++++++++++++++++
+    public static void displayAnnualReport(float startingScore, float endingScore, int buildingsConstructed, int eventsHandled){
+        // implment   
+    }
+     // ++++++++++++++++++++++++++++++++++ ADDED FOR YEAR REPORT ++++++++++++++++++++++++++++++++++
+
+
+
 
     /**
      * Draws all textures on the screen.
@@ -300,27 +338,7 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Food & Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-        batch.end();
-
-        // ________ ADDED ________
-        
-        if (isEventMessageActive && currentEventDetails != null){
-        // Draw transparent rectangle as a background for message
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.7f); // 70% opacity
-        float x = 2f; // <<<< ADJUST  
-        float y = 6f; // <<<< ADJUST 
-        float width = 12f; // <<<< ADJUST 
-        float height = 2f; // <<<< ADJUST 
-        shapeRenderer.rect(x, y - height, width, height);
-        shapeRenderer.end();
-
-        // draw event message on top of rectangle
-        batch.begin();
-        GameModel.font.draw(batch, currentEventDetails, x, y);
-        batch.end();
-        }
-
+        GameModel.smallerFont.draw(batch, "Press H for help!", 13.15f, 7.9f);
 
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
@@ -328,6 +346,17 @@ public class MainScreen implements Screen {
 
         // Draws all the textures for the building menu (bottom portion of the screen)
         drawBuildingMenu();
+
+        GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
+        if (currentActiveEvent != null || renderTutorial == true) {
+            sr.setProjectionMatrix(viewport.getCamera().combined);
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+
+            sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
+            sr.rect(3f, 2.8f, 10.4f, 5f);
+            
+            sr.end();
+        }
 
         // This text goes over the building menu, so must be drawn after.
         // This also therefore needs a new batch begin and end statement.
@@ -355,6 +384,33 @@ public class MainScreen implements Screen {
             batch.draw(mapObjTextures.get(buildingToAdd.getTexturePath()), screenPos.x, screenPos.y, tileSizeOnScreen * buildingToAdd.getWidth(), tileSizeOnScreen * buildingToAdd.getHeight());
         }
 
+        if (currentActiveEvent != null) {
+            String eventDescription = currentActiveEvent.getDescription();
+            GameModel.blackFont.draw(batch, "An event has occurred!",  3.2f, 7.6f);
+            GameModel.blackFont.draw(batch, eventDescription,  3.2f, 7f);
+            GameModel.blackFont.draw(batch, "Press 1, 2 or 3 to choose what to do",  3.2f, 6f);
+
+            GameEventHandler currentEventHandler = gameModel.getHandlers().get(currentActiveEvent.getEventType());
+            GameModel.blackFont.getData().setScale(0.0015f);
+            for(int i = 0; i < 3; i++) {
+                GameModel.blackFont.draw(batch, Integer.toString(i + 1) + ": " + currentEventHandler.getResponse(Integer.valueOf(i + 1)).getDescription(),  3.2f, 5.4f - (0.4f * i));
+            }
+            GameModel.blackFont.getData().setScale(0.002f);
+        }
+
+        if (renderTutorial) {
+            GameModel.blackFont.draw(batch, "Welcome to University Tycoon!",  3.2f, 7.6f);
+            GameModel.blackFont.draw(batch, "The aim of the game is maximising your student satisfaction score.",  3.2f, 7f);
+            GameModel.blackFont.draw(batch, "You can do this by strategically placing buildings,",  3.2f, 6.6f);
+            GameModel.blackFont.draw(batch, "and dealing with different events that occur during the game.",  3.2f, 6.3f);
+            GameModel.blackFont.draw(batch, "To place a building, just drag the icon from the bottom of the screen",  3.2f, 5.9f);
+            GameModel.blackFont.draw(batch, "or click on the arrow icons to swap between building types.",  3.2f, 5.6f);
+            GameModel.blackFont.draw(batch, "When events occur, you can select between 3 courses of action,",  3.2f, 5.2f);
+            GameModel.blackFont.draw(batch, "but make sure to choose wisely.",  3.2f, 4.9f);
+            GameModel.blackFont.draw(batch, "The game only lasts for 5 minutes of real time, so be careful to",  3.2f, 4.5f);
+            GameModel.blackFont.draw(batch, "consider the time it takes to construct your buildings!",  3.2f, 4.2f);
+            GameModel.blackFont.draw(batch, "To exit the tutorial, press H again.",  3.2f, 3.6f);
+        }
 
         batch.end();
 
@@ -495,26 +551,9 @@ public class MainScreen implements Screen {
         batch.end();
     }
 
-
-    /**
-     * This is called from the EventManager.displayResponses
-     * Sets the currentEventDetails message which will be accessed elsewere band drawn to the screen  
-     * @param eventDetails
-     */
-    public void displayEventDetails(String eventDetails) {
-        currentEventDetails = eventDetails;
-        isEventMessageActive = true;
-        pauseGameKeepMusic(); 
-    }
-
-
-    /**
-     * Restarts the game
-     */
     public void restartGame() {
         gameModel = new GameModel();
     }
-
 
     /**
      * Pauses the game.
@@ -525,15 +564,6 @@ public class MainScreen implements Screen {
         music.pause();
     }
 
-
-    /**
-     * Pauses the game NOT music
-     */
-    public void pauseGameKeepMusic(){
-        gameModel.isPaused = true;
-    }
-
-    
     /**
      * Resumes the game
      */

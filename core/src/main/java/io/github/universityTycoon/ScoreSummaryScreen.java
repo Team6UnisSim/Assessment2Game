@@ -80,7 +80,7 @@ public class ScoreSummaryScreen implements Screen {
 
         sr = new ShapeRenderer();
 
-        gameModel.achievementManager.checkGameEndAchievements(gameModel.getSatisfactionScore(), gameModel.getMapObjects());
+        gameModel.achievementManager.checkGameEndAchievements(gameModel.getSatisfactionScore(), gameModel.getMapObjects(), gameModel.getHandledEvents());
     
         playerName = new String[6];
         namePointer = 0;
@@ -194,7 +194,7 @@ public class ScoreSummaryScreen implements Screen {
         sr.end();
         batch.begin();  
     
-        GameModel.blackFont.draw(batch, "Final Student Satisfaction: " + Float.toString(gameModel.achievementManager.calculateNewSatisfactionScore(gameModel.getSatisfactionScore())) + "%", 2.6f, 8.4f);
+        GameModel.blackFont.draw(batch, "Final Student Satisfaction: " + String.format("%.1f", gameModel.achievementManager.calculateNewSatisfactionScore(gameModel.getSatisfactionScore())) + "%", 2.6f, 8.4f);
         GameModel.blackFont.draw(batch, "Achievements Completed: ", 2.6f, 7.8f);
 
         float displayed = 0;

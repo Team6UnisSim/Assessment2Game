@@ -6,10 +6,10 @@ import java.util.*;
 /**
  * Abstract method used for all event hanlders to access the methods modifyScore and displayMessageToPlayer
  */
-public abstract class GameEventHandler {
+public class GameEventHandler {
     GameModel gameModel;
-    // holds the responses to this event - populated in each handler class
-    Map<Integer, Response> eventResponses = new HashMap<>();
+    // holds the responses to this event
+    private Map<Integer, Response> eventResponses = new HashMap<>();
     
 
     /**
@@ -21,12 +21,6 @@ public abstract class GameEventHandler {
     }
 
 
-    /**
-     * Initialises the eventResponses map - specific to each handler class
-     */
-    public abstract void initialiseEventResponses();
-
-
     public Response getResponse(int responseID){
         Response response = eventResponses.get(responseID);
         if (response == null){
@@ -34,13 +28,6 @@ public abstract class GameEventHandler {
         }
         return response;
     }
-
-
-    public Map<Integer, Response> getAllResponses(){
-        return eventResponses;
-    }
-
-
 
 
     public void handleResponse(int responseID, GameEvent event){
@@ -53,26 +40,10 @@ public abstract class GameEventHandler {
     /**
      * Main method that delegates logic of event handling to following 3
      */
-    public int[] handle(GameEvent event){
-        // initialise/reinitialise the responses based on the current event occuring
-        // This will be accessed 10 sec later to display the responses to the player
-        initialiseEventResponses(); 
-        modifyScore(event);
+    public void handle(GameEvent event){
         displayMessageToPlayer(event);
-        return placeIconOnMap(event);  
+        placeIconOnMap(event);  
     }
-
-    /**
-     * Modifies satisfaction score based on the event-specific effect value
-     * 
-     * @param event to process its score effect
-     */
-    public void modifyScore(GameEvent event){
-        ScoreCalculator scoreCalculator = gameModel.getScoreCalculator();
-        float modifiedScore = scoreCalculator.calculateEventScoreChange(event);
-        gameModel.setSatisfactionScore(modifiedScore);
-    }
-
 
     /**
      * Passes the event description and calls the GameModel method to add the message
@@ -91,9 +62,8 @@ public abstract class GameEventHandler {
      * @param event event to process
      * @return coordinates of the placed icon
      */
-    public int[] placeIconOnMap(GameEvent event){
+    public void placeIconOnMap(GameEvent event){
         // retrieve the tile the event was placed at in MapController 
-        return gameModel.getMapController().placeEvent(event);
+        gameModel.getMapController().placeEvent(event);
     }   
 }
-

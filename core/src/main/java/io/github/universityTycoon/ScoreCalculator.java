@@ -15,7 +15,7 @@ import io.github.universityTycoon.PlaceableObjects.TeachingBuilding;
  */
 public class ScoreCalculator {
 
-    ArrayList<GameModifiers> activeModifiers = new ArrayList<GameModifiers>();
+    ArrayList<Float> activeModifiers = new ArrayList<>();
     float currentScore; 
     int currentStudents; // posssibly unneccessary
 
@@ -23,7 +23,7 @@ public class ScoreCalculator {
      * Adds a modifier to the active list --> modify the score currently
      * @param modifier modifier to add
      */
-    public void addActiveModifier(GameModifiers modifier){
+    public void addActiveModifier(Float modifier){
         activeModifiers.add(modifier);
     }
 
@@ -32,7 +32,7 @@ public class ScoreCalculator {
      * Remove a modifier from the active list --> stop them from modifying the score
      * @param modifier modifier to remove
      */
-    public void removeActiveModifier(GameModifiers modifier){
+    public void removeActiveModifier(Float modifier){
         activeModifiers.remove(modifier);
     }
 
@@ -41,7 +41,7 @@ public class ScoreCalculator {
      * Retrieve list of active modifiers 
      * @return list of active modifiers
      */
-    public ArrayList<GameModifiers> getActiveModifiers() {
+    public ArrayList<Float> getActiveModifiers() {
         return activeModifiers;
     }
 
@@ -65,7 +65,10 @@ public class ScoreCalculator {
         } else {
             currentScore = (campusScore + averageBuildingScore) / 2;
         }
-        return currentScore;
+        for (Float i : activeModifiers) {
+            currentScore += i;
+        }
+        return Math.max(0, Math.min(100, currentScore));
     }
 
     /**
@@ -110,15 +113,5 @@ public class ScoreCalculator {
             }
             return output / 3;
         }
-    }
-
-    // This will probably need a lot of parameters
-    public float calculateEventScoreChange (GameEvent event) {
-        float effect = event.getResponseEffect();
-
-        currentScore += effect; // apply the effect
-        currentScore = Math.max(0, Math.min(100, currentScore)); // keep between 0 and 100%
-
-        return currentScore;
     }
 }

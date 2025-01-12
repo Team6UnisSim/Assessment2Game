@@ -1,22 +1,20 @@
 package io.github.universityTycoon.Events;
 
-import io.github.universityTycoon.*;
+import java.util.HashMap;
 import java.util.Map;
 
+import io.github.universityTycoon.*;
+
 public class GoodWeatherHandler extends GameEventHandler {
-    
+    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
+    private Map<Integer, Response> eventResponses = new HashMap<>(); 
+
     public GoodWeatherHandler(GameModel gameModel){
         super(gameModel);
         initialiseEventResponses();
     }
 
-
-    /**
-     * Initialises the response pool for this event
-     */
-    @Override
     public void initialiseEventResponses(){
-        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(3,"Set up outdoor study spaces with shade and seating."));
         eventResponses.put(2, new Response(0, "Do nothing."));
         eventResponses.put(3, new Response(-3, "Use the good weather to perform overdue outdoor campus maintenance."));

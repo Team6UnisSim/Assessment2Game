@@ -1,25 +1,23 @@
 package io.github.universityTycoon.Events;
 
-import io.github.universityTycoon.*;
+import java.util.HashMap;
 import java.util.Map;
 
+import io.github.universityTycoon.*;
+
 public class StudentProtestHandler extends GameEventHandler {
-    
+    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
+    private Map<Integer, Response> eventResponses = new HashMap<>(); 
+
     public StudentProtestHandler(GameModel gameModel){
         super(gameModel);
         initialiseEventResponses();
     }
 
-
-    /**
-     * Initialises the response pool for this event
-     */
-    @Override
     public void initialiseEventResponses(){
-        eventResponses.clear(); // clear responses to old events that occured
         eventResponses.put(1, new Response(0,"Hold a meeting with student representatives to understand their concerns and find solutions."));
-        eventResponses.put(2, new Response(-20, "Disperse the protest and enforce stricter regulations on campus demonstrations."));
-        eventResponses.put(3, new Response(-12, "Provide temporary solutions to address the immediate issues raised by the protestors."));
+        eventResponses.put(2, new Response(-8, "Disperse the protest and enforce stricter regulations on campus demonstrations."));
+        eventResponses.put(3, new Response(-4, "Provide temporary solutions to address the immediate issues raised by the protestors."));
     }
 
     /**
