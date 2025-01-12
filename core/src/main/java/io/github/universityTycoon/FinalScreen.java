@@ -15,20 +15,22 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
- * ADDED IN ASSESSMENT 2
- * FinalScreen is an implementation of the screen interface.
- * It is used for the game's end screen, and an instance of it is created within ScreenManager.
+ * FirstScreen is an implementation of the screen interface.
+ * It is used for the initial startup screen, and an instance of it is created
+ * within ScreenManager.
  *
- * @param batch The batch which draws textures.
- * @param input An instance of the PlayerInputHandler class, which handles inputs.
- * @param viewport The viewport things are displayed on.
- * @param startButton The rectangle used to check for mouse inputs on the start button.
- * @param mousePos The vector position of the mouse.
- * @param mouseDown The updated when the mouse is clicked.
- * @param music The music.
- * @param sr the instance of ShapeRenderer used to draw the leaderboard background.
+ * @param batch       The batch which draws textures.
+ * @param input       An instance of the PlayerInputHandler class, which handles
+ *                    inputs.
+ * @param viewport    The viewport things are displayed on.
+ * @param startButton The rectangle used to check for mouse inputs on the start
+ *                    button.
+ * @param mousePos    The vector position of the mouse.
+ * @param mouseDown   The updated when the mouse is clicked.
+ * @param music       The music.
  *
- * @param game An instance of the ScreenManager class, used in the constructor so that stuff works.
+ * @param game        An instance of the ScreenManager class, used in the
+ *                    constructor so that stuff works.
  */
 public class FinalScreen implements Screen {
     SpriteBatch batch;
@@ -44,47 +46,65 @@ public class FinalScreen implements Screen {
 
     Texture background;
     Texture logo;
-    Texture restart;
-    Texture exit; 
+    Texture start;
 
     ShapeRenderer sr;
 
     final ScreenManager game;
+
     public FinalScreen(ScreenManager main) {
         this.game = main;
     }
 
-
     /**
      * Show is responsible for setting all variables.
      * It is effectively the constructor.
+     * Testing was done here to ensure efficiency
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        viewport = new FitViewport(16, 9);
-        input = new PlayerInputHandler();
+        try {
+            batch = new SpriteBatch();
+            viewport = new FitViewport(16, 9);
+            input = new PlayerInputHandler();
 
-        music.setVolume(0.3f);
-        music.setLooping(true);
-        music.play();
+            music.setVolume(0.3f);
+            music.setLooping(true);
+            music.play();
 
-        playAgainButton = new Rectangle();
-        exitButton = new Rectangle();
-        mousePos = new Vector2(0,0);
+            playAgainButton = new Rectangle();
+            exitButton = new Rectangle();
+            mousePos = new Vector2(0, 0);
 
-        background = new Texture(Gdx.files.internal("images/title_page.png"));
-        logo = new Texture(Gdx.files.internal("images/logo.png"));
-        restart = new Texture(Gdx.files.internal("images/restart.png"));
-        exit = new Texture(Gdx.files.internal("images/exit.png"));
+            try {
+                background = new Texture(Gdx.files.internal("images/title_page.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load background texture", e);
+            }
 
-        sr = new ShapeRenderer();
+            try {
+                logo = new Texture(Gdx.files.internal("images/logo.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load logo texture", e);
+            }
+
+            try {
+                start = new Texture(Gdx.files.internal("images/start.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load start texture", e);
+            }
+
+            sr = new ShapeRenderer();
+        } catch (Exception e) {
+            Gdx.app.error("Show Method", "Failed to initialize resources", e);
+        }
     }
 
     /**
      * Calls three functions which are used to split up the rendering method.
      *
-     * @param v Not sure what this does, but it's part of the screen interface ¯\_(ツ)_/¯
+     * @param v Not sure what this does, but it's part of the screen interface
+     *          ¯\_(ツ)_/¯
      */
     @Override
     public void render(float v) {
@@ -96,7 +116,7 @@ public class FinalScreen implements Screen {
     /**
      * Resizes the viewport
      *
-     * @param width The new width
+     * @param width  The new width
      * @param height The new height
      */
     @Override
@@ -110,23 +130,23 @@ public class FinalScreen implements Screen {
     private void input() {
         if (input.getKeyJustPressed(Input.Keys.SPACE)) {
             music.stop();
-            game.switchToMainScreen();  // Switch to MainScreen
+            game.switchToMainScreen(); // Switch to MainScreen
         }
 
         if (input.getKeyJustPressed(Input.Keys.ESCAPE)) {
             music.stop();
             dispose();
-            Gdx.app.exit(); // close the game
+            Gdx.app.exit();
         }
 
         if (input.getIsMouseDown()) {
             mousePos = input.getMousePos();
             mouseDown = true;
 
+        } else {
+            mouseDown = false;
         }
-        else {mouseDown = false;}
     }
-
 
     /**
      * Deals with the logic of the screen.
@@ -147,13 +167,13 @@ public class FinalScreen implements Screen {
         }
     }
 
-
     /**
      * Draws all textures on the screen.
-     * Note: Batch.begin() and batch.end() must contain all draw statements, and cannot overlap with other begin/ends.
+     * Note: Batch.begin() and batch.end() must contain all draw statements, and
+     * cannot overlap with other begin/ends.
      */
     private void draw() {
-        
+
         batch.begin();
 
         ScreenUtils.clear(Color.BLACK);
@@ -173,23 +193,24 @@ public class FinalScreen implements Screen {
 
         sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
         sr.rect(5.9f, 1.65f, 4.2f, 2.5f);
-        
+
         sr.end();
-        batch.begin();  
-        
+        batch.begin();
+
         batch.draw(logo, 6, 4.5f, 4, 4);
-    
-        batch.draw(restart, 6.05f, 1, 4, 0.55f);
-        batch.draw(exit, 6.05f, 0.4f, 4f, 0.55f);
+
+        batch.draw(start, 6.05f, 1, 4, 0.55f);
+        batch.draw(start, 6.05f, 0.4f, 4f, 0.55f);
 
         GameModel.blackFont.draw(batch, "Leaderboard:", 6, 4);
-        for(SavedScore i : game.leaderboard) {
-            GameModel.blackFont.draw(batch, Integer.toString(game.leaderboard.indexOf(i) + 1) + ". " + i.getName()+ ": " + i.getScore() + "%", 6f, 4f - 0.4f * (game.leaderboard.indexOf(i) + 1));
+        for (SavedScore i : game.leaderboard) {
+            GameModel.blackFont.draw(batch,
+                    Integer.toString(game.leaderboard.indexOf(i) + 1) + ". " + i.getName() + ": " + i.getScore() + "%",
+                    6f, 4f - 0.4f * (game.leaderboard.indexOf(i) + 1));
         }
 
         batch.end();
     }
-
 
     @Override
     public void pause() {
@@ -208,10 +229,17 @@ public class FinalScreen implements Screen {
 
     @Override
     public void dispose() {
-        background.dispose();
-        logo.dispose();
-        restart.dispose();
-        exit.dispose();
+        if (batch != null) {
+            batch.dispose();
+        }
+        if (background != null) {
+            background.dispose();
+        }
+        if (start != null) {
+            start.dispose();
+        }
+        if (music != null) {
+            music.dispose();
+        }
     }
 }
-
