@@ -8,26 +8,18 @@ import java.util.Map;
 
 
 /**
- * ADDED IN ASSESSMENT 2
  * Responsible for raising an event and dispatching it to the GameEventListener
- * 
- * @param eventMap keeps track of what event types have been raised, to avoid repetition.
- * @param listener the GameEventListener responsible for handling raised events.
- * @param timeSinceLastEvent the time since the last event in seconds.
- * @param eventInterval the time until the next event is triggered.
- * @param currentActiveEvent holds the current event taking place.
- * @param currentPlannedEvent holds the current planned event.
  */
 public class EventManager {
     private Map<GameEvent, Integer> eventMap = new HashMap<>();
     private GameEventListener listener;
     private float timeSinceLastEvent = 0.0f;
     private float eventInterval = 60; // 60 sec before first event is triggered
-    private GameEvent currentActiveEvent;  
+    private GameEvent currentActiveEvent; // holds the current event taking place 
     private GameEvent currentPlannedEvent;
 
     /**
-     * Constructor - Assigns the GameEventListener
+     * Assigns the GameEventListener
      * @param listener The listener that can process the event
      */
     public EventManager(GameEventListener listener) {
@@ -144,14 +136,8 @@ public class EventManager {
         }
     }
 
-    /**
-     * Handles raised planned events.
-     * @param delta time in seconds since the last frame.
-     * @param gameTimeGMT the current game time.
-     * @param pickedEvent the planned event that has been chosen.
-     */
     public void processPlannedEvent(float delta, LocalDateTime gameTimeGMT, GameEvent pickedEvent) {
-        if (gameTimeGMT.isAfter(pickedEvent.getEventStartedAt().plusDays(110))) { // delays event response
+        if (gameTimeGMT.isAfter(pickedEvent.getEventStartedAt().plusDays(110))) {
             currentActiveEvent = pickedEvent; // Label it as current active event
             timeSinceLastEvent -= eventInterval; // reset
             eventInterval = generateRandomInterval(); // set this for the event to be generated
@@ -162,10 +148,6 @@ public class EventManager {
         timeSinceLastEvent += delta;
     }
 
-    /**
-     * Returns the current planned event.
-     * @return the current planned event
-     */
     public GameEvent getPlannedEvent() {
         return currentPlannedEvent;
     }

@@ -12,18 +12,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 /**
- * CHANGED IN ASSESSMENT 2 - leaderboard and additional screens added
  * ScreenManager extends the Game abstract class, and is used to control which screen is displayed.
  *
  * @param batch The batch which draws textures.
  * @param gameScreen An instance of the GameScreen class.
  * @param titleScreen An instance of the FirstScreen class.
- * @param endScreen An instance of the FinalScreen class.
+ * @param endScreen An instance of the FinalScreen class, added during Assessment 2.
  * @param fullScreen A check for if the game is in fullscreen or not.
- * @param leaderboardNames an instance of Preferences (https://libgdx.com/wiki/preferences for more info),
- * holds Integer keys and the associated String names.
- * @param leaderboardScores an instance of Preferences, holds Integer keys and aassociated Float scores.
- * @param leaderboard An ArrayList that stores the top 5 high scores.
+ * @param leaderboardNames
+ * @param leaderboardScores
+ * @param leaderboard A HashMap that stores the top 5 high scores, added during Assessment 2.
+ *
  */
 
 public class ScreenManager extends Game {
@@ -31,17 +30,16 @@ public class ScreenManager extends Game {
     public SpriteBatch batch;
 
     public MainScreen gameScreen;
-    public FirstScreen titleScreen; // ADDED IN ASSESSMENT 2
-    public FinalScreen endScreen; // ADDED IN ASSESSMENT 2
+    public FirstScreen titleScreen;
+    public FinalScreen endScreen; 
 
     public Boolean fullScreen;
 
-    private Preferences leaderboardNames; // ADDED IN ASSESSMENT 2
-    private Preferences leaderboardScores; // ADDED IN ASSESSMENT 2
-    public ArrayList<SavedScore> leaderboard; // ADDED IN ASSESSMENT 2
+    private Preferences leaderboardNames;
+    private Preferences leaderboardScores;
+    public ArrayList<SavedScore> leaderboard;
 
     /**
-     * CHANGED IN ASSESSMENT 2 - brings in preferences and creates array to be updated in-game.
      * Create is responsible for setting all variables.
      * It is effectively the constructor.
      */
@@ -54,12 +52,10 @@ public class ScreenManager extends Game {
 
         batch = new SpriteBatch();
 
-        // ADDED IN ASSESSMENT 2
         leaderboardNames = Gdx.app.getPreferences("LeaderboardNames");
         leaderboardScores = Gdx.app.getPreferences("LeaderboardScores");
         leaderboard = new ArrayList<>();
 
-        // ADDED IN ASSESSMENT 2
         for(int i = 1; i < 6; i++) {
             leaderboard.add(new SavedScore(leaderboardNames.getString(String.valueOf(i), "PLAYER"), leaderboardScores.getFloat(String.valueOf(i), 0f)));
         }
@@ -99,18 +95,12 @@ public class ScreenManager extends Game {
         setScreen(gameScreen);
     }
 
-    /**
-     * ADDED IN ASSESSMENT 2
-     * Changes to the final screen and updates the leaderboard.
-     * @param playerName the name of the player of the previous game
-     * @param playerScore the score of the previous game
-     */
+    // Changes to final screen and resets the main game, added during Assessment 2.
     public void switchToFinalScreen(String playerName, float playerScore) {
         leaderboard.add(new SavedScore(playerName, playerScore));
         Collections.sort(leaderboard);
         leaderboard.remove(leaderboard.size() - 1);
         
-        // Updates the preferences with the new leaderboard so they are saved for future games.
         for (int i = 0; i < leaderboard.size(); i++) {
             leaderboardNames.putString(String.valueOf(i + 1), leaderboard.get(i).getName());
             leaderboardScores.putFloat(String.valueOf(i + 1), leaderboard.get(i).getScore());
@@ -122,10 +112,6 @@ public class ScreenManager extends Game {
         gameScreen.restartGame();
     }
 
-    /**
-     * ADDED IN ASSESSMENT 2
-     * Changes current screen to ScoreSummaryScreen, passing in the gameModel of the previous game.
-     */
     public void switchToScoreSummaryScreen() {
         setScreen(new ScoreSummaryScreen(this, gameScreen.gameModel));
     }

@@ -3,11 +3,10 @@ package io.github.universityTycoon;
 import java.util.function.Consumer;
 
 /**
- * ADDED IN ASSESSMENT 2
  * The GameEventListener "listens" for events triggered by the EventManager.
  * It then creates a handler to delegate the event handling to.
  * When created in GameModel it was passed the GamneModel.handleEvents which it accets in raiseEvent()
- * essentially calling GameModel.handleEvent. 
+ * essentially calling GameModel.handleEvent 
  */
 public class GameEventListener {
 
@@ -15,7 +14,7 @@ public class GameEventListener {
 
     /**
      * Constructor - GameEventListener 
-     * Implements Consumer class to be able to accept events in its constructor
+     * Implements Consumer class to be alke to accept events in its constructor
      * 
      * @param eventHandler eventHandler class passed 
      */

@@ -2,7 +2,6 @@ package io.github.universityTycoon;
 
 
 /**
- * ADDED IN ASSESSMENT 2
  * EventTypes is an enum class that holds all the information about the different events that can happen during the game.
  * There are 4 negative, 4 positive and 2 neutral.
  * These will have unique effect on satisfaction score and will be triggered at certain time intervals.
@@ -25,7 +24,7 @@ public enum EventTypes {
     private final String description; // short description of the event
     private final int rarity; // probability of the event occuring -> [1 = rare] -- [4 = common]
     private final String iconPath; // the file path for that event-specific icon to be displayed
-    private boolean planned; // whether this event type warns the user
+    private boolean planned;
 
 
     /**
