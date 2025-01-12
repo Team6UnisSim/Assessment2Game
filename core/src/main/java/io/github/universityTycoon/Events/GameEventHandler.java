@@ -4,23 +4,32 @@ import io.github.universityTycoon.*;
 import java.util.*;
 
 /**
- * Abstract method used for all event hanlders to access the methods modifyScore and displayMessageToPlayer
+ * ADDED IN ASSESSMENT 2
+ * A handler for a generic event, which will be extended by each of the different event types.
+ * 
+ * @param gameModel an instance of GameModel which is needed to access the array of MapObjects for placing icons.
+ * @param eventResponses A Map holding instances of Response, which contain a description and a score effect.
  */
 public class GameEventHandler {
+
     GameModel gameModel;
-    // holds the responses to this event
     private Map<Integer, Response> eventResponses = new HashMap<>();
     
 
     /**
-     * Constructor - GameEventHandler 
-     * @param gameModel
+     * Constructor taking the following parameters. 
+     * @param gameModel an instance of GameModel for accessing the map.
      */
     public GameEventHandler (GameModel gameModel){
         this.gameModel = gameModel;
     }
 
-
+    /**
+     * Returns the repsonse instance associated with responseID.
+     * 
+     * @param responseID the key for this instance of Response in eventResponses.
+     * @return the associated instance of Response. 
+     */
     public Response getResponse(int responseID){
         Response response = eventResponses.get(responseID);
         if (response == null){
@@ -30,37 +39,10 @@ public class GameEventHandler {
     }
 
 
-    public void handleResponse(int responseID, GameEvent event){
-        Response response = getResponse(responseID);
-        event.setResponseEffect(response.getEffect());
-        event.setResponseDescription(response.getDescription());
-    }
-
-
     /**
-     * Main method that delegates logic of event handling to following 3
-     */
-    public void handle(GameEvent event){
-        displayMessageToPlayer(event);
-        placeIconOnMap(event);  
-    }
-
-    /**
-     * Passes the event description and calls the GameModel method to add the message
+     * Adds the event icon to the map.
      * 
-     * @param event event's description to retrieve
-     */
-    public void displayMessageToPlayer(GameEvent event){
-        gameModel.addDescriptionMessage(event.getDescription());
-    } 
-
-
-
-    /**
-     * Finds a free tile on the map for placing the event icon. 
-     * 
-     * @param event event to process
-     * @return coordinates of the placed icon
+     * @param event the instance of GameEvent currently being handled.
      */
     public void placeIconOnMap(GameEvent event){
         // retrieve the tile the event was placed at in MapController 

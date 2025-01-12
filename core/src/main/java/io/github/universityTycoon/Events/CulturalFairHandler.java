@@ -5,15 +5,30 @@ import java.util.Map;
 
 import io.github.universityTycoon.*;
 
+
+/**
+ * ADDED IN ASSESSMENT 2
+ * A handler for the Cultural Fair event that allows the player to respond to this event type.
+ * 
+ * @param eventResponses A Map holding reponses for this event type, which contains a description and a score effect.
+ */
 public class CulturalFairHandler extends GameEventHandler {
-    // a map that holds the responses deascription and its effect to this event, can be accessed by the response ID
+    
     private Map<Integer, Response> eventResponses = new HashMap<>(); 
 
+    /**
+     * Constructor taking the following parameters.
+     * 
+     * @param gameModel an instance of GameModel which is needed to access the array of MapObjects for placing icons
+     */
     public CulturalFairHandler(GameModel gameModel){
         super(gameModel);
         initialiseEventResponses();
     }
 
+    /**
+     * Adds the 3 different responses to the map.
+     */
     public void initialiseEventResponses(){
         eventResponses.put(1, new Response(5,"Charge a £5 entry fee to fund additional activities and improve the event."));
         eventResponses.put(2, new Response(0, "Limit the fair to showcasing local cultural traditions only."));
@@ -21,9 +36,10 @@ public class CulturalFairHandler extends GameEventHandler {
     }
 
     /**
-     * Get specific response using response ID
-     * @param responseID
-     * @return
+     * Returns the repsonse instance associated with responseID.
+     * 
+     * @param responseID the key for this instance of Response in eventResponses.
+     * @return the associated instance of Response. 
      */
     public Response getResponse(int responseID){
         if (responseID < 1 || responseID > 3){
@@ -33,43 +49,11 @@ public class CulturalFairHandler extends GameEventHandler {
     }
 
     /**
-     * Get all ther event responses as a map
-     *
+     * Returns the map of event responses.
+     * 
+     * @return the Map eventResponses.
      */
     public Map<Integer, Response> getAllResponses(){
         return eventResponses;
-    }
-
-    /**
-     * Right now the AbstractEventHandler is invoked 
-     * Main method that delegates logic of event specific handling - in that case override and imlement
-     * 
-     */
-    // @Override
-    // public int[] handle(GameEvent event){
-    //     modifyScore(event);
-    //     displayMessageToPlayer(event);
-    //     return placeIconOnMap(event); // Return coordinates of placed icon in case it's needed
-        
-    // }
-    
-    // @Override
-    // public void modifyScore(GameEvent event){
-    //     // implement if needed to be event specific
-    // }
-
-    // @Override
-    // public void displayMessageToPlayer(GameEvent event){
-    //     // implement if needed to be event specific
-    // } 
-
-    // @Override
-    // public int[] placeIconOnMap(GameEvent event){
-    //     // implement if needed to be event specific
-    // }   
-
-    public boolean isResolved(GameEvent event){
-        // implement
-        return true;
     }
 }
