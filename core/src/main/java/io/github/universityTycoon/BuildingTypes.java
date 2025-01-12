@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+// CHANGED IN ASSESSMENT 2 - more building types added, category added to enum.
 public enum BuildingTypes {
     SmallAccommodation("Accommodation"),
     MediumAccommodation("Accommodation"), 
@@ -15,7 +16,7 @@ public enum BuildingTypes {
     ArtsBuilding("Teaching"),
     Library("Teaching");
     
-    public final String category;
+    public final String category; // ADDED IN ASSESSMENT 2
 
     private BuildingTypes(String category) {
         this.category = category;

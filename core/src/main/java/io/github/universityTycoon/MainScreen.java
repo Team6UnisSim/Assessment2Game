@@ -25,6 +25,7 @@ import static java.lang.Math.floorDiv;
 
 
 /**
+ * CHANGED IN ASSESSMENT 2 - lots added, all has been indicated individually.
  * MainScreen is an implementation of the screen interface.
  * It is used for the main screen of the game.
  *
@@ -45,6 +46,8 @@ import static java.lang.Math.floorDiv;
  * @param mouseDown The updated when the mouse is clicked.
  * @param placeMode Used as a condition to check whether to start attempting to place a building.
  * @param playerInputHandler An instance of the PlayerInputHandler class, which handles inputs.
+ * @param handlingEvent Determines whether to render event-based display.
+ * @param renderTutorial Determines whether to render tutorial
  *
  * @param time Takes the time as seconds from gameModel
  * @param dateTimeString Takes the time as a date from gameModel, and
@@ -82,13 +85,13 @@ public class MainScreen implements Screen {
     boolean mouseDown;
     boolean placeMode;
     PlayerInputHandler playerInputHandler;
-    boolean handlingEvent;
-    boolean renderTutorial;
+    boolean handlingEvent; // ADDED IN ASSESSMENT 2
+    boolean renderTutorial; // ADDED IN ASSESSMENT 2
 
     String time;
     String dateTimeString;
 
-    // ________ ADDED ________
+    // ADDED IN ASSESSMENT 2
     // added this to pass to EventManager.processEvents() from MainScreen.render()
     float delta;
 
@@ -192,6 +195,7 @@ public class MainScreen implements Screen {
             mouseDown = false;
         }
 
+        // ADDED IN ASSESSMENT 2 - Lets user show/hide tutorial
         if (playerInputHandler.getKeyJustPressed(Input.Keys.H) || handlingEvent == true) {
             if (!renderTutorial && handlingEvent == false) {
                 renderTutorial = true;
@@ -200,6 +204,7 @@ public class MainScreen implements Screen {
             }
         }
 
+        // ADDED IN ASSESSMENT 2 - Allows user to respond to events if one is active.
         if (playerInputHandler.getKeyJustPressed(Input.Keys.NUM_1) && handlingEvent == true) {
             GameEventHandler currentEventHandler = gameModel.getHandlers().get(gameModel.eventManager.getCurrentActiveEvent().getEventType());
             gameModel.scoreCalculator.addActiveModifier(currentEventHandler.getResponse(1).getEffect());
@@ -229,7 +234,7 @@ public class MainScreen implements Screen {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
 
-        // ________ ADDED ________
+        // ADDED IN ASSESSMENT 2
         // Trigger events through the EventManager
         gameModel.eventManager.processEvents(delta, gameModel.getGameTimeGMT());
         if (gameModel.eventManager.getPlannedEvent() != null) {
@@ -241,6 +246,7 @@ public class MainScreen implements Screen {
             handlingEvent = false;
         }
 
+        // CHANGED IN ASSESSMENT 2 - now considers handlingEvent and renderTutorial
         // Checks to see if the building icon has been clicked
         if (mouseDown && buildingIcon.contains(touch.x, touch.y) && handlingEvent == false && renderTutorial == false) {
             placeMode = true;
@@ -249,6 +255,7 @@ public class MainScreen implements Screen {
         else if (!mouseDown && placeMode && mousePos.y < 810) {
             placeBuilding();
         }
+        // CHANGED IN ASSESSMENT 2 - now considers handlingEvent and renderTutorial
         // Cancels place mode if the user lets go of the mouse in the Menu Bar
         else if (!mouseDown && placeMode || handlingEvent == true && placeMode || renderTutorial == true && placeMode) {
             placeMode = false;
@@ -322,6 +329,7 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Food & Drink Buildings: " + gameModel.getFoodAndDrinkBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
+        // ADDED IN ASSESSMENT 2
         GameModel.smallerFont.draw(batch, "Press H for help!", 13.15f, 7.9f);
 
         batch.end();
@@ -331,6 +339,7 @@ public class MainScreen implements Screen {
         // Draws all the textures for the building menu (bottom portion of the screen)
         drawBuildingMenu();
 
+        // ADDED IN ASSESSMENT 2 - draws the background when dealing with an event.
         GameEvent currentActiveEvent = gameModel.getEventManager().getCurrentActiveEvent();
         if (currentActiveEvent != null || renderTutorial == true) {
             sr.setProjectionMatrix(viewport.getCamera().combined);
@@ -346,6 +355,7 @@ public class MainScreen implements Screen {
         // This also therefore needs a new batch begin and end statement.
         batch.begin();
 
+        // CHANGED IN ASSESSMENT 2 - Uses same categories for every building type.
         // Draws all the relevant information about the currently selected building.
         Building building = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
         GameModel.blackFont.draw(batch, "Building type: " + building.getName(),  0.01f, 1.98f);
@@ -368,6 +378,7 @@ public class MainScreen implements Screen {
             batch.draw(mapObjTextures.get(buildingToAdd.getTexturePath()), screenPos.x, screenPos.y, tileSizeOnScreen * buildingToAdd.getWidth(), tileSizeOnScreen * buildingToAdd.getHeight());
         }
 
+        // ADDED IN ASSESSMENT 2 - Draws event response text.
         if (currentActiveEvent != null) {
             String eventDescription = currentActiveEvent.getDescription();
             GameModel.blackFont.draw(batch, "An event has occurred!",  3.2f, 7.6f);
@@ -382,6 +393,7 @@ public class MainScreen implements Screen {
             GameModel.blackFont.getData().setScale(0.002f);
         }
 
+        // ADDED IN ASSESSMENT 2 - Draws tutorial text
         if (renderTutorial) {
             GameModel.blackFont.draw(batch, "Welcome to University Tycoon!",  3.2f, 7.6f);
             GameModel.blackFont.draw(batch, "The aim of the game is maximising your student satisfaction score.",  3.2f, 7f);
@@ -396,9 +408,10 @@ public class MainScreen implements Screen {
             GameModel.blackFont.draw(batch, "To exit the tutorial, press H again.",  3.2f, 3.6f);
         }
 
+        // ADDED IN ASSESSMENT 2 - Displays planned event warning.
         GameEvent plannedEvent = gameModel.eventManager.getPlannedEvent();
         if (plannedEvent != null) {
-            GameModel.font.draw(batch, "Warning: a planned event will occur soon!", 2.3f, 6f);
+            GameModel.font.draw(batch, "Warning: a planned event may occur soon!", 2.3f, 6f);
             GameModel.font.draw(batch, plannedEvent.getDescription(), 2.3f, 5.5f);
             GameModel.font.draw(batch, "Think through how this would be best dealt with.", 2.3f, 5f);
         }
@@ -476,8 +489,7 @@ public class MainScreen implements Screen {
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
                     
-                // ----> ADDED <----: Draw events on map on the tile it is in MapObject grid
-                // NEED TO IMPLEMENT: remove events after they have beem dealt with or after a certain time has passed --> should probably be done in EventManager
+                // ADDED IN ASSESSMENT 2 - draws event icons on the map
                 } else if (mapObjects[i][j] instanceof Event event) {
                     // add event textures to MapObjTextures
                     String eventTexturePath = event.getTexturePath();
@@ -487,9 +499,8 @@ public class MainScreen implements Screen {
                         }
                         // draw event textures 
                         batch.draw(mapObjTextures.get(eventTexturePath), screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
-                        // ----> need to add logic for removing from MapObjects and event when it is dealt with, if not in MapObject ->not drawn
-                        // EventManager holds 'currentActiveEvent' variable and clearActiveCurrentEvent method
                     }
+                // ADDED IN ASSESSMENT 2 - Draws terrain objects onto map.
                 } else if (mapObjects[i][j] instanceof Terrain terrain) {
                     // Get the texture for the object
                     String texturePath = mapObjects[i][j].getTexturePath();
@@ -542,6 +553,10 @@ public class MainScreen implements Screen {
         batch.end();
     }
 
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Allows for the game to be restarted by creating a new GameModel
+     */
     public void restartGame() {
         gameModel = new GameModel();
     }

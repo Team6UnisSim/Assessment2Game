@@ -7,6 +7,7 @@ import java.util.Random;
 import java.time.LocalDateTime;
 
 /**
+ * CHANGED IN ASSESSMENT 2 - adds terrain objects, some methods made more general, event-based methods added.
  * Controls the map.
  *
  * @param tilesWide The number of tiles wide the map is.
@@ -22,6 +23,7 @@ public class MapController {
 
 
     /**
+     * CHANGED IN ASSESSMENT 2 - adds terrain objects to the map.
      * Constructor taking the following parameters.
      *
      * @param tilesWide The number of tiles wide the map is.
@@ -32,6 +34,7 @@ public class MapController {
         this.tilesHigh = tilesHigh;
         this.mapObjects = new MapObject[tilesWide][tilesHigh];
 
+        // ADDED IN ASSESSMENT 2 - Adds all of the terrain obbjects to the map before the game starts.
         addObject(new Road(), 4, 6);
         addObject(new Road(), 4, 13);
         addObject(new Water(), 10, 7);
@@ -54,7 +57,8 @@ public class MapController {
 
 
     /**
-     * Adds a building to the map, if the attempted location is acceptable. Meaning it doesn't overlap with something else.
+     * CHANGED IN ASSESSMENT 2 - renamed from addBuilding, reworked to add any MapObject
+     * Adds a MapObject to the map, if the attempted location is acceptable. Meaning it doesn't overlap with something else.
      *
      * @param building The building being added.
      * @param xPos The x grid coordinate it's being placed in.
@@ -95,6 +99,14 @@ public class MapController {
         return objectFits;
     }
 
+    /**
+     * ADDED IN ASSESSMENT 2
+     * Allows for a MapObject to be removed from the map.
+     * 
+     * @param object the object to be removed
+     * @param xPos the x coordinate of the object to be removed
+     * @param yPos the y coordinate of the object to be removed
+     */
     public void removeObject(MapObject object, int xPos, int yPos) {
         // Remove the bottom left square
         mapObjects[xPos][yPos] = null;
@@ -128,6 +140,7 @@ public class MapController {
     // --------- METHODS FOR EVENTS BELOW ---------
 
     /**
+     * ADDED IN ASSESSMENT 2
      * Finds a random free tile - no need to iterate over map
      * @return x and y coordinates of the tile
      */
@@ -154,6 +167,7 @@ public class MapController {
 
 
     /**
+     * ADDED IN ASSESSMENT 2
      * Finds a random tile to place the event icon using helper method above
      * Places the object on the MapObject grid on that free tile.
  
@@ -178,6 +192,7 @@ public class MapController {
     }
 
     /**
+     * ADDED IN ASSESSMENT 2
      * This function checks all the buildings against the current game time, and updates them when they've finished
      * being constructed. Call this to ensure buildings progress from under construction to complete
      * @param gameTime The current in game time.

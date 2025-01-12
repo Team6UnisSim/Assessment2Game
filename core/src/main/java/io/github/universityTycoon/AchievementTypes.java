@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+// ADDED IN ASSESSMENT 2
 public enum AchievementTypes {
     perfectScore("Perfect Score", "End the game with 100% student satisfaction.", 1f),
     zeroScore("Opposite Day", "End the game with 0% student satisfaction.", -1f),

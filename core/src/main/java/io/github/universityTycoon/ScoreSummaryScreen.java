@@ -1,4 +1,5 @@
 package io.github.universityTycoon;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -15,7 +16,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
- * FirstScreen is an implementation of the screen interface.
+ * ADDED IN ASSESSMENT 2
+ * ScoreSummaryScreen is an implementation of the screen interface.
  * It is used for the initial startup screen, and an instance of it is created within ScreenManager.
  *
  * @param batch The batch which draws textures.
@@ -25,6 +27,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * @param mousePos The vector position of the mouse.
  * @param mouseDown The updated when the mouse is clicked.
  * @param music The music.
+ * @param sr the instance of ShapeRenderer used to draw background rectangles.
+ * @param gameModel an instance of GameModel used to get data about the previous game.
+ * @param playerName an array used to hold the name of the player.
+ * @param namePointer used to indicate the current position of the most recent character in playerName.
+ * @param layout used to correctly space letters when user is typing in their name.
  *
  * @param game An instance of the ScreenManager class, used in the constructor so that stuff works.
  */
@@ -51,12 +58,9 @@ public class ScoreSummaryScreen implements Screen {
     String[] playerName;
     int namePointer;
     GlyphLayout layout;
+
     final ScreenManager game;
-    
     public ScoreSummaryScreen(ScreenManager main, GameModel gameModel) {
-        if (main == null || gameModel == null) {
-            throw new IllegalArgumentException("main or gamemodel is null");
-        }
         this.game = main;
         this.gameModel = gameModel;
     }
@@ -122,15 +126,16 @@ public class ScoreSummaryScreen implements Screen {
     private void input() {
         if (input.getKeyJustPressed(Input.Keys.ENTER)) {
             music.stop();
-            changeScreen();
+            changeScreen(); // switches to FinalScreen
         }
 
         if (input.getKeyJustPressed(Input.Keys.ESCAPE)) {
             music.stop();
             dispose();
-            Gdx.app.exit();
+            Gdx.app.exit(); // exits the game.
         }
         
+        // keeps track of user typing alphabetic characters and adds them to playerName if possible
         for (int i = 29; i < 55; i++) {
             if (input.getKeyJustPressed(i)) {
                 if (namePointer < 5) {
@@ -142,6 +147,7 @@ public class ScoreSummaryScreen implements Screen {
             }
         }
 
+        // allows the user to remove characters from playerName
         if (input.getKeyJustPressed(Input.Keys.BACKSPACE)) {
             playerName[namePointer] = null;
             if (!(namePointer == 0)) {
@@ -216,6 +222,7 @@ public class ScoreSummaryScreen implements Screen {
         GameModel.blackFont.draw(batch, "Final Student Satisfaction: " + String.format("%.1f", gameModel.achievementManager.calculateNewSatisfactionScore(gameModel.getSatisfactionScore())) + "%", 2.6f, 8.4f);
         GameModel.blackFont.draw(batch, "Achievements Completed: ", 2.6f, 7.8f);
 
+        // Iterates through and draws all achievements completed during the previous game.
         float displayed = 0;
         for (int i = 0; i < gameModel.achievementManager.getAchievements().length; i++) {
             if (gameModel.achievementManager.getAchievements()[i] == true) {
@@ -243,6 +250,9 @@ public class ScoreSummaryScreen implements Screen {
         batch.end();
     }
 
+    /**
+     * Switches to the final screen provided the player has entered a full 6-letter name.
+     */
     public void changeScreen() {
         boolean completeName = true;
         for (String i : playerName) {
@@ -279,12 +289,9 @@ public class ScoreSummaryScreen implements Screen {
 
     @Override
     public void dispose() {
-        if (batch != null) batch.dispose();
-        if (sr != null) sr.dispose();
-        if (background != null) background.dispose();
-        if (save != null) save.dispose();
-        if (exit != null) exit.dispose();
-        if (music != null) music.dispose();
+        background.dispose();
+        save.dispose();
+        exit.dispose();
     }
 }
 
