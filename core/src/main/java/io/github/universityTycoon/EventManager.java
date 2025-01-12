@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map;
+import io.github.universityTycoon.PlaceableObjects.*;
 
 
 /**
@@ -16,12 +17,21 @@ public class EventManager {
     private float eventInterval = 60; // 60 sec before first event is triggered
     private GameEvent currentActiveEvent; // holds the current event taking place 
 
+    private float yearlyReportInterval = 60.0f; // hardcoded to 60 sec // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private float startingYearlyScore = 0.0f; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private float endingYearlyScore = 0.0f; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private int startingNumOfBuildings = 0; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private int endingNumOfBuildings = 0; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private int numOfEvents = 0; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    private GameModel gameModel; // +++++++++++++++++ ADDED FOR YEAR REPORT 
+
     /**
      * Assigns the GameEventListener
      * @param listener The listener that can process the event
      */
-    public EventManager(GameEventListener listener) {
+    public EventManager(GameEventListener listener, GameModel gameModel) { // +++++++++++++++++ ADDED FOR YEAR REPORT 
         this.listener = listener;
+        this.gameModel = gameModel; // +++++++++++++++++ ADDED FOR YEAR REPORT 
         initialiseEventMap(); 
     }
 
@@ -48,6 +58,86 @@ public class EventManager {
         currentActiveEvent = null;
     }
 
+    public float getStartingScore(){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        return startingYearlyScore;
+    }
+
+    public float getEndingScore(){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        return endingYearlyScore;
+    }
+
+    public int getStartingNumOfBuildings(){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        return startingNumOfBuildings;
+    }
+
+    public int getEndingNumOfBuildings(){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        return endingNumOfBuildings;
+    }
+
+    public void setStartingYearlyScore(float startingScore){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        startingYearlyScore = startingScore;
+    }
+
+    public void setEndingYearlyScore(float endingScore){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        endingYearlyScore = endingScore;
+    }
+
+    public void setStartingNumOfBuildings(int buildingsNum){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        startingNumOfBuildings = buildingsNum;
+    }
+
+    public void setEndingNumOfBuildings(int buildingsNum){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        endingNumOfBuildings = buildingsNum;
+    }
+
+
+
+    /**
+     * Retrieves current number of buildings on the map
+     * @return numOfBuildings
+     */
+    public int getNumOfBuildings(){ // +++++++++++++++++ ADDED FOR YEAR REPORT 
+        MapObject[][] mapObjects = gameModel.getMapObjects();
+        if (mapObjects == null){
+            return 0;
+        }
+
+        int total = 0;
+        for (int i = 0; i < mapObjects.length; i++){ // retrieves nested array: MapObject[][]
+            for (int j = 0; j < mapObjects[i].length; j++){
+
+                MapObject object = mapObjects[i][j];
+                if (object instanceof Building){
+                    total++;
+                }
+            }
+        }
+        return total;
+    }
+    
+
+
+    /**
+     * Generates yearly report and will pass to mainScreen  for drawing
+     * Will pass all these to the MainScreen
+     */
+    public void generateYearlyReport(){
+    
+        // pass all the info to main screen to display it
+        MainScreen.displayAnnualReport( // +++++++++++++++++ ADDED FOR YEAR REPORT 
+            startingYearlyScore, 
+            endingYearlyScore, 
+            getEndingNumOfBuildings() - getStartingNumOfBuildings(),
+            numOfEvents
+        );
+        numOfEvents = 0; // reset
+    } 
+
+
+
+
+
+    // UNTIL HERE - ######## ADDED FOR YEAR REPORT ########
 
 
     /**
@@ -94,7 +184,7 @@ public class EventManager {
                 randomNumber -= entry.getValue(); // subtract event's rarities one by one until randomNum <= 0
                 if (randomNumber <= 0){ // Pick this event that we just subtracted its rarity last
                     event.disableEvent(); // Disable it as to not be picked again - we want event variation in the game
-                    return event;
+                    return event; // +++++++++++++++++ ADDED FOR YEAR REPORT 
                 }
             }
         } throw new IllegalStateException("Random event selection failed");
@@ -108,6 +198,23 @@ public class EventManager {
      * @param delta time in seconds since the last frame
      */
     public void processEvents(float delta) {
+
+        // FROM HERE +++++++++++++++++ ADDED FOR YEAR REPORT 
+        yearlyReportInterval -= delta;
+        if (yearlyReportInterval <= 0.0f){
+            // updste starting values
+            setStartingYearlyScore(getEndingScore()); 
+            setStartingNumOfBuildings(getNumOfBuildings()); 
+            // update to current 
+            setEndingYearlyScore(gameModel.getSatisfactionScore());
+            setEndingNumOfBuildings(getNumOfBuildings());
+
+            generateYearlyReport();
+            yearlyReportInterval = 60.0f; // reset
+        } // UNTIL HERE +++++++++++++++++ ADDED FOR YEAR REPORT 
+
+
+
         // increment this with every frame delta time
         timeSinceLastEvent += delta;
 
@@ -122,6 +229,8 @@ public class EventManager {
             if (pickedEvent != null){
                 pickedEvent.setEventStartedAt(LocalDateTime.now());
                 listener.raiseEvent(pickedEvent);
+                // Increment the counter for events handled
+                numOfEvents++; // +++++++++++++++++ ADDED FOR YEAR REPORT 
             }
 
             // create method to generate random interval between 40-70 sec every time an event is picked

@@ -287,6 +287,12 @@ public class MainScreen implements Screen {
         }
     }
 
+
+    // +++++++++++++++++ ADDED FOR YEAR REPORT 
+    public static void displayAnnualReport(float startingScore, float endingScore, int buildingsConstructed, int eventsHandled){
+        // implment   
+    }
+
     /**
      * Draws all textures on the screen.
      * Note: Batch.begin() and batch.end() must contain all draw statements, and cannot overlap with other begin/ends.
