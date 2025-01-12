@@ -140,46 +140,22 @@ public class GameEvent {
     }
 
     /**
- * Checks all the events against the current game time and removes them if their duration has exceeded a limit or if they have been dealt with.
- * 
- * @param gameTime The current in-game time.
- * @param eventX The x-coordinate of the event on the map.
- * @param eventY The y-coordinate of the event on the map.
- * @param gameModel The game model handling the game state.
- * @return true if the event was removed, false if it is still ongoing.
- * @throws IllegalArgumentException if gameTime or gameModel is null, or if coordinates are out of bounds.
- */
-public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, GameModel gameModel) {
-    if (gameTime == null) {
-        throw new IllegalArgumentException("gameTime cannot be null.");
-    }
-    if (gameModel == null) {
-        throw new IllegalArgumentException("gameModel cannot be null.");
+     * This function checks all the events against the current game time, and removes them.
+     * Only one 
+     * @param gameTime The current in game time.
+     */
+    public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, GameModel gameModel) {
+        // duration the event has been taking place
+        Duration durationOfEvent = Duration.between(eventStartedAt, gameTime);
+
+        if (durationOfEvent.getSeconds() >= 10000000 || dealtWith){ 
+            gameModel.removeEvent(eventX, eventY);; // remove event
+            return true;
+        }
+        return false; // event is still ongoing
     }
 
-    if (eventX < 0 || eventY < 0 || eventX >= gameModel.getMapWidth() || eventY >= gameModel.getMapHeight()) {
-        throw new IllegalArgumentException("Event coordinates are out of bounds.");
-    }
-
-    // Check event duration
-    if (eventStartedAt == null) {
-        Gdx.app.error("GameEvent", "eventStartedAt is null. Ensure setEventStartedAt() is called before updateEvent().");
-        return false; // Cannot proceed if event start time is not initialized
-    }
-    
-    Duration durationOfEvent = Duration.between(eventStartedAt, gameTime);
-    
-    if (durationOfEvent.isNegative()) {
-        Gdx.app.error("GameEvent", "Invalid gameTime: event started at " + eventStartedAt + ", but gameTime is " + gameTime + ".");
-        return false; // Invalid time, ignore update
-    }
-
-    // Remove event if it has been handled or duration exceeded
-    if (durationOfEvent.getSeconds() >= 10_000_000 || dealtWith) {
-        gameModel.removeEvent(eventX, eventY); // remove event
-        return true;
-    }
-    
-    return false; // event is still ongoing
-    }
+    // public boolean isResolved(){
+    //     return isResolved(this); // send to handler
+    // }
 }
