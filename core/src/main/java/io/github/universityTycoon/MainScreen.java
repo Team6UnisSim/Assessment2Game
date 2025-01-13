@@ -359,7 +359,7 @@ public class MainScreen implements Screen {
         if (displayReport) { // Draw annual report if timer is active
             annualReportTimer -= delta; // reduce timer by delta timer
             if (annualReportTimer > 0){
-                GameModel.blackfont.draw(batch, annualReportMessage, viewport.getWorldWidth() - 5.0f, 2.0f);
+                GameModel.blackFont.draw(batch, annualReportMessage, viewport.getWorldWidth() - 5.0f, 2.0f);
             } else {
                 displayReport = false; // stop displaying the message once timer expires
             }
