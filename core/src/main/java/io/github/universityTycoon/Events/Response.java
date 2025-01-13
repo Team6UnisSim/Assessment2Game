@@ -1,6 +1,5 @@
 package io.github.universityTycoon.Events;
 
-
 /**
  * ADDED IN ASSESSMENT 2
  * Used to store data associated with a response a player can choose for an event.
