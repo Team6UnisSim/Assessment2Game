@@ -1,5 +1,4 @@
 package io.github.universityTycoon.Events;
-
 import io.github.universityTycoon.*;
 import java.util.Map;
 import java.util.HashMap;
