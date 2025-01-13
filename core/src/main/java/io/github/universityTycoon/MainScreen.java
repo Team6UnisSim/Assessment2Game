@@ -48,6 +48,9 @@ import static java.lang.Math.floorDiv;
  * @param playerInputHandler An instance of the PlayerInputHandler class, which handles inputs.
  * @param handlingEvent Determines whether to render event-based display.
  * @param renderTutorial Determines whether to render tutorial
+ * @param annualReportTimer Timer to control the yearly report message display
+ * @param displayReport Flag to toggle display yearly report
+ * @param yearlyReportMessage Holds the message to be displayed for the yearly report
  *
  * @param time Takes the time as seconds from gameModel
  * @param dateTimeString Takes the time as a date from gameModel, and
@@ -87,13 +90,15 @@ public class MainScreen implements Screen {
     PlayerInputHandler playerInputHandler;
     boolean handlingEvent; // ADDED IN ASSESSMENT 2
     boolean renderTutorial; // ADDED IN ASSESSMENT 2
+    static float annualReportTimer = 0f; // ADDED IN ASSESSMENT 2
+    static boolean displayReport = false; // ADDED IN ASSESSMENT 2
+    static String yearlyReportMessage = ""; // ADDED IN ASSESSMENT 2
 
     String time;
     String dateTimeString;
 
     // ADDED IN ASSESSMENT 2
-    // added this to pass to EventManager.processEvents() from MainScreen.render()
-    float delta;
+    float delta; // passed to EventManager.processEvents() from MainScreen.render()
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
@@ -153,8 +158,8 @@ public class MainScreen implements Screen {
      */
     @Override
     public void render(float v) {
-        delta = v; // this is passed from the game class which the ScreenManager extends
-        gameModel.runGame(v); // TOM: I think 'v' here is delta time so I am passing it to EventManager.processEvents
+        delta = v; // ADDED IN ASSESSMENT 2 - this is passed from the game class which the ScreenManager extends
+        gameModel.runGame(v); 
         input();
         logic();
         draw();
@@ -292,6 +297,24 @@ public class MainScreen implements Screen {
     }
 
     /**
+     * ADDED IN ASSESSMENT 2 - draws the annual report message to screen
+     * @param startingScore starting score for the year
+     * @param endingScore ending score for the year
+     * @param buildingsConstructed number of buildings constructed this year
+     * @param eventsHandled number of events handled this year
+     */
+    public static void displayAnnualReport(float startingScore, float endingScore, int buildingsConstructed, int eventsHandled){
+        // format the message to be drawn in the MainScreen.draw
+        annualReportMessage = String.format(
+            "Yearly Report:\nStarting score: %.1f\nEnding score: %1.f\nBuildings constructed: %d\nEvents handled: %d\n", 
+            startingScore, endingScore, buildingsConstructed, eventsHandled
+        );
+        annualReportTimer = 10.0f // set timer to 10 seconds
+        displayReport = true;
+    }
+
+
+    /**
      * Draws all textures on the screen.
      * Note: Batch.begin() and batch.end() must contain all draw statements, and cannot overlap with other begin/ends.
      * This is also true for shapeRenderer. Meaning batch.end() must come before shapeRenderer.begin() for example.
@@ -332,6 +355,15 @@ public class MainScreen implements Screen {
         // ADDED IN ASSESSMENT 2
         GameModel.smallerFont.draw(batch, "Press H for help!", 13.15f, 7.9f);
 
+        // ADDED IN ASSESSMENT 2
+        if (displayReport) { // Draw annual report if timer is active
+            annualReportTimer -= delta; // reduce timer by delta timer
+            if (annualReportTimer > 0){
+                GameModel.balcfont.draw(batch, annualReportMessage, viewport.getWidth() - 5.0f, 2.0f);
+            } else {
+                displayReport = false; // stop displaying the message once timer expires
+            }
+        }
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
         // So batch.end() must go before anything with ShapeRenderer

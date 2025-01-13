@@ -108,7 +108,7 @@ public class GameModel {
     public GameModel() {
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern"
-        eventManager = new EventManager(eventListener);
+        eventManager = new EventManager(eventListener, this);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController(tilesWide, tilesHigh);
