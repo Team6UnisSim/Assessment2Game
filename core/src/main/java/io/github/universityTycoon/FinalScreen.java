@@ -93,6 +93,12 @@ public class FinalScreen implements Screen {
                 Gdx.app.error("Show Method", "Failed to load start texture", e);
             }
 
+            try {
+                exit = new Texture(Gdx.files.internal("images/exit.png"));
+            } catch (Exception e) {
+                Gdx.app.error("Show Method", "Failed to load exit texture", e);
+            }
+
             sr = new ShapeRenderer();
         } catch (Exception e) {
             Gdx.app.error("Show Method", "Failed to initialize resources", e);
