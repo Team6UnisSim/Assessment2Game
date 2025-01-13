@@ -33,7 +33,11 @@ public class GameEvent {
      * @param rarity how rare the event is
      * @param iconPath file path for the event's icon
      */
-    public GameEvent(EventTypes eventType){
+    public GameEvent(EventTypes eventType) {
+        // tests if the eventtype is acceptable
+        if (eventType == null) {
+            throw new IllegalArgumentException("EventType cannot be null.");
+        }
         this.eventType = eventType;
         this.isActive = true; // default is active
         this.description = eventType.getDescription();
@@ -54,19 +58,26 @@ public class GameEvent {
 
 
     /**
-     * Retrieves description of current event 
+     * Retrieves description of current event
+     * Handled via Testing
+     * 
      * @return event description
      */
-    public String getDescription(){
-        return description;
+    public String getDescription() {
+        return description != null ? description : "No description available.";
     }
 
 
     /**
      * Retrieves rarity of the current event
+     * Done via Testing
+     * 
      * @return event rarity
      */
-    public float getRarity(){
+    public float getRarity() {
+        if (rarity < 1 || rarity > 5) {
+            throw new IllegalStateException("Rarity must be between 1 and 5.");
+        }
         return rarity;
     }
 
@@ -142,6 +153,7 @@ public class GameEvent {
             gameModel.removeEvent(eventX, eventY);; // remove event
             return true;
         }
+        //DO NOT CHANGE THE ABOVE FUNCTION IT WILL BREAK THE GAME --Adam (Testing)
         return false; // event is still ongoing
     }
 }
