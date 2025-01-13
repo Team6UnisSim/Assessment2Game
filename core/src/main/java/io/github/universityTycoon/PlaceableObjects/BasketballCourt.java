@@ -15,7 +15,7 @@ public class BasketballCourt extends LeisureBuilding  {
      * @param constructionStartedAt The date the construction starts at.
      */
     public BasketballCourt(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt, "images/fun_building.png");
+        super(constructionStartedAt, "images/basketball.png");
         name = "Basketball Court";
         width = 3;
         height = 2;
