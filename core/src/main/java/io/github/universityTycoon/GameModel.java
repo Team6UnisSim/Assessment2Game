@@ -372,11 +372,11 @@ public class GameModel {
  
     /**
      * ADDED IN ASSESSMENT 2
-     * HELPER METHOD FOR ABOVE: handleEvent()
+     * Helper method for above: handleEvent()
      * Creates relevant type handler object based on eventType passed
      * 
      * @param eventType the type of the current event being processed
-     * @return hanlder object of corresponding type, else throws exception
+     * @return hanlder object of corresponding type, else returns null
      */
     private GameEventHandler createHandler(EventTypes type) {
         return switch (type) {
