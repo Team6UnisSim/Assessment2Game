@@ -1,9 +1,10 @@
 package io.github.universityTycoon;
 
+import io.github.universityTycoon.PlaceableObjects.MapObject;
+import io.github.universityTycoon.PlaceableObjects.Building;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Random;
-
 import java.util.Map;
 
 
