@@ -22,35 +22,61 @@ public class PlayerInputHandler {
 
     /**
      * Checks if the left mouse button is currently being pressed.
+     * 
      * @return true if the left mouse button is pressed, false otherwise.
      */
     public boolean getIsMouseDown() {
-        return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        try {
+            return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        } catch (Exception e) {
+            System.err.println("Error checking mouse down state: " + e.getMessage());
+            return false; // Default fallback to not pressed.
+        }
     }
 
     /**
      * Checks if the left mouse button was just clicked (pressed and released).
+     * Testing was done here to make things more efficient and errorhandle edge
+     * cases
+     * 
      * @return true if the left mouse button was just clicked, false otherwise.
      */
     public boolean mouseJustClicked() {
-        return Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
+        try {
+            return Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
+        } catch (Exception e) {
+            System.err.println("Error checking mouse click state: " + e.getMessage());
+            return false; // Default fallback to not clicked.
+        }
     }
 
     /**
      * Checks if the pause key was just pressed.
+     * 
      * @return true if the pause key was just pressed, false otherwise.
      */
     public boolean getIsPauseJustPressed() {
-        return Gdx.input.isKeyJustPressed(PAUSE_KEY);
+        try {
+            return Gdx.input.isKeyJustPressed(PAUSE_KEY);
+        } catch (Exception e) {
+            System.err.println("Error checking pause key state: " + e.getMessage());
+            return false; // Default fallback to not pressed.
+        }
     }
 
     /**
      * Checks if a specified key was just pressed.
+     * 
      * @param key The integer code representing the key to check.
      * @return true if the specified key was just pressed, false otherwise.
      */
     public boolean getKeyJustPressed(int key) {
-        return Gdx.input.isKeyJustPressed(key);
+        try {
+            return Gdx.input.isKeyJustPressed(key);
+        } catch (Exception e) {
+            System.err.println("Error checking key press state for key: " + key + " - " + e.getMessage());
+            return false; // Default fallback to not pressed.
+        }
     }
 
 }
