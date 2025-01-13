@@ -309,7 +309,7 @@ public class MainScreen implements Screen {
             "Yearly Report:\nStarting score: %.1f\nEnding score: %1.f\nBuildings constructed: %d\nEvents handled: %d\n", 
             startingScore, endingScore, buildingsConstructed, eventsHandled
         );
-        annualReportTimer = 10.0f // set timer to 10 seconds
+        annualReportTimer = 10.0f; // set timer to 10 seconds
         displayReport = true;
     }
 
