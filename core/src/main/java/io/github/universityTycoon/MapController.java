@@ -170,8 +170,6 @@ public class MapController {
      * ADDED IN ASSESSMENT 2
      * Finds a random tile to place the event icon using helper method above
      * Places the object on the MapObject grid on that free tile.
- 
-     * 
      * @param event event to retrieve icon for
      * @return x and y coordinates of the tile that event was placed on
      */

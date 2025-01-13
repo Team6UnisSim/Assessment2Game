@@ -79,52 +79,91 @@ public class GameEvent {
         return iconPath;
     }
     
+    /**
+     * Get Map events
+     * @return mapEvent -> Event
+     */
     public Event getMapEvent(){
         return mapEvent;
     }
 
 
+    /**
+     * Set time event started at
+     * @param eventStartedAt time event started at
+     */
     public void setEventStartedAt(LocalDateTime eventStartedAt) {
         this.eventStartedAt = eventStartedAt;
     }
 
-
+    /**
+     * Find if event is active
+     * @return isActive
+     */
     public boolean isActive(){
         return isActive;
     }
 
+    /**
+     * Disable event
+     */
     public void disableEvent(){
         this.isActive = false;
     }
 
-
+    /**
+     * Get reponse effect
+     * @return responseEffect -> float
+     */
     public float getResponseEffect(){
         return responseEffect;
     }
 
 
+    /**
+     * Get response description
+     * @return responseDescription -> String
+     */
     public String getResponseDescription(){
         return responseDescription;
     }
 
-
+    /**
+     * Set response effect
+     * @param effect of response
+     */
     public void setResponseEffect(float effect){
         this.responseEffect = effect;
     }
 
 
+    /**
+     * Set response description
+     * @param description description of response
+     */
     public void setResponseDescription(String description){
         this.responseDescription = description;
     }
 
+    /**
+     * Get time event started at
+     * @return eventStartedAt -> LocalDateTime
+     */
     public LocalDateTime getEventStartedAt() {
         return eventStartedAt;
     }
 
+    /**
+     * Set event dealt with
+     * @param eventDealtWith
+     */
     public void setEventDealtWith(boolean eventDealtWith) {
         dealtWith = eventDealtWith;
     }
 
+    /*
+     * Get boolean value if vent is dealt with
+     */
     public boolean getEventDealtWith() {
         return dealtWith;
     }
@@ -133,6 +172,10 @@ public class GameEvent {
      * This function checks all the events against the current game time, and removes them.
      * Only one 
      * @param gameTime The current in game time.
+     * @param eventX x coordinate of the event
+     * @param eventY y coordinate of the event
+     * @param gameModel game model
+     * @return boolean
      */
     public boolean updateEvent(LocalDateTime gameTime, int eventX, int eventY, GameModel gameModel) {
         // duration the event has been taking place

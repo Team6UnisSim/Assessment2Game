@@ -8,7 +8,7 @@ import java.util.Map;
 
 
 /**
- * ADDED IN ASSESSMENT 2
+ * CHANGED IN ASSESSMENT 2 - Nothing implemented in Assessment 1.
  * Responsible for raising an event and dispatching it to the GameEventListener
  * 
  * @param eventMap keeps track of what event types have been raised, to avoid repetition.

@@ -45,14 +45,26 @@ public enum EventTypes {
         this.planned = planned;
     }
 
+    /**
+     * Get rarity of event
+     * @return rarity -> int
+     */
     public int getRarity(){
         return rarity;
     }
 
+    /**
+     * Get description of event
+     * @return description -> String
+     */
     public String getDescription(){
         return description;
     }
 
+    /**
+     * Get boolean value of planned event
+     * @return planned -> boolean
+     */
     public boolean getPlanned() {
         return planned;
     }
